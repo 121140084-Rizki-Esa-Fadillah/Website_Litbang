@@ -1,0 +1,107 @@
+* {
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    letter-spacing: 0.5px;
+}
+
+.profile-admin {
+    display: flex;
+    align-items: center;
+    gap: 1.25rem;
+    margin: 2rem;
+    margin-top: 1.5rem;
+}
+
+.profile-admin i {
+    font-size: 7rem;
+    color: #eaddff;
+}
+
+.foto-profile {
+    background-color: #0C25A3;
+    border-radius: 100%;
+}
+
+.data-profile-admin {
+    display: flex;
+    gap: 60px;
+    margin-left: 29px;
+}
+
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label,
+.form-group input,
+.form-group select {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    font-size: 1rem;
+}
+
+.form-group label {
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+    margin-top: 5px;
+    padding: 8px;
+    box-sizing: border-box;
+    width: 18rem;
+    border-radius: 8px;
+    border: 1px solid #0C25A3;
+}
+
+
+.tombol {
+    margin-top: 6rem;
+    margin-right: 2rem;
+    display: flex;
+    justify-content: flex-end;
+    gap: 2.5rem;
+}
+
+.tombol a {
+    color: #444;
+    font-size: 1rem;
+    background-color: #D9D9D9;
+    padding: 0.5rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    border-width: 0;
+    text-decoration: none;
+    gap: 0.5rem;
+    transition: background-color 0.3s ease, transform 0.3s ease; 
+    cursor: pointer; 
+}
+
+.tombol a:hover { 
+    color: black;
+    border: 1px solid black;
+}
+
+.tombol-simpan {
+    color: white;
+    font-size: 1rem;
+    background-color: #0C25A3;
+    padding: 0.5rem 1.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+    border-width: 0;
+    text-decoration: none;
+    gap: 0.5rem;
+    transition: background-color 0.3s ease, transform 0.3s ease; 
+    cursor: pointer; 
+}
+
+.tombol-simpan:hover {
+    background-color: #D9D9D9; 
+    color: #0C25A3;
+    border: 1px solid #0C25A3;
+}

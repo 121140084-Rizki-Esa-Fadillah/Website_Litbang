@@ -1,0 +1,262 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+body {
+    background-color: #f0f0f0;
+    display: flex;
+    height: 100vh;
+    margin: 0;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+header {
+    background-color: #f7f2fa;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0 0 7.5rem;
+    border-bottom: 1px solid #f8f8f8;
+    height: 5rem;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+}
+
+header .logo_radar img {
+    height: 3rem;
+}
+
+.akun {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-right: 3rem;
+    cursor: pointer;
+    position: relative;
+}
+
+.akun i {
+    font-size: 1.5rem;
+}
+
+.akun .dropdown i {
+    font-size: 1rem;
+}
+
+.dropdown-menu {
+    display: none;
+    position: absolute;
+    right: 2.5rem;
+    top: 2rem;
+    background-color: #f7f2fa;
+    box-shadow: 0 2px 0 1px rgba(0, 0, 0, 0.1);
+    border-top: 1px solid #e2e2e2;
+    border-radius: 0.25rem;
+    z-index: 1000;
+    width: 15vw;
+}
+
+.dropdown-menu a {
+    display: block;
+    padding: 0.75rem 1rem;
+    text-decoration: none;
+    color: #333;
+}
+
+.dropdown-menu a:hover {
+    background-color: #e2e2e2;
+    border-radius: 0.25rem;
+}
+
+.dropdown.active .dropdown-menu {
+    display: block;
+}
+
+aside {
+    background-color: #0c25a3;
+    color: white;
+    width: 20vw;
+    height: calc(100vh - 4rem);
+    position: fixed;
+    top: 5rem;
+    left: 0;
+    overflow-y: auto;
+}
+
+aside .profile {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    padding: 1.5rem 0 1rem 1.5rem;
+    border-bottom: 1px solid #575757;
+}
+
+aside .profile i {
+    font-size: 4rem;
+}
+
+aside .username-status {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+}
+
+aside .profile .username-status h3 {
+    font-size: 16px;
+    padding-bottom: 0.5rem;
+}
+
+aside .profile .username-status .indikator {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #60f21d;
+}
+
+aside .profile .username-status .status {
+    font-size: 12px;
+    font-weight: 600;
+}
+
+aside .profile .username-status .indikator i {
+    font-size: 12px;
+}
+
+nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+nav ul li {
+    display: flex;
+    align-items: center;
+    margin: 2px;
+    padding-left: 2vw;
+    border-bottom: 1px solid #575757;
+    background-color: #d9d9d930;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+nav ul li i {
+    font-size: 1.25rem;
+}
+
+nav ul li a,
+nav ul li strong {
+    color: white;
+    padding: 1.25rem;
+    text-decoration: none;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+nav ul li:hover {
+    background-color: #d9d9d97b;
+}
+
+nav ul li.active {
+    background-color: #d9d9d97b;
+}
+
+.dropdown-survey {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+}
+
+.dropdown-survey.show {
+    max-height: 200px; /* Adjust as needed */
+    transition: max-height 0.3s ease;
+}
+
+.survey-toggle {
+    display: flex;
+    align-items: center;
+}
+
+.survey-toggle span {
+    margin-left: auto;
+    padding-right: 1rem;
+    margin-right: 0.5rem;
+    font-size: 2rem;
+}
+
+.Tambah_Survey_Hal1,
+.Hasil_Survey {
+    display: flex;
+    align-items: center;
+    padding-left: 1rem;
+}
+
+.survey-menu span {
+    font-size: 1.6rem;
+}
+
+li .survey-toggle {
+    align-items: center;
+}
+
+.rotate {
+    transform: rotate(90deg);
+    transition: transform 0.4s ease;
+    transform-origin: center; 
+}
+
+
+span.arrow {
+    display: inline-block;
+    transition: transform 0.4s ease;
+}
+
+.arrow {
+    width: 2rem;
+    height: 2rem;
+}
+
+
+main {
+    margin-left: 20vw;
+    padding: 0;
+    flex-grow: 1;
+    margin-top: 7rem;
+    overflow-y: scroll;
+    overflow-x: auto;
+}
+
+section {
+    background-color: #6a77c6;
+    padding: 0.4rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    padding-left: 1rem;
+    height: 2rem;
+    position: fixed;
+    top: 5rem;
+    width: calc(100% - 20vw);
+    z-index: 999;
+}
+
+section i {
+    font-size: 1.25rem;
+    color: white;
+}
+
+section h2 {
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+}
