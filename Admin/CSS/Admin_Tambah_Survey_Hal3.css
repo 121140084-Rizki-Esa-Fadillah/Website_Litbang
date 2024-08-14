@@ -95,6 +95,22 @@ td:nth-child(6){
     margin-left: 2rem;
 }
 
+.grafik div {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+}
+
+canvas {
+    max-width: 28rem; 
+    max-height: 20rem; 
+    margin: 1rem 0.5rem;
+    padding: 0.5rem;
+    border: #000 solid 1px;
+    border-radius: 0.5rem; 
+    box-sizing: border-box; /* Termasuk border dan padding dalam ukuran elemen */
+}
+
+
 .actions {
     display: flex;
     justify-content: space-between;

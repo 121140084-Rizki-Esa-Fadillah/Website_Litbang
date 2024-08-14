@@ -29,7 +29,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     mysqli_close($conn);
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -85,7 +84,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <label for="upload-gambar">Upload Gambar (Optional):</label>
                         <div class="upload-section">
                               <div class="upload-box">
-                                    <img src="../../image/upload_foto.png" alt="">
+                                    <img id="image-preview" src="../../image/upload_foto.png" alt="Preview">
                                     <input type="file" id="upload-gambar" name="upload-gambar"
                                           accept="image/jpeg, image/png">
                               </div>
@@ -101,6 +100,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </div>
       </main>
       <script src="..\Js\Main.js"></script>
+      <script>
+      document.getElementById('upload-gambar').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            const reader = new FileReader();
+
+            if (file) {
+                  reader.onload = function(e) {
+                        document.getElementById('image-preview').src = e.target.result;
+                  };
+                  reader.readAsDataURL(file);
+            }
+      });
+      </script>
 </body>
 
 </html>
