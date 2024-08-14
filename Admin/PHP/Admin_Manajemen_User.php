@@ -1,3 +1,28 @@
+<?php
+session_start();
+
+include('Koneksi_user_litbang.php');
+
+if (!isset($_SESSION['username'])) {
+    header("Location: Admin_Login.php");
+    exit();
+}
+
+$username = $_SESSION['username'];
+$sql = "SELECT * FROM user";
+$result = $conn->query($sql);
+
+if ($result->num_rows > 0) {
+    $users = $result->fetch_all(MYSQLI_ASSOC);
+} else {
+    // Jika tidak ada data pengguna ditemukan, redirect ke halaman login
+    header("Location: Admin_Login.php");
+    exit();
+}
+
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -57,16 +82,17 @@
                               </tr>
                         </thead>
                         <tbody>
+                              <?php foreach ($users as $user): ?>
                               <tr>
-                                    <td>123</td>
-                                    <td>Ucup Sentosa</td>
-                                    <td>User123</td>
-                                    <td>Laki-laki</td>
-                                    <td>User@gmail.com</td>
-                                    <td>08********</td>
+                                    <td><?php echo htmlspecialchars($user['id']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['nama_lengkap']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['username']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['jenis_kelamin']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['email']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['no_hp']); ?></td>
                                     <td>2024-11-12</td>
                                     <td>2025-03-01</td>
-                                    <td>Admin</td>
+                                    <td><?php echo htmlspecialchars($user['role']); ?></td>
                                     <td>
                                           <div class="action-buttons">
                                                 <a href="Admin_Edit_User.php" class="tombol-edit">
@@ -78,7 +104,7 @@
                                           </div>
                                     </td>
                               </tr>
-                              <!-- Additional rows can be added here -->
+                              <?php endforeach; ?>
                         </tbody>
                   </table>
             </div>
