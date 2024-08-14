@@ -52,8 +52,9 @@ $conn->close();
             <div class="profile-admin">
                   <div class="foto-profile">
                         <?php if (!empty($user['image_profile_path'])): ?>
-                        <img src="<?php echo htmlspecialchars($user['image_profile_path']); ?>" alt="Foto Profil"
-                              style="width: 100px; height: 100px; border-radius: 50%;">
+                              <div style="width: 7rem; height: 7rem; border-radius: 50%;">
+                                    <img src="<?php echo htmlspecialchars($user['image_profile_path']); ?>" alt="Foto Profil" id="open-modal-btn" style="cursor: pointer; width: 7rem; height: 7rem; border-radius: 50%;" >
+                              </div>
                         <?php else: ?>
                         <i class="fa-solid fa-circle-user"></i>
                         <?php endif; ?>
