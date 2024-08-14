@@ -76,5 +76,5 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     // Load header HTML and initialize listeners
-    loadHTML('header', '../HTML/Main.html');
+    loadHTML('header', 'Main.php');
 });
