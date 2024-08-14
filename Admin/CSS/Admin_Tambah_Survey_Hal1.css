@@ -63,6 +63,9 @@ form select {
     cursor: pointer;
 }
 
+/* Optional: Style for image preview */
+
+
 .upload-box {
     text-align: center;
     display: flex;
