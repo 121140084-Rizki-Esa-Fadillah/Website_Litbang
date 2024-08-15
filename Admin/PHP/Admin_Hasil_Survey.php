@@ -130,7 +130,6 @@ $conn->close();
                                     </div>
                               </form>
                         </div>
-
                   </div>
                   <div class="sort-box">
                         <label for="sort">Sorting :</label>
@@ -178,9 +177,7 @@ $conn->close();
                                           <option value="Metro" <?php if ($sort == 'Metro') echo 'selected'; ?>>Kota
                                                 Metro</option>
                                     </select>
-                                    <span class="material-symbols-outlined arrow-select">
-                                          keyboard_arrow_up
-                                    </span>
+                                    <span class="material-symbols-outlined arrow-select">keyboard_arrow_up</span>
                               </form>
                         </div>
                   </div>
@@ -195,19 +192,20 @@ $conn->close();
                     echo '</a>';
                     echo '<div class="hasil-container">';
                     if (!empty($survey['image'])) {
-                        // Pastikan tipe MIME sesuai dengan gambar yang disimpan
-                        $imageType = 'jpeg'; // Atau bisa diganti dengan 'png', 'gif', dll.
-                        
-                        // Konversi BLOB ke base64
-                        $image = base64_encode($survey['image']);
-                        
-                        // Output gambar dengan format yang benar
-                        echo '<div class="img"><img src="../image/'. $image . '" alt="' . htmlspecialchars($survey['title']) . '"></div>';
+                        // Mengatur path gambar sesuai dengan struktur direktori Anda
+                        $imagePath = '../../image/' . $survey['image']; // Misalnya, path relatif ke folder 'image'
+                    
+                        // Memastikan gambar ada dan dapat diakses
+                        if (file_exists($imagePath)) {
+                            // Output gambar dengan format yang benar
+                            echo '<div class="img"><img src="' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($survey['title']) . '"></div>';
+                        } else {
+                            echo '<div class="img">Image not found</div>';
+                        }
                     } else {
                         echo '<div class="img">No Image</div>';
-                        echo '<pre>' . htmlspecialchars($image) . '</pre>';
-
                     }
+                    
                     
                     echo '<div class="ket">';
                     echo '<p>' . htmlspecialchars($survey['keterangan']) . '</p>';

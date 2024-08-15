@@ -1,43 +1,46 @@
 <?php
 include 'Koneksi_survei_litbang.php';
 
-// Fetch the latest survey
-$sql = "SELECT * FROM survey ORDER BY id DESC LIMIT 1";
-$result = $conn->query($sql);
+// Prepare and execute query to fetch the latest survey
+$sqlSurvey = "SELECT * FROM survey ORDER BY id DESC LIMIT 1";
+$stmtSurvey = $conn->prepare($sqlSurvey);
+$stmtSurvey->execute();
+$surveyResult = $stmtSurvey->get_result();
 
-if ($result->num_rows > 0) {
-$row = $result->fetch_assoc();
-$surveyTitle = $row['title'];
-$surveyIdWilayah = $row['id_wilayah'];
-
-// Fetch wilayah name
-$sqlWilayah = "SELECT nama_wilayah FROM wilayah WHERE id = $surveyIdWilayah";            
-$resultWilayah = $conn->query($sqlWilayah);
-      if ($resultWilayah->num_rows > 0) {
-          $rowWilayah = $resultWilayah->fetch_assoc();
-            $wilayahName = $rowWilayah['nama_wilayah'];
-      }
+if ($surveyResult->num_rows > 0) {
+    $surveyData = $surveyResult->fetch_assoc();
+    $surveyTitle = $surveyData['title'];
+    $surveyIdWilayah = $surveyData['id_wilayah'];
+    
+    // Prepare and execute query to fetch wilayah name
+    $sqlWilayah = "SELECT nama_wilayah FROM wilayah WHERE id = ?";
+    $stmtWilayah = $conn->prepare($sqlWilayah);
+    $stmtWilayah->bind_param("i", $surveyIdWilayah);
+    $stmtWilayah->execute();
+    $wilayahResult = $stmtWilayah->get_result();
+    
+    if ($wilayahResult->num_rows > 0) {
+        $wilayahData = $wilayahResult->fetch_assoc();
+        $wilayahName = $wilayahData['nama_wilayah'];
+    }
 } else {
-      $surveyTitle = "No Survey Found";
-      $wilayahName = "Unknown";
+    $surveyTitle = "No Survey Found";
+    $wilayahName = "Unknown";
 }
 
-// Fetch the latest data for gender
-$sqlGender = "SELECT * FROM gender ORDER BY id DESC LIMIT 1";
-$resultGender = $conn->query($sqlGender);
-    
-// Fetch the latest data for usia
-$sqlUsia = "SELECT * FROM usia ORDER BY id DESC LIMIT 1";
-$resultUsia = $conn->query($sqlUsia);
-    
-// Fetch the latest data for lulusan
-$sqlLulusan = "SELECT * FROM lulusan ORDER BY id DESC LIMIT 1";
-$resultLulusan = $conn->query($sqlLulusan);
-    
-// Fetch the latest data for profesi
-$sqlProfesi = "SELECT * FROM profesi ORDER BY id DESC LIMIT 1";
-$resultProfesi = $conn->query($sqlProfesi);
-    
+// Function to fetch latest data from a table
+function fetchLatestData($conn, $tableName) {
+    $sql = "SELECT * FROM $tableName ORDER BY id DESC LIMIT 1";
+    $stmt = $conn->prepare($sql);
+    $stmt->execute();
+    return $stmt->get_result()->fetch_assoc();
+}
+
+$genderData = fetchLatestData($conn, 'gender');
+$usiaData = fetchLatestData($conn, 'usia');
+$lulusanData = fetchLatestData($conn, 'lulusan');
+$profesiData = fetchLatestData($conn, 'profesi');
+
 $conn->close();
 ?>
 
@@ -94,42 +97,42 @@ $conn->close();
                         </thead>
                         <tbody>
                               <?php
-                        if ($resultGender->num_rows > 0) {
-                            $rowGender = $resultGender->fetch_assoc();
-                            echo "<tr>
-                                    <td>Laki-laki</td>
-                                        <td>{$rowGender['laki_laki_sangat_puas']}</td>
-                                        <td>{$rowGender['laki_laki_puas']}</td>
-                                        <td>{$rowGender['laki_laki_kurang_puas']}</td>
-                                        <td>{$rowGender['laki_laki_sangat_kurang_puas']}</td>
-                                        <td>{$rowGender['total_responden_laki_laki']}</td>
+                              if ($genderData) {
+                                    echo "
+                                    <tr>
+                                          <td>Laki - Laki</td>
+                                          <td>" . htmlspecialchars($genderData['laki_laki_sangat_puas']) . "</td>
+                                          <td>" . htmlspecialchars($genderData['laki_laki_puas']) . "</td>
+                                          <td>" . htmlspecialchars($genderData['laki_laki_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($genderData['laki_laki_sangat_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($genderData['total_responden_laki_laki']) . "</td>
                                     </tr>
                                     <tr>
-                                        <td>Perempuan</td>
-                                        <td>{$rowGender['perempuan_sangat_puas']}</td>
-                                        <td>{$rowGender['perempuan_puas']}</td>
-                                        <td>{$rowGender['perempuan_kurang_puas']}</td>
-                                        <td>{$rowGender['perempuan_sangat_kurang_puas']}</td>
-                                        <td>{$rowGender['total_responden_perempuan']}</td>
+                                          <td>Perempuan</td>
+                                          <td>" . htmlspecialchars($genderData['perempuan_sangat_puas']) . "</td>
+                                          <td>" . htmlspecialchars($genderData['perempuan_puas']) . "</td>
+                                          <td>" . htmlspecialchars($genderData['perempuan_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($genderData['perempuan_sangat_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($genderData['total_responden_perempuan']) . "</td>
                                     </tr>
                                     <tr>
                                           <td>Total</td>
-                                          <td>{$rowGender['total_sangat_puas_gender']}</td>
-                                          <td>{$rowGender['total_puas_gender']}</td>
-                                          <td>{$rowGender['total_kurang_puas_gender']}</td>
-                                          <td>{$rowGender['total_sangat_kurang_puas_gender']}</td>
-                                          <td>{$rowGender['total_responden_gender']}</td>
+                                          <td>" . htmlspecialchars($genderData['laki_laki_sangat_puas'] + $genderData['perempuan_sangat_puas']) . "</td>
+                                          <td>" . htmlspecialchars($genderData['laki_laki_puas'] + $genderData['perempuan_puas']) . "</td>
+                                          <td>" . htmlspecialchars($genderData['laki_laki_kurang_puas'] + $genderData['perempuan_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($genderData['laki_laki_sangat_kurang_puas'] + $genderData['perempuan_sangat_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($genderData['total_responden_gender']) . "</td>
                                     </tr>
                                     <tr>
                                           <td>Persentase</td>
-                                          <td>{$rowGender['persentase_sangat_puas_gender']}%</td>
-                                          <td>{$rowGender['persentase_puas_gender']}%</td>
-                                          <td>{$rowGender['persentase_kurang_puas_gender']}%</td>
-                                          <td>{$rowGender['persentase_sangat_kurang_puas_gender']}%</td>
+                                          <td>" . number_format((($genderData['laki_laki_sangat_puas'] + $genderData['perempuan_sangat_puas']) / $genderData['total_responden_gender']) * 100, 2) . "%</td>
+                                          <td>" . number_format((($genderData['laki_laki_puas'] + $genderData['perempuan_puas']) / $genderData['total_responden_gender']) * 100, 2) . "%</td>
+                                          <td>" . number_format((($genderData['laki_laki_kurang_puas'] + $genderData['perempuan_kurang_puas']) / $genderData['total_responden_gender']) * 100, 2) . "%</td>
+                                          <td>" . number_format((($genderData['laki_laki_sangat_kurang_puas'] + $genderData['perempuan_sangat_kurang_puas']) / $genderData['total_responden_gender']) * 100, 2) . "%</td>
                                           <td>100%</td>
                                     </tr>";
-                        }
-                        ?>
+                              }
+                              ?>
                         </tbody>
                   </table>
                   <h3>Usia</h3>
@@ -146,42 +149,42 @@ $conn->close();
                         </thead>
                         <tbody>
                               <?php
-                        if ($resultUsia->num_rows > 0) {
-                            $rowUsia = $resultUsia->fetch_assoc();
-                            echo "<tr>
-                                        <td>18-35 Tahun</td>
-                                        <td>{$rowUsia['18_35_sangat_puas']}</td>
-                                        <td>{$rowUsia['18_35_puas']}</td>
-                                        <td>{$rowUsia['18_35_kurang_puas']}</td>
-                                        <td>{$rowUsia['18_35_sangat_kurang_puas']}</td>
-                                        <td>{$rowUsia['total_responden_18_35']}</td>
+                              if ($usiaData) {
+                                    echo "
+                                    <tr>
+                                          <td>Usia 18 - 35 Tahun</td>
+                                          <td>" . htmlspecialchars($usiaData['18_35_sangat_puas']) . "</td>
+                                          <td>" . htmlspecialchars($usiaData['18_35_puas']) . "</td>
+                                          <td>" . htmlspecialchars($usiaData['18_35_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($usiaData['18_35_sangat_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($usiaData['total_responden_18_35']) . "</td>
                                     </tr>
                                     <tr>
-                                        <td>36 Tahun ke atas</td>
-                                        <td>{$rowUsia['36_up_sangat_puas']}</td>
-                                        <td>{$rowUsia['36_up_puas']}</td>
-                                        <td>{$rowUsia['36_up_kurang_puas']}</td>
-                                        <td>{$rowUsia['36_up_sangat_kurang_puas']}</td>
-                                        <td>{$rowUsia['total_responden_36_up']}</td>
+                                          <td>Usia 36 Tahun ke Atas</td>
+                                          <td>" . htmlspecialchars($usiaData['36_up_sangat_puas']) . "</td>
+                                          <td>" . htmlspecialchars($usiaData['36_up_puas']) . "</td>
+                                          <td>" . htmlspecialchars($usiaData['36_up_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($usiaData['36_up_sangat_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($usiaData['total_responden_36_up']) . "</td>
                                     </tr>
                                     <tr>
                                           <td>Total</td>
-                                          <td>{$rowUsia['total_sangat_puas_usia']}</td>
-                                          <td>{$rowUsia['total_puas_usia']}</td>
-                                          <td>{$rowUsia['total_kurang_puas_usia']}</td>
-                                          <td>{$rowUsia['total_sangat_kurang_puas_usia']}</td>
-                                          <td>{$rowUsia['total_responden_usia']}</td>
+                                          <td>" . htmlspecialchars($usiaData['18_35_sangat_puas'] + $usiaData['36_up_sangat_puas']) . "</td>
+                                          <td>" . htmlspecialchars($usiaData['18_35_puas'] + $usiaData['36_up_puas']) . "</td>
+                                          <td>" . htmlspecialchars($usiaData['18_35_kurang_puas'] + $usiaData['36_up_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($usiaData['18_35_sangat_kurang_puas'] + $usiaData['36_up_sangat_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($usiaData['total_responden_usia']) . "</td>
                                     </tr>
                                     <tr>
                                           <td>Persentase</td>
-                                          <td>{$rowUsia['persentase_sangat_puas_usia']}%</td>
-                                          <td>{$rowUsia['persentase_puas_usia']}%</td>
-                                          <td>{$rowUsia['persentase_kurang_puas_usia']}%</td>
-                                          <td>{$rowUsia['persentase_sangat_kurang_puas_usia']}%</td>
+                                          <td>" . number_format((($usiaData['18_35_sangat_puas'] + $usiaData['36_up_sangat_puas']) / $usiaData['total_responden_usia']) * 100, 2) . "%</td>
+                                          <td>" . number_format((($usiaData['18_35_puas'] + $usiaData['36_up_puas']) / $usiaData['total_responden_usia']) * 100, 2) . "%</td>
+                                          <td>" . number_format((($usiaData['18_35_kurang_puas'] + $usiaData['36_up_kurang_puas']) / $usiaData['total_responden_usia']) * 100, 2) . "%</td>
+                                          <td>" . number_format((($usiaData['18_35_sangat_kurang_puas'] + $usiaData['36_up_sangat_kurang_puas']) / $usiaData['total_responden_usia']) * 100, 2) . "%</td>
                                           <td>100%</td>
                                     </tr>";
-                        }
-                        ?>
+                              }
+                              ?>
                         </tbody>
                   </table>
                   <h3>Lulusan</h3>
@@ -198,66 +201,66 @@ $conn->close();
                         </thead>
                         <tbody>
                               <?php
-                        if ($resultLulusan->num_rows > 0) {
-                            $rowLulusan = $resultLulusan->fetch_assoc();
-                            echo "<tr>
-                                        <td>SD</td>
-                                        <td>{$rowLulusan['sd_sangat_puas']}</td>
-                                        <td>{$rowLulusan['sd_puas']}</td>
-                                        <td>{$rowLulusan['sd_kurang_puas']}</td>
-                                        <td>{$rowLulusan['sd_sangat_kurang_puas']}</td>
-                                        <td>{$rowLulusan['total_responden_sd']}</td>
+                              if ($lulusanData) {
+                                    echo "
+                                    <tr>
+                                          <td>Lulusan SD</td>
+                                          <td>" . htmlspecialchars($lulusanData['sd_sangat_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['sd_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['sd_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['sd_sangat_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['total_responden_sd']) . "</td>
                                     </tr>
                                     <tr>
-                                        <td>SMP</td>
-                                        <td>{$rowLulusan['smp_sangat_puas']}</td>
-                                        <td>{$rowLulusan['smp_puas']}</td>
-                                        <td>{$rowLulusan['smp_kurang_puas']}</td>
-                                        <td>{$rowLulusan['smp_sangat_kurang_puas']}</td>
-                                        <td>{$rowLulusan['total_responden_smp']}</td>
+                                          <td>Lulusan SMP</td>
+                                          <td>" . htmlspecialchars($lulusanData['smp_sangat_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['smp_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['smp_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['smp_sangat_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['total_responden_smp']) . "</td>
                                     </tr>
                                     <tr>
-                                        <td>SMA</td>
-                                        <td>{$rowLulusan['sma_sangat_puas']}</td>
-                                        <td>{$rowLulusan['sma_puas']}</td>
-                                        <td>{$rowLulusan['sma_kurang_puas']}</td>
-                                        <td>{$rowLulusan['sma_sangat_kurang_puas']}</td>
-                                        <td>{$rowLulusan['total_responden_sma']}</td>
+                                          <td>Lulusan SMA</td>
+                                          <td>" . htmlspecialchars($lulusanData['sma_sangat_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['sma_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['sma_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['sma_sangat_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['total_responden_sma']) . "</td>
                                     </tr>
                                     <tr>
-                                        <td>Diploma</td>
-                                        <td>{$rowLulusan['diploma_sangat_puas']}</td>
-                                        <td>{$rowLulusan['diploma_puas']}</td>
-                                        <td>{$rowLulusan['diploma_kurang_puas']}</td>
-                                        <td>{$rowLulusan['diploma_sangat_kurang_puas']}</td>
-                                        <td>{$rowLulusan['total_responden_diploma']}</td>
+                                          <td>Lulusan Diploma</td>
+                                          <td>" . htmlspecialchars($lulusanData['diploma_sangat_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['diploma_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['diploma_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['diploma_sangat_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['total_responden_diploma']) . "</td>
                                     </tr>
                                     <tr>
-                                        <td>S1/S2/S3</td>
-                                        <td>{$rowLulusan['sarjana_sangat_puas']}</td>
-                                        <td>{$rowLulusan['sarjana_puas']}</td>
-                                        <td>{$rowLulusan['sarjana_kurang_puas']}</td>
-                                        <td>{$rowLulusan['sarjana_sangat_kurang_puas']}</td>
-                                        <td>{$rowLulusan['total_responden_sarjana']}</td>
+                                          <td>Lulusan S1/S2/S3</td>
+                                          <td>" . htmlspecialchars($lulusanData['sarjana_sangat_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['sarjana_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['sarjana_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['sarjana_sangat_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['total_responden_sarjana']) . "</td>
                                     </tr>
                                     <tr>
                                           <td>Total</td>
-                                          <td>{$rowLulusan['total_sangat_puas_lulusan']}</td>
-                                          <td>{$rowLulusan['total_puas_lulusan']}</td>
-                                          <td>{$rowLulusan['total_kurang_puas_lulusan']}</td>
-                                          <td>{$rowLulusan['total_sangat_kurang_puas_lulusan']}</td>
-                                          <td>{$rowLulusan['total_responden_lulusan']}</td>
+                                          <td>" . htmlspecialchars($lulusanData['sd_sangat_puas'] + $lulusanData['smp_sangat_puas'] + $lulusanData['sma_sangat_puas'] + $lulusanData['diploma_sangat_puas'] + $lulusanData['sarjana_sangat_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['sd_puas'] + $lulusanData['smp_puas'] + $lulusanData['sma_puas'] + $lulusanData['diploma_puas'] + $lulusanData['sarjana_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['sd_kurang_puas'] + $lulusanData['smp_kurang_puas'] + $lulusanData['sma_kurang_puas'] + $lulusanData['diploma_kurang_puas'] + $lulusanData['sarjana_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['sd_sangat_kurang_puas'] + $lulusanData['smp_sangat_kurang_puas'] + $lulusanData['sma_sangat_kurang_puas'] + $lulusanData['diploma_sangat_kurang_puas'] + $lulusanData['sarjana_sangat_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($lulusanData['total_responden_lulusan']) . "</td>
                                     </tr>
                                     <tr>
                                           <td>Persentase</td>
-                                          <td>{$rowLulusan['persentase_sangat_puas_lulusan']}%</td>
-                                          <td>{$rowLulusan['persentase_puas_lulusan']}%</td>
-                                          <td>{$rowLulusan['persentase_kurang_puas_lulusan']}%</td>
-                                          <td>{$rowLulusan['persentase_sangat_kurang_puas_lulusan']}%</td>
+                                          <td>" . number_format((($lulusanData['sd_sangat_puas'] + $lulusanData['smp_sangat_puas'] + $lulusanData['sma_sangat_puas'] + $lulusanData['diploma_sangat_puas'] + $lulusanData['sarjana_sangat_puas']) / $lulusanData['total_responden_lulusan']) * 100, 2) . "%</td>
+                                          <td>" . number_format((($lulusanData['sd_puas'] + $lulusanData['smp_puas'] + $lulusanData['sma_puas'] + $lulusanData['diploma_puas'] + $lulusanData['sarjana_puas']) / $lulusanData['total_responden_lulusan']) * 100, 2) . "%</td>
+                                          <td>" . number_format((($lulusanData['sd_kurang_puas'] + $lulusanData['smp_kurang_puas'] + $lulusanData['sma_kurang_puas'] + $lulusanData['diploma_kurang_puas'] + $lulusanData['sarjana_kurang_puas']) / $lulusanData['total_responden_lulusan']) * 100, 2) . "%</td>
+                                          <td>" . number_format((($lulusanData['sd_sangat_kurang_puas'] + $lulusanData['smp_sangat_kurang_puas'] + $lulusanData['sma_sangat_kurang_puas'] + $lulusanData['diploma_sangat_kurang_puas'] + $lulusanData['sarjana_sangat_kurang_puas'])  / $lulusanData['total_responden_lulusan']) * 100, 2) . "%</td>
                                           <td>100%</td>
                                     </tr>";
-                            }
-                        ?>
+                              }
+                              ?>
                         </tbody>
                   </table>
                   <h3>Profesi</h3>
@@ -274,58 +277,59 @@ $conn->close();
                         </thead>
                         <tbody>
                               <?php
-                        if ($resultProfesi->num_rows > 0) {
-                            $rowProfesi = $resultProfesi->fetch_assoc();
-                            echo "<tr>
-                                        <td>PNS</td>
-                                        <td>{$rowProfesi['pns_sangat_puas']}</td>
-                                        <td>{$rowProfesi['pns_puas']}</td>
-                                        <td>{$rowProfesi['pns_kurang_puas']}</td>
-                                        <td>{$rowProfesi['pns_sangat_kurang_puas']}</td>
-                                        <td>{$rowProfesi['total_responden_pns']}</td>
+                              if ($profesiData) {
+                                    echo "
+                                    <tr>
+                                          <td>PNS</td>
+                                          <td>" . htmlspecialchars($profesiData['pns_sangat_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['pns_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['pns_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['pns_sangat_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['total_responden_pns']) . "</td>
                                     </tr>
                                     <tr>
-                                        <td>Swasta/Wiraswasta</td>
-                                        <td>{$rowProfesi['swasta_wiraswasta_sangat_puas']}</td>
-                                        <td>{$rowProfesi['swasta_wiraswasta_puas']}</td>
-                                        <td>{$rowProfesi['swasta_wiraswasta_kurang_puas']}</td>
-                                        <td>{$rowProfesi['swasta_wiraswasta_sangat_kurang_puas']}</td>
-                                        <td>{$rowProfesi['total_responden_swasta_wiraswasta']}</td>
+                                          <td>Swasta/Wiraswasta</td>
+                                          <td>" . htmlspecialchars($profesiData['swasta_wiraswasta_sangat_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['swasta_wiraswasta_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['swasta_wiraswasta_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['swasta_wiraswasta_sangat_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['total_responden_swasta_wiraswasta']) . "</td>
                                     </tr>
                                     <tr>
-                                        <td>Pelajar/Mahasiswa</td>
-                                        <td>{$rowProfesi['pelajar_mahasiswa_sangat_puas']}</td>
-                                        <td>{$rowProfesi['pelajar_mahasiswa_puas']}</td>
-                                        <td>{$rowProfesi['pelajar_mahasiswa_kurang_puas']}</td>
-                                        <td>{$rowProfesi['pelajar_mahasiswa_sangat_kurang_puas']}</td>
-                                        <td>{$rowProfesi['total_responden_pelajar_mahasiswa']}</td>
+                                          <td>Pelajar/Mahasiswa</td>
+                                          <td>" . htmlspecialchars($profesiData['pelajar_mahasiswa_sangat_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['pelajar_mahasiswa_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['pelajar_mahasiswa_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['pelajar_mahasiswa_sangat_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['total_responden_pelajar_mahasiswa']) . "</td>
                                     </tr>
                                     <tr>
-                                        <td>Pengangguran</td>
-                                        <td>{$rowProfesi['pengangguran_sangat_puas']}</td>
-                                        <td>{$rowProfesi['pengangguran_puas']}</td>
-                                        <td>{$rowProfesi['pengangguran_kurang_puas']}</td>
-                                        <td>{$rowProfesi['pengangguran_sangat_kurang_puas']}</td>
-                                        <td>{$rowProfesi['total_responden_pengangguran']}</td>
+                                          <td>Pengangguran</td>
+                                          <td>" . htmlspecialchars($profesiData['pengangguran_sangat_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['pengangguran_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['pengangguran_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['pengangguran_sangat_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['total_responden_pengangguran']) . "</td>
                                     </tr>
+                                    <tr>
                                     <tr>
                                           <td>Total</td>
-                                          <td>{$rowProfesi['total_sangat_puas_profesi']}</td>
-                                          <td>{$rowProfesi['total_puas_profesi']}</td>
-                                          <td>{$rowProfesi['total_kurang_puas_profesi']}</td>
-                                          <td>{$rowProfesi['total_sangat_kurang_puas_profesi']}</td>
-                                          <td>{$rowProfesi['total_responden_profesi']}</td>
+                                          <td>" . htmlspecialchars($profesiData['pns_sangat_puas'] + $profesiData['swasta_wiraswasta_sangat_puas'] + $profesiData['pelajar_mahasiswa_sangat_puas'] + $profesiData['pengangguran_sangat_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['pns_puas'] + $profesiData['swasta_wiraswasta_puas'] + $profesiData['pelajar_mahasiswa_puas'] + $profesiData['pengangguran_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['pns_kurang_puas'] + $profesiData['swasta_wiraswasta_kurang_puas'] + $profesiData['pelajar_mahasiswa_kurang_puas'] + $profesiData['pengangguran_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['pns_sangat_kurang_puas'] + $profesiData['swasta_wiraswasta_sangat_kurang_puas'] + $profesiData['pelajar_mahasiswa_sangat_kurang_puas'] + $profesiData['pengangguran_sangat_kurang_puas']) . "</td>
+                                          <td>" . htmlspecialchars($profesiData['total_responden_profesi']) . "</td>
                                     </tr>
                                     <tr>
                                           <td>Persentase</td>
-                                          <td>{$rowProfesi['persentase_sangat_puas_profesi']}%</td>
-                                          <td>{$rowProfesi['persentase_puas_profesi']}%</td>
-                                          <td>{$rowProfesi['persentase_kurang_puas_profesi']}%</td>
-                                          <td>{$rowProfesi['persentase_sangat_kurang_puas_profesi']}%</td>
+                                          <td>" . number_format((($profesiData['pns_sangat_puas'] + $profesiData['swasta_wiraswasta_sangat_puas'] + $profesiData['pelajar_mahasiswa_sangat_puas'] + $profesiData['pengangguran_sangat_puas']) / $profesiData['total_responden_profesi']) * 100, 2) . "%</td>
+                                          <td>" . number_format((($profesiData['pns_puas'] + $profesiData['swasta_wiraswasta_puas'] + $profesiData['pelajar_mahasiswa_puas'] + $profesiData['pengangguran_puas']) / $profesiData['total_responden_profesi']) * 100, 2) . "%</td>
+                                          <td>" . number_format((($profesiData['pns_kurang_puas'] + $profesiData['swasta_wiraswasta_kurang_puas'] + $profesiData['pelajar_mahasiswa_kurang_puas'] + $profesiData['pengangguran_kurang_puas']) / $profesiData['total_responden_profesi']) * 100, 2) . "%</td>
+                                          <td>" . number_format((($profesiData['pns_sangat_kurang_puas'] + $profesiData['swasta_wiraswasta_sangat_kurang_puas'] + $profesiData['pelajar_mahasiswa_sangat_kurang_puas'] + $profesiData['pengangguran_sangat_kurang_puas'])  / $profesiData['total_responden_profesi']) * 100, 2) . "%</td>
                                           <td>100%</td>
                                     </tr>";
-                        }
-                        ?>
+                              }
+                              ?>
                         </tbody>
                   </table>
             </div>
@@ -375,10 +379,10 @@ $conn->close();
                   datasets: [{
                         label: 'Jumlah Responden',
                         data: [
-                              <?php echo $rowGender['laki_laki_sangat_puas'] ?? 0; ?>,
-                              <?php echo $rowGender['laki_laki_puas'] ?? 0; ?>,
-                              <?php echo $rowGender['laki_laki_kurang_puas'] ?? 0; ?>,
-                              <?php echo $rowGender['laki_laki_sangat_kurang_puas'] ?? 0; ?>
+                              <?php echo htmlspecialchars($genderData['laki_laki_sangat_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($genderData['laki_laki_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($genderData['laki_laki_kurang_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($genderData['laki_laki_sangat_kurang_puas'] ?? 0); ?>
                         ],
                         borderWidth: 1,
                         backgroundColor: [
@@ -421,7 +425,8 @@ $conn->close();
                                     font: {
                                           size: 10 // Adjust font size for legend
                                     },
-                                    boxWidth: 12 // Adjust the width of the color box
+                                    boxWidth: 12,
+                                    padding: 25
                               }
                         },
                         datalabels: {
@@ -453,10 +458,10 @@ $conn->close();
                   datasets: [{
                         label: 'Jumlah Responden',
                         data: [
-                              <?php echo $rowGender['perempuan_sangat_puas'] ?? 0; ?>,
-                              <?php echo $rowGender['perempuan_puas'] ?? 0; ?>,
-                              <?php echo $rowGender['perempuan_kurang_puas'] ?? 0; ?>,
-                              <?php echo $rowGender['perempuan_sangat_kurang_puas'] ?? 0; ?>
+                              <?php echo htmlspecialchars($genderData['perempuan_sangat_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($genderData['perempuan_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($genderData['perempuan_kurang_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($genderData['perempuan_sangat_kurang_puas'] ?? 0); ?>
                         ],
                         borderWidth: 1,
                         backgroundColor: [
@@ -498,7 +503,8 @@ $conn->close();
                                     font: {
                                           size: 10 // Adjust font size for legend
                                     },
-                                    boxWidth: 12 // Adjust the width of the color box
+                                    boxWidth: 12,
+                                    padding: 25
                               }
                         },
                         datalabels: {
@@ -529,10 +535,10 @@ $conn->close();
                   datasets: [{
                         label: 'Jumlah Responden',
                         data: [
-                              <?php echo $rowUsia['18_35_sangat_puas'] ?? 0; ?>,
-                              <?php echo $rowUsia['18_35_puas'] ?? 0; ?>,
-                              <?php echo $rowUsia['18_35_kurang_puas'] ?? 0; ?>,
-                              <?php echo $rowUsia['18_35_sangat_kurang_puas'] ?? 0; ?>
+                              <?php echo htmlspecialchars($usiaData['18_35_sangat_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($usiaData['18_35_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($usiaData['18_35_kurang_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($usiaData['18_35_sangat_kurang_puas'] ?? 0); ?>
                         ],
                         borderWidth: 1,
                         backgroundColor: [
@@ -574,7 +580,8 @@ $conn->close();
                                     font: {
                                           size: 10 // Adjust font size for legend
                                     },
-                                    boxWidth: 12 // Adjust the width of the color box
+                                    boxWidth: 12,
+                                    padding: 25
                               }
                         },
                         datalabels: {
@@ -605,10 +612,10 @@ $conn->close();
                   datasets: [{
                         label: 'Jumlah Responden',
                         data: [
-                              <?php echo $rowUsia['36_up_sangat_puas'] ?? 0; ?>,
-                              <?php echo $rowUsia['36_up_puas'] ?? 0; ?>,
-                              <?php echo $rowUsia['36_up_kurang_puas'] ?? 0; ?>,
-                              <?php echo $rowUsia['36_up_sangat_kurang_puas'] ?? 0; ?>
+                              <?php echo htmlspecialchars($usiaData['36_up_sangat_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($usiaData['36_up_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($usiaData['36_up_kurang_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($usiaData['36_up_sangat_kurang_puas'] ?? 0); ?>
                         ],
                         borderWidth: 1,
                         backgroundColor: [
@@ -650,7 +657,8 @@ $conn->close();
                                     font: {
                                           size: 10 // Adjust font size for legend
                                     },
-                                    boxWidth: 12 // Adjust the width of the color box
+                                    boxWidth: 12,
+                                    padding: 25
                               }
                         },
                         datalabels: {
@@ -681,10 +689,10 @@ $conn->close();
                   datasets: [{
                         label: 'Jumlah Responden',
                         data: [
-                              <?php echo $rowLulusan['sd_sangat_puas'] ?? 0; ?>,
-                              <?php echo $rowLulusan['sd_puas'] ?? 0; ?>,
-                              <?php echo $rowLulusan['sd_kurang_puas'] ?? 0; ?>,
-                              <?php echo $rowLulusan['sd_sangat_kurang_puas'] ?? 0; ?>
+                              <?php echo htmlspecialchars($lulusanData['sd_sangat_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($lulusanData['sd_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($lulusanData['sd_kurang_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($lulusanData['sd_sangat_kurang_puas'] ?? 0); ?>
                         ],
                         borderWidth: 1,
                         backgroundColor: [
@@ -726,7 +734,8 @@ $conn->close();
                                     font: {
                                           size: 10 // Adjust font size for legend
                                     },
-                                    boxWidth: 12 // Adjust the width of the color box
+                                    boxWidth: 12,
+                                    padding: 25
                               }
                         },
                         datalabels: {
@@ -757,10 +766,10 @@ $conn->close();
                   datasets: [{
                         label: 'Jumlah Responden',
                         data: [
-                              <?php echo $rowLulusan['smp_sangat_puas'] ?? 0; ?>,
-                              <?php echo $rowLulusan['smp_puas'] ?? 0; ?>,
-                              <?php echo $rowLulusan['smp_kurang_puas'] ?? 0; ?>,
-                              <?php echo $rowLulusan['smp_sangat_kurang_puas'] ?? 0; ?>
+                              <?php echo htmlspecialchars($lulusanData['smp_sangat_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($lulusanData['smp_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($lulusanData['smp_kurang_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($lulusanData['smp_sangat_kurang_puas'] ?? 0); ?>
                         ],
                         borderWidth: 1,
                         backgroundColor: [
@@ -802,7 +811,8 @@ $conn->close();
                                     font: {
                                           size: 10 // Adjust font size for legend
                                     },
-                                    boxWidth: 12 // Adjust the width of the color box
+                                    boxWidth: 12,
+                                    padding: 25
                               }
                         },
                         datalabels: {
@@ -833,10 +843,10 @@ $conn->close();
                   datasets: [{
                         label: 'Jumlah Responden',
                         data: [
-                              <?php echo $rowLulusan['sma_sangat_puas'] ?? 0; ?>,
-                              <?php echo $rowLulusan['sma_puas'] ?? 0; ?>,
-                              <?php echo $rowLulusan['sma_kurang_puas'] ?? 0; ?>,
-                              <?php echo $rowLulusan['sma_sangat_kurang_puas'] ?? 0; ?>
+                              <?php echo htmlspecialchars($lulusanData['sma_sangat_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($lulusanData['sma_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($lulusanData['sma_kurang_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($lulusanData['sma_sangat_kurang_puas'] ?? 0); ?>
                         ],
                         borderWidth: 1,
                         backgroundColor: [
@@ -878,7 +888,8 @@ $conn->close();
                                     font: {
                                           size: 10 // Adjust font size for legend
                                     },
-                                    boxWidth: 12 // Adjust the width of the color box
+                                    boxWidth: 12,
+                                    padding: 25
                               }
                         },
                         datalabels: {
@@ -909,10 +920,10 @@ $conn->close();
                   datasets: [{
                         label: 'Jumlah Responden',
                         data: [
-                              <?php echo $rowLulusan['diploma_sangat_puas'] ?? 0; ?>,
-                              <?php echo $rowLulusan['diploma_puas'] ?? 0; ?>,
-                              <?php echo $rowLulusan['diploma_kurang_puas'] ?? 0; ?>,
-                              <?php echo $rowLulusan['diploma_sangat_kurang_puas'] ?? 0; ?>
+                              <?php echo htmlspecialchars($lulusanData['diploma_sangat_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($lulusanData['diploma_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($lulusanData['diploma_kurang_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($lulusanData['diploma_sangat_kurang_puas'] ?? 0); ?>
                         ],
                         borderWidth: 1,
                         backgroundColor: [
@@ -954,7 +965,8 @@ $conn->close();
                                     font: {
                                           size: 10 // Adjust font size for legend
                                     },
-                                    boxWidth: 12 // Adjust the width of the color box
+                                    boxWidth: 12,
+                                    padding: 25
                               }
                         },
                         datalabels: {
@@ -985,10 +997,10 @@ $conn->close();
                   datasets: [{
                         label: 'Jumlah Responden',
                         data: [
-                              <?php echo $rowLulusan['sarjana_sangat_puas'] ?? 0; ?>,
-                              <?php echo $rowLulusan['sarjana_puas'] ?? 0; ?>,
-                              <?php echo $rowLulusan['sarjana_kurang_puas'] ?? 0; ?>,
-                              <?php echo $rowLulusan['sarjana_sangat_kurang_puas'] ?? 0; ?>
+                              <?php echo htmlspecialchars($lulusanData['sarjana_sangat_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($lulusanData['sarjana_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($lulusanData['sarjana_kurang_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($lulusanData['sarjana_sangat_kurang_puas'] ?? 0); ?>
                         ],
                         borderWidth: 1,
                         backgroundColor: [
@@ -1030,7 +1042,8 @@ $conn->close();
                                     font: {
                                           size: 10 // Adjust font size for legend
                                     },
-                                    boxWidth: 12 // Adjust the width of the color box
+                                    boxWidth: 12,
+                                    padding: 25
                               }
                         },
                         datalabels: {
@@ -1061,10 +1074,10 @@ $conn->close();
                   datasets: [{
                         label: 'Jumlah Responden',
                         data: [
-                              <?php echo $rowProfesi['pns_sangat_puas'] ?? 0; ?>,
-                              <?php echo $rowProfesi['pns_puas'] ?? 0; ?>,
-                              <?php echo $rowProfesi['pns_kurang_puas'] ?? 0; ?>,
-                              <?php echo $rowProfesi['pns_sangat_kurang_puas'] ?? 0; ?>
+                              <?php echo htmlspecialchars($profesiData['pns_sangat_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($profesiData['pns_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($profesiData['pns_kurang_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($profesiData['pns_sangat_kurang_puas'] ?? 0); ?>
                         ],
                         borderWidth: 1,
                         backgroundColor: [
@@ -1106,7 +1119,8 @@ $conn->close();
                                     font: {
                                           size: 10 // Adjust font size for legend
                                     },
-                                    boxWidth: 12 // Adjust the width of the color box
+                                    boxWidth: 12,
+                                    padding: 25
                               }
                         },
                         datalabels: {
@@ -1137,10 +1151,10 @@ $conn->close();
                   datasets: [{
                         label: 'Jumlah Responden',
                         data: [
-                              <?php echo $rowProfesi['swasta_wiraswasta_sangat_puas'] ?? 0; ?>,
-                              <?php echo $rowProfesi['swasta_wiraswasta_puas'] ?? 0; ?>,
-                              <?php echo $rowProfesi['swasta_wiraswasta_kurang_puas'] ?? 0; ?>,
-                              <?php echo $rowProfesi['swasta_wiraswasta_sangat_kurang_puas'] ?? 0; ?>
+                              <?php echo htmlspecialchars($profesiData['swasta_wiraswasta_sangat_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($profesiData['swasta_wiraswasta_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($profesiData['swasta_wiraswasta_kurang_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($profesiData['swasta_wiraswasta_sangat_kurang_puas'] ?? 0); ?>
                         ],
                         borderWidth: 1,
                         backgroundColor: [
@@ -1182,7 +1196,8 @@ $conn->close();
                                     font: {
                                           size: 10 // Adjust font size for legend
                                     },
-                                    boxWidth: 12 // Adjust the width of the color box
+                                    boxWidth: 12,
+                                    padding: 25
                               }
                         },
                         datalabels: {
@@ -1213,10 +1228,10 @@ $conn->close();
                   datasets: [{
                         label: 'Jumlah Responden',
                         data: [
-                              <?php echo $rowProfesi['pelajar_mahasiswa_sangat_puas'] ?? 0; ?>,
-                              <?php echo $rowProfesi['pelajar_mahasiswa_puas'] ?? 0; ?>,
-                              <?php echo $rowProfesi['pelajar_mahasiswa_kurang_puas'] ?? 0; ?>,
-                              <?php echo $rowProfesi['pelajar_mahasiswa_sangat_kurang_puas'] ?? 0; ?>
+                              <?php echo htmlspecialchars($profesiData['pelajar_mahasiswa_sangat_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($profesiData['pelajar_mahasiswa_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($profesiData['pelajar_mahasiswa_kurang_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($profesiData['pelajar_mahasiswa_sangat_kurang_puas'] ?? 0); ?>
                         ],
                         borderWidth: 1,
                         backgroundColor: [
@@ -1258,7 +1273,8 @@ $conn->close();
                                     font: {
                                           size: 10 // Adjust font size for legend
                                     },
-                                    boxWidth: 12 // Adjust the width of the color box
+                                    boxWidth: 12,
+                                    padding: 25
                               }
                         },
                         datalabels: {
@@ -1289,10 +1305,10 @@ $conn->close();
                   datasets: [{
                         label: 'Jumlah Responden',
                         data: [
-                              <?php echo $rowProfesi['pengangguran_sangat_puas'] ?? 0; ?>,
-                              <?php echo $rowProfesi['pengangguran_puas'] ?? 0; ?>,
-                              <?php echo $rowProfesi['pengangguran_kurang_puas'] ?? 0; ?>,
-                              <?php echo $rowProfesi['pengangguran_sangat_kurang_puas'] ?? 0; ?>
+                              <?php echo htmlspecialchars($profesiData['pengangguran_sangat_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($profesiData['pengangguran_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($profesiData['pengangguran_kurang_puas'] ?? 0); ?>,
+                              <?php echo htmlspecialchars($profesiData['pengangguran_sangat_kurang_puas'] ?? 0); ?>
                         ],
                         borderWidth: 1,
                         backgroundColor: [
@@ -1334,7 +1350,8 @@ $conn->close();
                                     font: {
                                           size: 10 // Adjust font size for legend
                                     },
-                                    boxWidth: 12 // Adjust the width of the color box
+                                    boxWidth: 12,
+                                    padding: 25
                               }
                         },
                         datalabels: {
