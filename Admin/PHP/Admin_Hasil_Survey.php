@@ -59,7 +59,7 @@ if ($delete_id > 0) {
 }
 
 // Query untuk mengambil data dari tabel survey dan wilayah
-$sql = "SELECT survey.id, survey.title, survey.keterangan, survey.image, wilayah.nama_wilayah
+$sql = "SELECT survey.id, survey.title, survey.keterangan, survey.image, survey.waktu_buat, wilayah.nama_wilayah
         FROM survey
         JOIN wilayah ON survey.id_wilayah = wilayah.id
         WHERE survey.title LIKE ?";
@@ -87,6 +87,8 @@ $surveys = [];
 if ($result->num_rows > 0) {
     // Output data dari setiap baris
     while ($row = $result->fetch_assoc()) {
+        // Format tanggal pembuatan jika diperlukan
+        $row['formatted_date'] = date('d F Y', strtotime($row['waktu_buat']));
         $surveys[] = $row;
     }
 } else {
@@ -144,7 +146,8 @@ $conn->close();
                                                 Tanggamus</option>
                                           <option value="Lampung Selatan"
                                                 <?php if ($sort == 'Lampung Selatan') echo 'selected'; ?>>Lampung
-                                                Selatan</option>
+                                                Selatan
+                                          </option>
                                           <option value="Lampung Timur"
                                                 <?php if ($sort == 'Lampung Timur') echo 'selected'; ?>>Lampung Timur
                                           </option>
@@ -206,7 +209,6 @@ $conn->close();
                         echo '<div class="img">No Image</div>';
                     }
                     
-                    
                     echo '<div class="ket">';
                     echo '<p>' . htmlspecialchars($survey['keterangan']) . '</p>';
                     echo '<p class="wilayah">Wilayah Pelaksanaan Survei :</p>';
@@ -214,7 +216,7 @@ $conn->close();
                     echo '<div class="ket-action">';
                     echo '<div class="tanggal">';
                     echo '<span class="material-symbols-outlined">schedule</span>';
-                    echo '<p>Radar Litbang, 32 Juli 2023</p>';
+                    echo '<p>Radar Litbang, ' . htmlspecialchars($survey['formatted_date']) . '</p>';
                     echo '</div>';
                     echo '<div class="action-buttons">';
                     echo '<a href="Admin_Edit_Keterangan_Survey.php?id=' . $survey['id'] . '" class="tombol-edit">';

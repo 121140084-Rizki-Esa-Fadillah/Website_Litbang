@@ -4,7 +4,8 @@ $username = "root";
 $password = "";
 $database = "user_litbang";
 
-$conn = new mysqli($servername, $username, $password, $database);
+// Membuat koneksi
+$conn = new mysqli($servername, $username, $password, $dbname);
 
 // Cek koneksi
 if ($conn->connect_error) {

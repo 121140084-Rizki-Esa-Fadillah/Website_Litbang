@@ -3,6 +3,7 @@
     letter-spacing: 0.5px;
 }
 
+
 .dashboard_admin {
     display: flex;
     align-items: center;
@@ -75,8 +76,8 @@
 
 .cari-container {
     text-align: center;
-    margin: 2rem;
-    padding-bottom: 0.5rem;
+    margin: 1rem 2rem;
+    padding: 1rem 0 0.5rem 0;
     border-bottom: solid 1.5px #79747E;
     box-shadow: 0 3px rgba(0, 0, 0, 0.1);
 }
@@ -84,17 +85,20 @@
 .search-sort-container {
     display: flex;
     align-items: center;
-    gap: 18.5rem;
+    gap: 18rem;
     margin-left: 0.5rem;
     margin-top: 1rem;
 }
 
-.search-box {
+.search-container {
+    display: flex;
+}
+
+.search-box form{
     display: flex;
     align-items: center;
     border-radius: 0.25rem;
     box-shadow: 0 2px 2px rgba(0, 0, 0, 0.316);
-    width: 35%;
 }
 
 .search-box input {
@@ -103,7 +107,7 @@
     border-radius: 0.25rem 0 0 0.25rem;
     outline: none;
     background-color: #cac4d06c;
-    width: 100%;
+    width: 17.5rem;
 }
 
 .search-box button {
@@ -157,12 +161,18 @@
     margin: 0 2rem 2rem 2rem;
 }
 
-.img {
-    width: 50rem;
+.survey-item a{
+    text-decoration: none;
+    color: #000000;
+}
+
+.img img {
+    width: 20rem;
     height: 10rem;
     background-color: #D9D9D9;
-    margin: 1.25rem 1rem 0 0;
+    margin: 0.5rem 1rem 1.5rem 0;
     border-radius: 0.5rem;
+    object-fit: cover;
 }
 
 .hasil-container {

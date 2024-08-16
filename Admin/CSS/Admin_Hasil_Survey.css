@@ -21,8 +21,6 @@
     align-items: center;
 }
 
-
-
 .search-container button:hover {
     background-color: #0056b3;
 }
@@ -92,6 +90,7 @@
 
 .hasil {
     margin: 0 2rem 2rem 2rem;
+    padding-top: 1rem;
     cursor: pointer;
 }
 
@@ -106,6 +105,7 @@
     background-color: #D9D9D9;
     margin: 0.5rem 1rem 1.5rem 0;
     border-radius: 0.5rem;
+    object-fit: cover;
 }
 
 .hasil-container {

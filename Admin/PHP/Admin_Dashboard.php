@@ -1,3 +1,47 @@
+<?php
+include "Koneksi_survei_litbang.php";
+
+// Ambil nilai pencarian dan pengurutan dari parameter GET
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+$sort = isset($_GET['sort']) ? $_GET['sort'] : '';
+
+// Query untuk mengambil data survei dengan sorting dan pencarian
+$sql = "SELECT survey.id, survey.title, survey.keterangan, survey.image, survey.waktu_buat, wilayah.nama_wilayah
+        FROM survey
+        JOIN wilayah ON survey.id_wilayah = wilayah.id
+        WHERE survey.title LIKE ?";
+
+// Tambahkan sorting jika ada
+$params = [];
+$types = "s";
+$params[] = "%" . $search . "%";
+
+if ($sort) {
+    $sql .= " AND wilayah.nama_wilayah = ?";
+    $types .= "s";
+    $params[] = $sort;
+}
+
+$sql .= " ORDER BY survey.waktu_buat DESC LIMIT 1"; // Default hanya menampilkan 1 survei terbaru
+
+$stmt = $conn->prepare($sql);
+
+// Binding parameter pencarian dan sorting
+$stmt->bind_param($types, ...$params);
+
+$stmt->execute();
+$result = $stmt->get_result();
+
+$surveys = [];
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $row['formatted_date'] = date('d F Y', strtotime($row['waktu_buat']));
+        $surveys[] = $row;
+    }
+}
+
+$conn->close();
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,7 +56,7 @@
       <script src="https://kit.fontawesome.com/ae643ea90b.js" crossorigin="anonymous"></script>
 </head>
 
-<bosdy>
+<body>
       <div id="header"></div>
       <div id="aside"></div>
       <main id="content">
@@ -41,7 +85,7 @@
                         <div class="total-survey-box">
                               <i class="fa-solid fa-file-lines"></i>
                               <div class="total">
-                                    <span>7</span>
+                                    <span><?php echo htmlspecialchars(count($surveys)); ?></span>
                                     <h3>Total Survey</h3>
                               </div>
                         </div>
@@ -49,75 +93,129 @@
             </div>
 
             <div class="cari-container">
-                  <h3>Cari Hasil Survey</h3>
+                  <h3>Cari Hasil Survey</h3><br>
                   <div class="search-sort-container">
                         <div class="search-box">
-                              <input type="text" placeholder="Search...">
-                              <button>
-                                    <i class="fa fa-search"></i>
-                              </button>
+                              <form method="GET" action="">
+                                    <div class="search-container">
+                                          <input type="text" name="search" placeholder="Search..."
+                                                value="<?php echo htmlspecialchars($search); ?>">
+                                          <button type="submit">
+                                                <i class="fa fa-search"></i>
+                                          </button>
+                                    </div>
+                              </form>
                         </div>
                         <div class="sort-box">
                               <label for="sort">Sorting :</label>
                               <div class="select-container">
-                                    <select id="sort">
-                                          <option value="lampung_barat">Lampung Barat</option>
-                                          <option value="tanggamus">Tanggamus</option>
-                                          <option value="lampung_selatan">Lampung Selatan</option>
-                                          <option value="lampung_timur">Lampung Timur</option>
-                                          <option value="lampung_tengah">Lampung Tengah</option>
-                                          <option value="lampung_utara">Lampung Utara</option>
-                                          <option value="way_kanan">Way Kanan</option>
-                                          <option value="tulang_bawang">Tulang Bawang</option>
-                                          <option value="pesawaran">Pesawaran</option>
-                                          <option value="pringsewu">Pringsewu</option>
-                                          <option value="mesuji">Mesuji</option>
-                                          <option value="tulang_bawang_barat">Tulang Bawang Barat</option>
-                                          <option value="pesisir_barat">Pesisir Barat</option>
-                                          <option value="Bandar_Lampung">Bandar Lampung</option>
-                                          <option value="metro">Kota Metro</option>
-                                    </select>
-                                    <span class="material-symbols-outlined arrow-select">
-                                          keyboard_arrow_up
-                                    </span>
+                                    <form method="GET" action="">
+                                          <select id="sort" name="sort" onchange="this.form.submit()">
+                                                <option value="">-- Pilih Wilayah --</option>
+                                                <option value="Lampung Barat"
+                                                      <?php if ($sort == 'Lampung Barat') echo 'selected'; ?>>
+                                                      Lampung Barat</option>
+                                                <option value="Tanggamus"
+                                                      <?php if ($sort == 'Tanggamus') echo 'selected'; ?>>Tanggamus
+                                                </option>
+                                                <option value="Lampung Selatan"
+                                                      <?php if ($sort == 'Lampung Selatan') echo 'selected'; ?>>
+                                                      Lampung Selatan</option>
+                                                <option value="Lampung Timur"
+                                                      <?php if ($sort == 'Lampung Timur') echo 'selected'; ?>>
+                                                      Lampung Timur</option>
+                                                <option value="Lampung Tengah"
+                                                      <?php if ($sort == 'Lampung Tengah') echo 'selected'; ?>>
+                                                      Lampung Tengah</option>
+                                                <option value="Lampung Utara"
+                                                      <?php if ($sort == 'Lampung Utara') echo 'selected'; ?>>
+                                                      Lampung Utara</option>
+                                                <option value="Way Kanan"
+                                                      <?php if ($sort == 'Way Kanan') echo 'selected'; ?>>Way
+                                                      Kanan</option>
+                                                <option value="Tulang Bawang"
+                                                      <?php if ($sort == 'Tulang Bawang') echo 'selected'; ?>>
+                                                      Tulang Bawang</option>
+                                                <option value="Pesawaran"
+                                                      <?php if ($sort == 'Pesawaran') echo 'selected'; ?>>Pesawaran
+                                                </option>
+                                                <option value="Pringsewu"
+                                                      <?php if ($sort == 'Pringsewu') echo 'selected'; ?>>
+                                                      Pringsewu</option>
+                                                <option value="Mesuji" <?php if ($sort == 'Mesuji') echo 'selected'; ?>>
+                                                      Mesuji
+                                                </option>
+                                                <option value="Tulang Bawang Barat"
+                                                      <?php if ($sort == 'Tulang Bawang Barat') echo 'selected'; ?>>
+                                                      Tulang Bawang Barat</option>
+                                                <option value="Pesisir Barat"
+                                                      <?php if ($sort == 'Pesisir Barat') echo 'selected'; ?>>
+                                                      Pesisir Barat</option>
+                                                <option value="Bandar Lampung"
+                                                      <?php if ($sort == 'Bandar Lampung') echo 'selected'; ?>>
+                                                      Bandar Lampung</option>
+                                                <option value="Metro" <?php if ($sort == 'Metro') echo 'selected'; ?>>
+                                                      Kota Metro
+                                                </option>
+                                          </select>
+                                          <span class="material-symbols-outlined arrow-select">
+                                                keyboard_arrow_up
+                                          </span>
+                                    </form>
                               </div>
                         </div>
                   </div>
             </div>
 
             <div class="hasil">
-                  <h3>Judul Survei</h3>
-                  <div class="hasil-container">
-                        <div class="img"></div>
-                        <div class="ket">
-                              <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-                                    incididunt ut
-                                    labore et dolore magna aliqua. Lorem ipsum dolor sit amet, consectetur adipiscing
-                                    elit, sed do
-                                    eiusmod tempor incididunt ut labore et dolore magna aliqua.</p>
-                              <p class="wilayah">Wilayah Pelaksanaan Survei :</p>
-                              <p>Bandar Lampung, Lampung Selatan, Lampung Timur,......</p>
-                              <div class="ket-action">
-                                    <div class="tanggal">
-                                          <span class="material-symbols-outlined">
-                                                schedule
-                                          </span>
-                                          <p>Radar Litbang, 32 Juli 2023</p>
-                                    </div>
-                              </div>
-                        </div>
-                  </div>
+                  <?php
+            if (!empty($surveys)) {
+                foreach ($surveys as $survey) {
+                    echo '<div class="survey-item">';
+                    echo '<a href="Admin_Detail_Hasil_Survey.php?id=' . $survey['id'] . '" class="survey-title">';
+                    echo '<h3>' . htmlspecialchars($survey['title']) . '</h3>';
+                    echo '</a>';
+                    echo '<div class="hasil-container">';
+                    if (!empty($survey['image'])) {
+                        $imagePath = '../../image/' . $survey['image'];
+                        if (file_exists($imagePath)) {
+                            echo '<div class="img"><img src="' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($survey['title']) . '"></div>';
+                        } else {
+                            echo '<div class="img">Image not found</div>';
+                        }
+                    } else {
+                        echo '<div class="img">No Image</div>';
+                    }
+                    
+                    echo '<div class="ket">';
+                    echo '<p>' . htmlspecialchars($survey['keterangan']) . '</p>';
+                    echo '<p class="wilayah">Wilayah Pelaksanaan Survei :</p>';
+                    echo '<p>' . htmlspecialchars($survey['nama_wilayah']) . '</p>';
+                    echo '<div class="ket-action">';
+                    echo '<div class="tanggal">';
+                    echo '<span class="material-symbols-outlined">schedule</span>';
+                    echo '<p>Radar Litbang, ' . htmlspecialchars($survey['formatted_date']) . '</p>';
+                    echo '</div>';
+                    echo '</div>';
+                    echo '</div>';
+                    echo '</div>';
+                    echo '</div>';
+                }
+            } else {
+                echo '<p>No surveys found.</p>';
+            }
+            ?>
             </div>
       </main>
-      <script src="..\Js\Main.js"></script>
+      <script src="../Js/Main.js"></script>
       <script>
       // Initialize links
-      const links = "Admin_Dashboard.php";
-      links.forEach(link => {
+      document.querySelectorAll("nav ul li a").forEach(link => {
             link.addEventListener("click", function() {
                   setActiveLink(this);
             });
       });
+
       // Function to set the active link in the sidebar
       function setActiveLink(link) {
             document.querySelectorAll("nav ul li").forEach(li => {
@@ -128,7 +226,6 @@
             }
       }
       </script>
-
-</bosdy>
+</body>
 
 </html>
