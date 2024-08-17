@@ -3,14 +3,14 @@ session_start();
 
 include('Koneksi_user_litbang.php');
 
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['id'])) {
     header("Location: Admin_Login.php");
     exit();
 }
 
-$username = $_SESSION['username'];
-$stmt = $conn->prepare("SELECT * FROM user WHERE username = ?");
-$stmt->bind_param('s', $username);
+$id = $_SESSION['id'];
+$stmt = $conn->prepare("SELECT * FROM user WHERE id = ?");
+$stmt->bind_param('i', $id);
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -62,7 +62,7 @@ $conn->close();
                   <div class="username-status-admin">
                         <h2><?php echo !empty($user['username']) ? htmlspecialchars($user['username']) : '-'; ?></h2>
                         <div class="indikator-admin">
-                              <span class="status-admin">Admin</span>
+                              <span class="status-admin"><?php echo !empty($user['role']) ? htmlspecialchars($user['role']) : '-'; ?></span>
                         </div>
                   </div>
             </div>

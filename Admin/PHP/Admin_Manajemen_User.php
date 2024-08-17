@@ -3,12 +3,12 @@ session_start();
 
 include('Koneksi_user_litbang.php');
 
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['id'])) {
     header("Location: Admin_Login.php");
     exit();
 }
 
-$username = $_SESSION['username'];
+$id = $_SESSION['id'];
 $sql = "SELECT * FROM user";
 $result = $conn->query($sql);
 
@@ -76,7 +76,7 @@ $conn->close();
                                     <th>Email</th>
                                     <th>No. HP</th>
                                     <th>Registered</th>
-                                    <th>Last Visit</th>
+                                    <th>Last Login</th>
                                     <th>Roles</th>
                                     <th>Activity</th>
                               </tr>
@@ -90,8 +90,8 @@ $conn->close();
                                     <td><?php echo htmlspecialchars($user['jenis_kelamin']); ?></td>
                                     <td><?php echo htmlspecialchars($user['email']); ?></td>
                                     <td><?php echo htmlspecialchars($user['no_hp']); ?></td>
-                                    <td>2024-11-12</td>
-                                    <td>2025-03-01</td>
+                                    <td><?php echo htmlspecialchars($user['registered']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['last_login']); ?></td>
                                     <td><?php echo htmlspecialchars($user['role']); ?></td>
                                     <td>
                                           <div class="action-buttons">

@@ -8,7 +8,7 @@ CREATE TABLE `user` (
     `password` varchar(255) NOT NULL,
     `role` varchar(5) NOT NULL,
     `registered` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    `last_visit` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
+    `last_login` TIMESTAMP NULL DEFAULT NULL ON UPDATE CURRENT_TIMESTAMP,
     `image_profile_name` varchar(255) NOT NULL,
     `image_profile_path` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
