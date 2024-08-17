@@ -3,26 +3,23 @@ session_start();
 
 include('Koneksi_user_litbang.php');
 
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['id'])) {
     header("Location: Admin_Login.php");
     exit();
 }
 
-$username = $_SESSION['username'];
-$sql = "SELECT id, password FROM user WHERE username='$username'";
+$id = $_SESSION['id'];
+$sql = "SELECT password FROM user WHERE id='$id'";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
-    // Ambil ID dari hasil query
-    $row = $result->fetch_assoc();
-    $id = $row['id'];
+      $row = $result->fetch_assoc();
 
-    if ($_SERVER["REQUEST_METHOD"] == "POST") {
+      if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $password_lama = $_POST['password-lama'];
         $password_baru = $_POST['password-baru'];
         $confirm_password_baru = $_POST['confirm-password-baru'];
 
-        if ($password_baru == $confirm_password_baru) {
             if ($password_lama == $row['password']) {
                 // Update data pengguna berdasarkan ID
                 $sql_update = "UPDATE user SET password='$password_baru' WHERE id=$id";
@@ -35,15 +32,11 @@ if ($result->num_rows > 0) {
                     echo "<script>alert('Gagal memperbaharui password');</script>";
                 }
             } else {
-                header("Location: Admin_Edit_Password.php&error=invalid_password_old");
+                echo "<script>alert('Password lama salah'); window.location.href='Admin_Edit_Password.php';</script>";
                 exit();
             }
-        } else {
-            header("Location: Admin_Edit_Password.php&error=invalid_password_new");
-            exit();
-        }
 
-    }
+      }
 } else {
     echo "<script>alert('user tidak ditemukan');</script>";
 }
@@ -81,7 +74,7 @@ $conn->close();
                         serta simbol.
                         Jangan gunakan kata sandi yang mudah ditebak atau terkait dengan informasi pribadi Anda.</p>
             </div>
-            <form action="Admin_Edit_Password.php" method="post">
+            <form action="Admin_Edit_Password.php" method="post" id="registration-form">
                   <div class="edit-password-admin">
                         <div class="form-group">
                               <label for="password-lama">Password Lama</label>
@@ -111,7 +104,8 @@ $conn->close();
                   </div>
             </form>
       </main>
-      <script src="..\Js\Main.js"></script>
+      <script src="../Js/Main.js"></script>
+      <script src="../Js/Admin_Edit_Password.js"></script>
 </body>
 
 </html>
