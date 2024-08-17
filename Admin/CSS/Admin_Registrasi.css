@@ -1,0 +1,88 @@
+body {
+    background-color: #f0f0f0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+        Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+}
+
+.registrasi {
+    background-color: #cecded;
+    width: 25vw;
+    height: 55vh;
+    padding: 2rem;
+    border-radius: 0 0.5rem 0.5rem 0;
+    text-align: center;
+}
+
+.registrasi h2 {
+    margin-bottom: 1rem;
+    margin-top: 0;
+    text-align: center;
+    font-size: 22px;
+}
+
+.login p {
+    margin-bottom: 1rem;
+    text-align: center;
+    font-size: 14px;
+}
+
+.login p a {
+    text-decoration: none;
+    font-weight: 500;
+    color: #0c25a3;
+}
+
+.login p a:hover {
+    color: #0c25a3c5;
+}
+
+.registrasi input {
+    width: 70%;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    border: 1.5px solid #0c25a3;
+    border-radius: 0.5rem;
+    outline: none;
+}
+
+.login input:focus {
+    border-color: #0c25a3;
+    box-shadow: 0 0 0 1px #0c25a3;
+}
+
+.registrasi button {
+    width: 40%;
+    padding: 0.5rem;
+    background-color: #0c25a3;
+    color: white;
+    border: none;
+    border-radius: 0.5rem;
+    cursor: pointer;
+    margin-top: 0.5rem;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.registrasi button:hover {
+    background-color: #0c25a3c5;
+}
+
+.image_register {
+    background-color: #0c25a3;
+    padding: 2rem;
+    width: 25vw;
+    height: 55vh;
+    border-radius: 1rem 0 0 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.image_register img {
+    width: 75%;
+}

@@ -2,12 +2,6 @@
 session_start();
 include('Koneksi_user_litbang.php');
 
-// Cek apakah pengguna sudah login
-if (isset($_SESSION['username'])) {
-    header("Location: Admin_Dashboard.php"); // Redirect ke halaman dashboard jika sudah login
-    exit();
-}
-
 // Cek apakah form login telah disubmit
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Simpan data login dari form
@@ -20,14 +14,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->execute();
     $result = $stmt->get_result();
 
+    
+    
     if ($result->num_rows > 0) {
         $user = $result->fetch_assoc();
-
+        
         // Verifikasi kata sandi
         if ($password == $user['password']) {
             // Set data pengguna dalam session
-            $_SESSION['username'] = $user['username'];
-
+            $_SESSION['id'] = $user['id'];
+            $id = $_SESSION['id'];
+            $updateStmt = $conn->prepare("UPDATE user SET last_login = NOW() WHERE id = ?");
+            $updateStmt->bind_param("i", $id);
+            $updateStmt->execute();
+            
             // Redirect ke halaman dashboard setelah login berhasil
             header("Location: Admin_Dashboard.php");
             exit();

@@ -3,12 +3,12 @@ session_start();
 
 include('Koneksi_user_litbang.php');
 
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['id'])) {
     header("Location: Admin_Login.php");
     exit();
 }
 
-$username = $_SESSION['username'];
+$id = $_SESSION['id'];
 $sql = "SELECT * FROM user";
 $result = $conn->query($sql);
 
@@ -69,6 +69,7 @@ $conn->close();
                   <table>
                         <thead>
                               <tr>
+                                    <th>No</th>
                                     <th>ID</th>
                                     <th>Nama</th>
                                     <th>Username</th>
@@ -76,31 +77,38 @@ $conn->close();
                                     <th>Email</th>
                                     <th>No. HP</th>
                                     <th>Registered</th>
-                                    <th>Last Visit</th>
+                                    <th>Last Login</th>
                                     <th>Roles</th>
                                     <th>Activity</th>
                               </tr>
                         </thead>
                         <tbody>
-                              <?php foreach ($users as $user): ?>
+                              <?php 
+                              $no = 1;
+                              foreach ($users as $user):
+                              ?>
                               <tr>
+                                    <td><?php echo $no++; ?></td>
                                     <td><?php echo htmlspecialchars($user['id']); ?></td>
                                     <td><?php echo htmlspecialchars($user['nama_lengkap']); ?></td>
                                     <td><?php echo htmlspecialchars($user['username']); ?></td>
                                     <td><?php echo htmlspecialchars($user['jenis_kelamin']); ?></td>
                                     <td><?php echo htmlspecialchars($user['email']); ?></td>
                                     <td><?php echo htmlspecialchars($user['no_hp']); ?></td>
-                                    <td>2024-11-12</td>
-                                    <td>2025-03-01</td>
+                                    <td><?php echo htmlspecialchars($user['registered']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['last_login']); ?></td>
                                     <td><?php echo htmlspecialchars($user['role']); ?></td>
                                     <td>
                                           <div class="action-buttons">
-                                                <a href="Admin_Edit_User.php" class="tombol-edit">
+                                                <a href="Admin_Edit_User.php?id=<?php echo $user['id']; ?>" class="tombol-edit">
                                                       <i class="fa fa-edit"></i>Edit
                                                 </a>
-                                                <button class="tombol-hapus-user">
-                                                      <i class="fa fa-trash"></i>Delete
-                                                </button>
+                                                <a href="Admin_Delete_User.php?id=<?php echo $user['id']; ?>">
+                                                      <button class="tombol-hapus-user">
+                                                            <i class="fa fa-trash"></i>Delete
+                                                      </button>
+
+                                                </a>
                                           </div>
                                     </td>
                               </tr>

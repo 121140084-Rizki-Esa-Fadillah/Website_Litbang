@@ -5,7 +5,7 @@ $password = "";
 $dbname = "user_litbang";
 
 // Membuat koneksi
-$conn = new mysqli($servername, $username, $password, $dbname);
+$conn = new mysqli($servername, $username, $password, $database);
 
 // Cek koneksi
 if ($conn->connect_error) {

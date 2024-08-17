@@ -3,13 +3,13 @@ session_start();
 
 include('Koneksi_user_litbang.php');
 
-if (!isset($_SESSION['username'])) {
+if (!isset($_SESSION['id'])) {
     header("Location: Admin_Login.php");
     exit();
 }
 
-$username = $_SESSION['username'];
-$sql = "SELECT * FROM user WHERE username='$username'";
+$id = $_SESSION['id'];
+$sql = "SELECT * FROM user WHERE id='$id'";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
@@ -86,12 +86,12 @@ $conn->close();
                               <div class="form-group">
                                     <label for="gender">Jenis Kelamin</label>
                                     <select name="gender" id="gender">
-                                          <option value="laki-laki"
-                                                <?php if ($user['jenis_kelamin'] == 'laki-laki') echo 'selected'; ?>>
+                                          <option value="Laki-Laki"
+                                                <?php if ($user['jenis_kelamin'] == 'Laki-Laki') echo 'selected'; ?>>
                                                 Laki-Laki
                                           </option>
-                                          <option value="perempuan"
-                                                <?php if ($user['jenis_kelamin'] == 'perempuan') echo 'selected'; ?>>
+                                          <option value="Perempuan"
+                                                <?php if ($user['jenis_kelamin'] == 'Perempuan') echo 'selected'; ?>>
                                                 Perempuan
                                           </option>
                                     </select>
