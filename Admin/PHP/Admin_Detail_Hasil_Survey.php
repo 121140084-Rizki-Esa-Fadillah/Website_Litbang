@@ -22,6 +22,10 @@ $surveyQuery = "SELECT * FROM survey WHERE id = ?";
 $surveyResult = executeQuery($conn, $surveyQuery, ["i", $survey_id]);
 $surveyData = $surveyResult->fetch_assoc();
 
+// Format tanggal pembuatan
+$surveyData['formatted_date'] = date('d F Y', strtotime($surveyData['waktu_buat']));
+
+
 // Ambil nama wilayah
 $wilayahQuery = "SELECT nama_wilayah FROM wilayah WHERE id = ?";
 $wilayahResult = executeQuery($conn, $wilayahQuery, ["i", $surveyData['id_wilayah']]);
@@ -62,6 +66,13 @@ mysqli_close($conn);
       <script src="https://kit.fontawesome.com/ae643ea90b.js" crossorigin="anonymous"></script>
       <link rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+      <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/0.5.0-beta4/html2canvas.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.2/html2pdf.bundle.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.9.1/chart.min.js"></script>
+
 </head>
 
 <body>
@@ -77,8 +88,9 @@ mysqli_close($conn);
                   <p><?php echo htmlspecialchars($surveyData['keterangan']); ?></p>
                   <div class="tanggal">
                         <span class="material-symbols-outlined">schedule</span>
-                        <p>Radar Litbang, <?php echo date('d F Y'); ?></p>
+                        <p>Radar Litbang, <?php echo htmlspecialchars($surveyData['formatted_date']); ?></p>
                   </div>
+            </div>
             </div>
             <div class="tab-container-wrapper">
                   <div class="tab-container">
@@ -568,11 +580,9 @@ mysqli_close($conn);
                         <p>Unduh hasil survei dalam berbagai PDF untuk kemudahan penyimpanan, pembagian, dan analisis
                               data.</p>
                   </div>
-                  <button class="tombol-unduh">Download</button>
+                  <button id="downloadBtn" class="tombol-unduh">Download</button>
             </div>
       </main>
-      <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-      <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
       <script>
       // Chart untuk Gender - Laki-laki
       const chart_laki_laki = document.getElementById('laki_laki');
@@ -1589,6 +1599,7 @@ mysqli_close($conn);
       });
       </script>
       <script src="../Js/Main.js"></script>
+      <script src="../Js/Download.js"></script>
       <script src="../Js/Detail_Survey.js"></script>
 </body>
 

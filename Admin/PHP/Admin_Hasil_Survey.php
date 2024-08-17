@@ -59,7 +59,7 @@ if ($delete_id > 0) {
 }
 
 // Query untuk mengambil data dari tabel survey dan wilayah
-$sql = "SELECT survey.id, survey.title, survey.keterangan, survey.image, wilayah.nama_wilayah
+$sql = "SELECT survey.id, survey.title, survey.keterangan, survey.image, survey.waktu_buat, wilayah.nama_wilayah
         FROM survey
         JOIN wilayah ON survey.id_wilayah = wilayah.id
         WHERE survey.title LIKE ?";
@@ -87,6 +87,8 @@ $surveys = [];
 if ($result->num_rows > 0) {
     // Output data dari setiap baris
     while ($row = $result->fetch_assoc()) {
+        // Format tanggal pembuatan jika diperlukan
+        $row['formatted_date'] = date('d F Y', strtotime($row['waktu_buat']));
         $surveys[] = $row;
     }
 } else {
@@ -130,7 +132,6 @@ $conn->close();
                                     </div>
                               </form>
                         </div>
-
                   </div>
                   <div class="sort-box">
                         <label for="sort">Sorting :</label>
@@ -145,7 +146,8 @@ $conn->close();
                                                 Tanggamus</option>
                                           <option value="Lampung Selatan"
                                                 <?php if ($sort == 'Lampung Selatan') echo 'selected'; ?>>Lampung
-                                                Selatan</option>
+                                                Selatan
+                                          </option>
                                           <option value="Lampung Timur"
                                                 <?php if ($sort == 'Lampung Timur') echo 'selected'; ?>>Lampung Timur
                                           </option>
@@ -178,9 +180,7 @@ $conn->close();
                                           <option value="Metro" <?php if ($sort == 'Metro') echo 'selected'; ?>>Kota
                                                 Metro</option>
                                     </select>
-                                    <span class="material-symbols-outlined arrow-select">
-                                          keyboard_arrow_up
-                                    </span>
+                                    <span class="material-symbols-outlined arrow-select">keyboard_arrow_up</span>
                               </form>
                         </div>
                   </div>
@@ -195,18 +195,18 @@ $conn->close();
                     echo '</a>';
                     echo '<div class="hasil-container">';
                     if (!empty($survey['image'])) {
-                        // Pastikan tipe MIME sesuai dengan gambar yang disimpan
-                        $imageType = 'jpeg'; // Atau bisa diganti dengan 'png', 'gif', dll.
-                        
-                        // Konversi BLOB ke base64
-                        $image = base64_encode($survey['image']);
-                        
-                        // Output gambar dengan format yang benar
-                        echo '<div class="img"><img src="../image/'. $image . '" alt="' . htmlspecialchars($survey['title']) . '"></div>';
+                        // Mengatur path gambar sesuai dengan struktur direktori Anda
+                        $imagePath = '../../image/' . $survey['image']; // Misalnya, path relatif ke folder 'image'
+                    
+                        // Memastikan gambar ada dan dapat diakses
+                        if (file_exists($imagePath)) {
+                            // Output gambar dengan format yang benar
+                            echo '<div class="img"><img src="' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($survey['title']) . '"></div>';
+                        } else {
+                            echo '<div class="img">Image not found</div>';
+                        }
                     } else {
                         echo '<div class="img">No Image</div>';
-                        echo '<pre>' . htmlspecialchars($image) . '</pre>';
-
                     }
                     
                     echo '<div class="ket">';
@@ -216,7 +216,7 @@ $conn->close();
                     echo '<div class="ket-action">';
                     echo '<div class="tanggal">';
                     echo '<span class="material-symbols-outlined">schedule</span>';
-                    echo '<p>Radar Litbang, 32 Juli 2023</p>';
+                    echo '<p>Radar Litbang, ' . htmlspecialchars($survey['formatted_date']) . '</p>';
                     echo '</div>';
                     echo '<div class="action-buttons">';
                     echo '<a href="Admin_Edit_Keterangan_Survey.php?id=' . $survey['id'] . '" class="tombol-edit">';
