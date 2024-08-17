@@ -111,6 +111,7 @@
 .hasil-container {
     display: flex;
     font-size: 14px;
+    margin-bottom: 2rem;
 }
 
 .ket {

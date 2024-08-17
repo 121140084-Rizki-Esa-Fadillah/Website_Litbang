@@ -188,7 +188,13 @@ $conn->close();
                     }
                     
                     echo '<div class="ket">';
-                    echo '<p>' . htmlspecialchars($survey['keterangan']) . '</p>';
+                    $description = htmlspecialchars($survey['keterangan']);
+                    $maxLength = 200;
+  
+                    // Memotong keterangan jika melebihi batas panjang
+                    $truncatedDescription = (strlen($description) > $maxLength) ? substr($description, 0, $maxLength) . '...' : $description;
+  
+                    echo '<p>' . $truncatedDescription . '</p>';
                     echo '<p class="wilayah">Wilayah Pelaksanaan Survei :</p>';
                     echo '<p>' . htmlspecialchars($survey['nama_wilayah']) . '</p>';
                     echo '<div class="ket-action">';

@@ -96,15 +96,15 @@ mysqli_close($conn);
             </div>
             <div class="tab-container-wrapper">
                   <div class="tab-container">
-                        <button id="chart-button" class="tab">Grafik</button>
-                        <button id="table-button" class="tab active">Tabel Data</button>
+                        <button id="chart-button" class="tab active">Grafik</button>
+                        <button id="table-button" class="tab">Tabel Data</button>
                   </div>
             </div>
             <div class="info-umum">
                   <h5>Wilayah: <?php echo htmlspecialchars($wilayahData['nama_wilayah']); ?></h5>
                   <h5>Total Responden: <?php echo htmlspecialchars($genderData['total_responden_gender']); ?></h5>
             </div>
-            <div id="table" class="table" style="display: block;">
+            <div id="table" class="table" style="display: none;">
                   <table class="survey-table" id="survey-table"">
                         <thead>
                               <tr>
@@ -393,7 +393,7 @@ mysqli_close($conn);
                         </tbody>
                   </table>
             </div>
-            <div id="chart" class="grafik" style="display: none;">
+            <div id="chart" class="grafik" style="display: block;">
                   <h3>Gender</h3><br>
                   <div class="Gender">
                         <div class="chart-area">

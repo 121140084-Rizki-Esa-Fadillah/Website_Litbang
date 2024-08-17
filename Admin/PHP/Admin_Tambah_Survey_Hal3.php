@@ -370,1009 +370,192 @@ $conn->close();
       <script src="..\Js\Main.js"></script>
       <script src="..\Js\Detail_Survey.js"></script>
       <script>
-      // Chart untuk Gender - Laki-laki
-      const chart_laki_laki = document.getElementById('laki_laki');
-      new Chart(chart_laki_laki, {
-            type: 'pie',
-            data: {
-                  labels: ['Sangat Puas', 'Puas', 'Kurang Puas', 'Sangat Kurang Puas'],
-                  datasets: [{
-                        label: 'Jumlah Responden',
-                        data: [
-                              <?php echo htmlspecialchars($genderData['laki_laki_sangat_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($genderData['laki_laki_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($genderData['laki_laki_kurang_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($genderData['laki_laki_sangat_kurang_puas'] ?? 0); ?>
-                        ],
-                        borderWidth: 1,
-                        backgroundColor: [
-                              'rgba(255, 99, 132, 0.2)',
-                              'rgba(54, 162, 235, 0.2)',
-                              'rgba(255, 206, 86, 0.2)',
-                              'rgba(75, 192, 192, 0.2)'
-                        ],
-                        borderColor: [
-                              'rgba(255, 99, 132, 1)',
-                              'rgba(54, 162, 235, 1)',
-                              'rgba(255, 206, 86, 1)',
-                              'rgba(75, 192, 192, 1)'
-                        ],
-                  }]
-            },
-            options: {
-                  responsive: true,
-                  maintainAspectRatio: false,
-                  layout: {
-                        padding: {
-                              top: 10,
-                              right: 40
+      function createPieChart(ctx, titleText, data) {
+            new Chart(ctx, {
+                  type: 'pie',
+                  data: {
+                        labels: ['Sangat Puas', 'Puas', 'Kurang Puas', 'Sangat Kurang Puas'],
+                        datasets: [{
+                              label: 'Jumlah Responden',
+                              data: data,
+                              borderWidth: 1,
+                              backgroundColor: [
+                                    'rgba(255, 99, 132, 0.2)',
+                                    'rgba(54, 162, 235, 0.2)',
+                                    'rgba(255, 206, 86, 0.2)',
+                                    'rgba(75, 192, 192, 0.2)'
+                              ],
+                              borderColor: [
+                                    'rgba(255, 99, 132, 1)',
+                                    'rgba(54, 162, 235, 1)',
+                                    'rgba(255, 206, 86, 1)',
+                                    'rgba(75, 192, 192, 1)'
+                              ],
+                        }]
+                  },
+                  options: {
+                        layout: {
+                              padding: {
+                                    left: 10,
+                                    top: 10,
+                                    right: 40
+                              }
+                        },
+                        plugins: {
+                              title: {
+                                    display: true,
+                                    text: titleText,
+                                    font: {
+                                          size: 16
+                                    },
+                                    padding: {
+                                          bottom: 25
+                                    }
+                              },
+                              legend: {
+                                    position: 'left',
+                                    labels: {
+                                          font: {
+                                                size: 10
+                                          },
+                                          boxWidth: 12,
+                                          padding: 25
+                                    }
+                              },
+                              datalabels: {
+                                    formatter: (value, ctx) => {
+                                          let total = ctx.dataset.data.reduce((acc, val) => acc + val,
+                                                0);
+                                          let percentage = (value / total * 100).toFixed(2) + '%';
+                                          return percentage;
+                                    },
+                                    color: '#000',
+                                    anchor: 'end',
+                                    align: 'end',
+                                    offset: 1,
+                                    font: {
+                                          size: 10
+                                    }
+                              }
                         }
                   },
-                  plugins: {
-                        title: {
-                              display: true,
-                              text: 'Kategori Laki-laki',
-                              font: {
-                                    size: 16
-                              },
-                              padding: {
-                                    bottom: 10
-                              }
-                        },
-                        legend: {
-                              position: 'left',
-                              labels: {
-                                    font: {
-                                          size: 10 // Adjust font size for legend
-                                    },
-                                    boxWidth: 12,
-                                    padding: 25
-                              }
-                        },
-                        datalabels: {
-                              formatter: (value, ctx) => {
-                                    let total = ctx.dataset.data.reduce((acc, val) => acc + val, 0);
-                                    let percentage = (value / total * 100).toFixed(2) + '%';
-                                    return percentage;
-                              },
-                              color: '#000',
-                              anchor: 'end',
-                              align: 'end',
-                              offset: 1,
-                              font: {
-                                    size: 10 // Adjust font size for data labels
-                              }
-                        }
+                  plugins: [ChartDataLabels]
+            });
+      }
 
-                  }
-            },
-            plugins: [ChartDataLabels]
-      });
+      // Chart untuk Gender - Laki-laki
+      const dataLakiLaki = [
+            <?php echo htmlspecialchars($genderData['laki_laki_sangat_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($genderData['laki_laki_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($genderData['laki_laki_kurang_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($genderData['laki_laki_sangat_kurang_puas'] ?? 0); ?>
+      ];
+      createPieChart(document.getElementById('laki_laki'), 'Kategori Laki-laki', dataLakiLaki);
 
       // Chart untuk Gender - Perempuan
-      const chart_perempuan = document.getElementById('perempuan');
-      new Chart(chart_perempuan, {
-            type: 'pie',
-            data: {
-                  labels: ['Sangat Puas', 'Puas', 'Kurang Puas', 'Sangat Kurang Puas'],
-                  datasets: [{
-                        label: 'Jumlah Responden',
-                        data: [
-                              <?php echo htmlspecialchars($genderData['perempuan_sangat_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($genderData['perempuan_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($genderData['perempuan_kurang_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($genderData['perempuan_sangat_kurang_puas'] ?? 0); ?>
-                        ],
-                        borderWidth: 1,
-                        backgroundColor: [
-                              'rgba(255, 99, 132, 0.2)',
-                              'rgba(54, 162, 235, 0.2)',
-                              'rgba(255, 206, 86, 0.2)',
-                              'rgba(75, 192, 192, 0.2)'
-                        ],
-                        borderColor: [
-                              'rgba(255, 99, 132, 1)',
-                              'rgba(54, 162, 235, 1)',
-                              'rgba(255, 206, 86, 1)',
-                              'rgba(75, 192, 192, 1)'
-                        ],
-                  }]
-            },
-            options: {
-                  layout: {
-                        padding: {
-                              left: 5,
-                              top: 10,
-                              right: 40
-                        }
-                  },
-                  plugins: {
-                        title: {
-                              display: true,
-                              text: 'Kategori Perempuan',
-                              font: {
-                                    size: 16
-                              },
-                              padding: {
-                                    bottom: 10
-                              }
-                        },
-                        legend: {
-                              position: 'left',
-                              labels: {
-                                    font: {
-                                          size: 10 // Adjust font size for legend
-                                    },
-                                    boxWidth: 12,
-                                    padding: 25
-                              }
-                        },
-                        datalabels: {
-                              formatter: (value, ctx) => {
-                                    let total = ctx.dataset.data.reduce((acc, val) => acc + val, 0);
-                                    let percentage = (value / total * 100).toFixed(2) + '%';
-                                    return percentage;
-                              },
-                              color: '#000',
-                              anchor: 'end',
-                              align: 'end',
-                              offset: 1,
-                              font: {
-                                    size: 10 // Adjust font size for data labels
-                              }
-                        }
-                  }
-            },
-            plugins: [ChartDataLabels]
-      });
+      const dataPerempuan = [
+            <?php echo htmlspecialchars($genderData['perempuan_sangat_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($genderData['perempuan_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($genderData['perempuan_kurang_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($genderData['perempuan_sangat_kurang_puas'] ?? 0); ?>
+      ];
+      createPieChart(document.getElementById('perempuan'), 'Kategori Perempuan', dataPerempuan);
 
       // Chart untuk Usia - 18-35 Tahun
-      const chart_usia_18_35 = document.getElementById('usia_18_35');
-      new Chart(chart_usia_18_35, {
-            type: 'pie',
-            data: {
-                  labels: ['Sangat Puas', 'Puas', 'Kurang Puas', 'Sangat Kurang Puas'],
-                  datasets: [{
-                        label: 'Jumlah Responden',
-                        data: [
-                              <?php echo htmlspecialchars($usiaData['18_35_sangat_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($usiaData['18_35_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($usiaData['18_35_kurang_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($usiaData['18_35_sangat_kurang_puas'] ?? 0); ?>
-                        ],
-                        borderWidth: 1,
-                        backgroundColor: [
-                              'rgba(255, 99, 132, 0.2)',
-                              'rgba(54, 162, 235, 0.2)',
-                              'rgba(255, 206, 86, 0.2)',
-                              'rgba(75, 192, 192, 0.2)'
-                        ],
-                        borderColor: [
-                              'rgba(255, 99, 132, 1)',
-                              'rgba(54, 162, 235, 1)',
-                              'rgba(255, 206, 86, 1)',
-                              'rgba(75, 192, 192, 1)'
-                        ],
-                  }]
-            },
-            options: {
-                  layout: {
-                        padding: {
-                              left: 10,
-                              top: 10,
-                              right: 40
-                        }
-                  },
-                  plugins: {
-                        title: {
-                              display: true,
-                              text: 'Usia 18-35 Tahun',
-                              font: {
-                                    size: 16
-                              },
-                              padding: {
-                                    bottom: 25
-                              }
-                        },
-                        legend: {
-                              position: 'left',
-                              labels: {
-                                    font: {
-                                          size: 10 // Adjust font size for legend
-                                    },
-                                    boxWidth: 12,
-                                    padding: 25
-                              }
-                        },
-                        datalabels: {
-                              formatter: (value, ctx) => {
-                                    let total = ctx.dataset.data.reduce((acc, val) => acc + val, 0);
-                                    let percentage = (value / total * 100).toFixed(2) + '%';
-                                    return percentage;
-                              },
-                              color: '#000',
-                              anchor: 'end',
-                              align: 'end',
-                              offset: 1,
-                              font: {
-                                    size: 10 // Adjust font size for data labels
-                              }
-                        }
-                  }
-            },
-            plugins: [ChartDataLabels]
-      });
+      const dataUsia18_35 = [
+            <?php echo htmlspecialchars($usiaData['18_35_sangat_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($usiaData['18_35_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($usiaData['18_35_kurang_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($usiaData['18_35_sangat_kurang_puas'] ?? 0); ?>
+      ];
+      createPieChart(document.getElementById('usia_18_35'), 'Usia 18-35 Tahun', dataUsia18_35);
 
-      // Chart untuk Usia - 36 Tahun ke atas
-      const chart_usia_36_up = document.getElementById('usia_36_up');
-      new Chart(chart_usia_36_up, {
-            type: 'pie',
-            data: {
-                  labels: ['Sangat Puas', 'Puas', 'Kurang Puas', 'Sangat Kurang Puas'],
-                  datasets: [{
-                        label: 'Jumlah Responden',
-                        data: [
-                              <?php echo htmlspecialchars($usiaData['36_up_sangat_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($usiaData['36_up_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($usiaData['36_up_kurang_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($usiaData['36_up_sangat_kurang_puas'] ?? 0); ?>
-                        ],
-                        borderWidth: 1,
-                        backgroundColor: [
-                              'rgba(255, 99, 132, 0.2)',
-                              'rgba(54, 162, 235, 0.2)',
-                              'rgba(255, 206, 86, 0.2)',
-                              'rgba(75, 192, 192, 0.2)'
-                        ],
-                        borderColor: [
-                              'rgba(255, 99, 132, 1)',
-                              'rgba(54, 162, 235, 1)',
-                              'rgba(255, 206, 86, 1)',
-                              'rgba(75, 192, 192, 1)'
-                        ],
-                  }]
-            },
-            options: {
-                  layout: {
-                        padding: {
-                              left: 10,
-                              top: 10,
-                              right: 40
-                        }
-                  },
-                  plugins: {
-                        title: {
-                              display: true,
-                              text: 'Usia 36 Tahun ke atas',
-                              font: {
-                                    size: 16
-                              },
-                              padding: {
-                                    bottom: 25
-                              }
-                        },
-                        legend: {
-                              position: 'left',
-                              labels: {
-                                    font: {
-                                          size: 10 // Adjust font size for legend
-                                    },
-                                    boxWidth: 12,
-                                    padding: 25
-                              }
-                        },
-                        datalabels: {
-                              formatter: (value, ctx) => {
-                                    let total = ctx.dataset.data.reduce((acc, val) => acc + val, 0);
-                                    let percentage = (value / total * 100).toFixed(2) + '%';
-                                    return percentage;
-                              },
-                              color: '#000',
-                              anchor: 'end',
-                              align: 'end',
-                              offset: 1,
-                              font: {
-                                    size: 10 // Adjust font size for data labels
-                              }
-                        }
-                  }
-            },
-            plugins: [ChartDataLabels]
-      });
 
-      // Chart untuk Lulusan - SD
-      const chart_sd = document.getElementById('sd');
-      new Chart(chart_sd, {
-            type: 'pie',
-            data: {
-                  labels: ['Sangat Puas', 'Puas', 'Kurang Puas', 'Sangat Kurang Puas'],
-                  datasets: [{
-                        label: 'Jumlah Responden',
-                        data: [
-                              <?php echo htmlspecialchars($lulusanData['sd_sangat_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($lulusanData['sd_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($lulusanData['sd_kurang_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($lulusanData['sd_sangat_kurang_puas'] ?? 0); ?>
-                        ],
-                        borderWidth: 1,
-                        backgroundColor: [
-                              'rgba(255, 99, 132, 0.2)',
-                              'rgba(54, 162, 235, 0.2)',
-                              'rgba(255, 206, 86, 0.2)',
-                              'rgba(75, 192, 192, 0.2)'
-                        ],
-                        borderColor: [
-                              'rgba(255, 99, 132, 1)',
-                              'rgba(54, 162, 235, 1)',
-                              'rgba(255, 206, 86, 1)',
-                              'rgba(75, 192, 192, 1)'
-                        ],
-                  }]
-            },
-            options: {
-                  layout: {
-                        padding: {
-                              left: 10,
-                              top: 10,
-                              right: 40
-                        }
-                  },
-                  plugins: {
-                        title: {
-                              display: true,
-                              text: 'Lulusan SD',
-                              font: {
-                                    size: 16
-                              },
-                              padding: {
-                                    bottom: 25
-                              }
-                        },
-                        legend: {
-                              position: 'left',
-                              labels: {
-                                    font: {
-                                          size: 10 // Adjust font size for legend
-                                    },
-                                    boxWidth: 12,
-                                    padding: 25
-                              }
-                        },
-                        datalabels: {
-                              formatter: (value, ctx) => {
-                                    let total = ctx.dataset.data.reduce((acc, val) => acc + val, 0);
-                                    let percentage = (value / total * 100).toFixed(2) + '%';
-                                    return percentage;
-                              },
-                              color: '#000',
-                              anchor: 'end',
-                              align: 'end',
-                              offset: 1,
-                              font: {
-                                    size: 10 // Adjust font size for data labels
-                              }
-                        }
-                  }
-            },
-            plugins: [ChartDataLabels]
-      });
+      const dataUsia36Up = [
+            <?php echo htmlspecialchars($usiaData['36_up_sangat_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($usiaData['36_up_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($usiaData['36_up_kurang_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($usiaData['36_up_sangat_kurang_puas'] ?? 0); ?>
+      ];
+      createPieChart(document.getElementById('usia_36_up'), 'Usia 36 Tahun ke atas', dataUsia36Up);
 
-      // Chart untuk Lulusan - SMP
-      const chart_smp = document.getElementById('smp');
-      new Chart(chart_smp, {
-            type: 'pie',
-            data: {
-                  labels: ['Sangat Puas', 'Puas', 'Kurang Puas', 'Sangat Kurang Puas'],
-                  datasets: [{
-                        label: 'Jumlah Responden',
-                        data: [
-                              <?php echo htmlspecialchars($lulusanData['smp_sangat_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($lulusanData['smp_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($lulusanData['smp_kurang_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($lulusanData['smp_sangat_kurang_puas'] ?? 0); ?>
-                        ],
-                        borderWidth: 1,
-                        backgroundColor: [
-                              'rgba(255, 99, 132, 0.2)',
-                              'rgba(54, 162, 235, 0.2)',
-                              'rgba(255, 206, 86, 0.2)',
-                              'rgba(75, 192, 192, 0.2)'
-                        ],
-                        borderColor: [
-                              'rgba(255, 99, 132, 1)',
-                              'rgba(54, 162, 235, 1)',
-                              'rgba(255, 206, 86, 1)',
-                              'rgba(75, 192, 192, 1)'
-                        ],
-                  }]
-            },
-            options: {
-                  layout: {
-                        padding: {
-                              left: 10,
-                              top: 10,
-                              right: 40
-                        }
-                  },
-                  plugins: {
-                        title: {
-                              display: true,
-                              text: 'Lulusan SMP',
-                              font: {
-                                    size: 16
-                              },
-                              padding: {
-                                    bottom: 25
-                              }
-                        },
-                        legend: {
-                              position: 'left',
-                              labels: {
-                                    font: {
-                                          size: 10 // Adjust font size for legend
-                                    },
-                                    boxWidth: 12,
-                                    padding: 25
-                              }
-                        },
-                        datalabels: {
-                              formatter: (value, ctx) => {
-                                    let total = ctx.dataset.data.reduce((acc, val) => acc + val, 0);
-                                    let percentage = (value / total * 100).toFixed(2) + '%';
-                                    return percentage;
-                              },
-                              color: '#000',
-                              anchor: 'end',
-                              align: 'end',
-                              offset: 1,
-                              font: {
-                                    size: 10 // Adjust font size for data labels
-                              }
-                        }
-                  }
-            },
-            plugins: [ChartDataLabels]
-      });
 
-      // Chart untuk Lulusan - SMA
-      const chart_sma = document.getElementById('sma');
-      new Chart(chart_sma, {
-            type: 'pie',
-            data: {
-                  labels: ['Sangat Puas', 'Puas', 'Kurang Puas', 'Sangat Kurang Puas'],
-                  datasets: [{
-                        label: 'Jumlah Responden',
-                        data: [
-                              <?php echo htmlspecialchars($lulusanData['sma_sangat_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($lulusanData['sma_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($lulusanData['sma_kurang_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($lulusanData['sma_sangat_kurang_puas'] ?? 0); ?>
-                        ],
-                        borderWidth: 1,
-                        backgroundColor: [
-                              'rgba(255, 99, 132, 0.2)',
-                              'rgba(54, 162, 235, 0.2)',
-                              'rgba(255, 206, 86, 0.2)',
-                              'rgba(75, 192, 192, 0.2)'
-                        ],
-                        borderColor: [
-                              'rgba(255, 99, 132, 1)',
-                              'rgba(54, 162, 235, 1)',
-                              'rgba(255, 206, 86, 1)',
-                              'rgba(75, 192, 192, 1)'
-                        ],
-                  }]
-            },
-            options: {
-                  layout: {
-                        padding: {
-                              left: 10,
-                              top: 10,
-                              right: 40
-                        }
-                  },
-                  plugins: {
-                        title: {
-                              display: true,
-                              text: 'Lulusan SMA',
-                              font: {
-                                    size: 16
-                              },
-                              padding: {
-                                    bottom: 25
-                              }
-                        },
-                        legend: {
-                              position: 'left',
-                              labels: {
-                                    font: {
-                                          size: 10 // Adjust font size for legend
-                                    },
-                                    boxWidth: 12,
-                                    padding: 25
-                              }
-                        },
-                        datalabels: {
-                              formatter: (value, ctx) => {
-                                    let total = ctx.dataset.data.reduce((acc, val) => acc + val, 0);
-                                    let percentage = (value / total * 100).toFixed(2) + '%';
-                                    return percentage;
-                              },
-                              color: '#000',
-                              anchor: 'end',
-                              align: 'end',
-                              offset: 1,
-                              font: {
-                                    size: 10 // Adjust font size for data labels
-                              }
-                        }
-                  }
-            },
-            plugins: [ChartDataLabels]
-      });
+      const dataLulusanSD = [
+            <?php echo htmlspecialchars($lulusanData['sd_sangat_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($lulusanData['sd_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($lulusanData['sd_kurang_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($lulusanData['sd_sangat_kurang_puas'] ?? 0); ?>
+      ];
+      createPieChart(document.getElementById('sd'), 'Lulusan SD', dataLulusanSD);
 
-      // Chart untuk Lulusan - Perguruan Tinggi
-      const chart_diploma = document.getElementById('diploma');
-      new Chart(chart_diploma, {
-            type: 'pie',
-            data: {
-                  labels: ['Sangat Puas', 'Puas', 'Kurang Puas', 'Sangat Kurang Puas'],
-                  datasets: [{
-                        label: 'Jumlah Responden',
-                        data: [
-                              <?php echo htmlspecialchars($lulusanData['diploma_sangat_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($lulusanData['diploma_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($lulusanData['diploma_kurang_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($lulusanData['diploma_sangat_kurang_puas'] ?? 0); ?>
-                        ],
-                        borderWidth: 1,
-                        backgroundColor: [
-                              'rgba(255, 99, 132, 0.2)',
-                              'rgba(54, 162, 235, 0.2)',
-                              'rgba(255, 206, 86, 0.2)',
-                              'rgba(75, 192, 192, 0.2)'
-                        ],
-                        borderColor: [
-                              'rgba(255, 99, 132, 1)',
-                              'rgba(54, 162, 235, 1)',
-                              'rgba(255, 206, 86, 1)',
-                              'rgba(75, 192, 192, 1)'
-                        ],
-                  }]
-            },
-            options: {
-                  layout: {
-                        padding: {
-                              left: 10,
-                              top: 10,
-                              right: 40
-                        }
-                  },
-                  plugins: {
-                        title: {
-                              display: true,
-                              text: 'Lulusan Diploma',
-                              font: {
-                                    size: 16
-                              },
-                              padding: {
-                                    bottom: 25
-                              }
-                        },
-                        legend: {
-                              position: 'left',
-                              labels: {
-                                    font: {
-                                          size: 10 // Adjust font size for legend
-                                    },
-                                    boxWidth: 12,
-                                    padding: 25
-                              }
-                        },
-                        datalabels: {
-                              formatter: (value, ctx) => {
-                                    let total = ctx.dataset.data.reduce((acc, val) => acc + val, 0);
-                                    let percentage = (value / total * 100).toFixed(2) + '%';
-                                    return percentage;
-                              },
-                              color: '#000',
-                              anchor: 'end',
-                              align: 'end',
-                              offset: 1,
-                              font: {
-                                    size: 10 // Adjust font size for data labels
-                              }
-                        }
-                  }
-            },
-            plugins: [ChartDataLabels]
-      });
 
-      // Chart untuk Profesi - Karyawan
-      const chart_Sarjana = document.getElementById('sarjana');
-      new Chart(chart_Sarjana, {
-            type: 'pie',
-            data: {
-                  labels: ['Sangat Puas', 'Puas', 'Kurang Puas', 'Sangat Kurang Puas'],
-                  datasets: [{
-                        label: 'Jumlah Responden',
-                        data: [
-                              <?php echo htmlspecialchars($lulusanData['sarjana_sangat_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($lulusanData['sarjana_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($lulusanData['sarjana_kurang_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($lulusanData['sarjana_sangat_kurang_puas'] ?? 0); ?>
-                        ],
-                        borderWidth: 1,
-                        backgroundColor: [
-                              'rgba(255, 99, 132, 0.2)',
-                              'rgba(54, 162, 235, 0.2)',
-                              'rgba(255, 206, 86, 0.2)',
-                              'rgba(75, 192, 192, 0.2)'
-                        ],
-                        borderColor: [
-                              'rgba(255, 99, 132, 1)',
-                              'rgba(54, 162, 235, 1)',
-                              'rgba(255, 206, 86, 1)',
-                              'rgba(75, 192, 192, 1)'
-                        ],
-                  }]
-            },
-            options: {
-                  layout: {
-                        padding: {
-                              left: 10,
-                              top: 10,
-                              right: 40
-                        }
-                  },
-                  plugins: {
-                        title: {
-                              display: true,
-                              text: 'Lulusan Sarjana',
-                              font: {
-                                    size: 16
-                              },
-                              padding: {
-                                    bottom: 25
-                              }
-                        },
-                        legend: {
-                              position: 'left',
-                              labels: {
-                                    font: {
-                                          size: 10 // Adjust font size for legend
-                                    },
-                                    boxWidth: 12,
-                                    padding: 25
-                              }
-                        },
-                        datalabels: {
-                              formatter: (value, ctx) => {
-                                    let total = ctx.dataset.data.reduce((acc, val) => acc + val, 0);
-                                    let percentage = (value / total * 100).toFixed(2) + '%';
-                                    return percentage;
-                              },
-                              color: '#000',
-                              anchor: 'end',
-                              align: 'end',
-                              offset: 1,
-                              font: {
-                                    size: 10 // Adjust font size for data labels
-                              }
-                        }
-                  }
-            },
-            plugins: [ChartDataLabels]
-      });
+      const dataprofesi = [
+            <?php echo htmlspecialchars($lulusanData['smp_sangat_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($lulusanData['smp_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($lulusanData['smp_kurang_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($lulusanData['smp_sangat_kurang_puas'] ?? 0); ?>
+      ];
+      createPieChart(document.getElementById('smp'), 'Lulusan SD', dataprofesi);
 
-      // Chart untuk Profesi - Wirausaha
-      const chart_pns = document.getElementById('pns');
-      new Chart(chart_pns, {
-            type: 'pie',
-            data: {
-                  labels: ['Sangat Puas', 'Puas', 'Kurang Puas', 'Sangat Kurang Puas'],
-                  datasets: [{
-                        label: 'Jumlah Responden',
-                        data: [
-                              <?php echo htmlspecialchars($profesiData['pns_sangat_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($profesiData['pns_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($profesiData['pns_kurang_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($profesiData['pns_sangat_kurang_puas'] ?? 0); ?>
-                        ],
-                        borderWidth: 1,
-                        backgroundColor: [
-                              'rgba(255, 99, 132, 0.2)',
-                              'rgba(54, 162, 235, 0.2)',
-                              'rgba(255, 206, 86, 0.2)',
-                              'rgba(75, 192, 192, 0.2)'
-                        ],
-                        borderColor: [
-                              'rgba(255, 99, 132, 1)',
-                              'rgba(54, 162, 235, 1)',
-                              'rgba(255, 206, 86, 1)',
-                              'rgba(75, 192, 192, 1)'
-                        ],
-                  }]
-            },
-            options: {
-                  layout: {
-                        padding: {
-                              left: 10,
-                              top: 10,
-                              right: 40
-                        }
-                  },
-                  plugins: {
-                        title: {
-                              display: true,
-                              text: 'Profesi Wirausaha',
-                              font: {
-                                    size: 16
-                              },
-                              padding: {
-                                    bottom: 25
-                              }
-                        },
-                        legend: {
-                              position: 'left',
-                              labels: {
-                                    font: {
-                                          size: 10 // Adjust font size for legend
-                                    },
-                                    boxWidth: 12,
-                                    padding: 25
-                              }
-                        },
-                        datalabels: {
-                              formatter: (value, ctx) => {
-                                    let total = ctx.dataset.data.reduce((acc, val) => acc + val, 0);
-                                    let percentage = (value / total * 100).toFixed(2) + '%';
-                                    return percentage;
-                              },
-                              color: '#000',
-                              anchor: 'end',
-                              align: 'end',
-                              offset: 1,
-                              font: {
-                                    size: 10 // Adjust font size for data labels
-                              }
-                        }
-                  }
-            },
-            plugins: [ChartDataLabels]
-      });
 
-      // Chart untuk Profesi - Lainnya
-      const chart_swasta_wiraswasta = document.getElementById('swasta_wiraswasta');
-      new Chart(chart_swasta_wiraswasta, {
-            type: 'pie',
-            data: {
-                  labels: ['Sangat Puas', 'Puas', 'Kurang Puas', 'Sangat Kurang Puas'],
-                  datasets: [{
-                        label: 'Jumlah Responden',
-                        data: [
-                              <?php echo htmlspecialchars($profesiData['swasta_wiraswasta_sangat_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($profesiData['swasta_wiraswasta_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($profesiData['swasta_wiraswasta_kurang_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($profesiData['swasta_wiraswasta_sangat_kurang_puas'] ?? 0); ?>
-                        ],
-                        borderWidth: 1,
-                        backgroundColor: [
-                              'rgba(255, 99, 132, 0.2)',
-                              'rgba(54, 162, 235, 0.2)',
-                              'rgba(255, 206, 86, 0.2)',
-                              'rgba(75, 192, 192, 0.2)'
-                        ],
-                        borderColor: [
-                              'rgba(255, 99, 132, 1)',
-                              'rgba(54, 162, 235, 1)',
-                              'rgba(255, 206, 86, 1)',
-                              'rgba(75, 192, 192, 1)'
-                        ],
-                  }]
-            },
-            options: {
-                  layout: {
-                        padding: {
-                              left: 10,
-                              top: 10,
-                              right: 40
-                        }
-                  },
-                  plugins: {
-                        title: {
-                              display: true,
-                              text: 'Profesi Swasta & Wiraswasta',
-                              font: {
-                                    size: 16
-                              },
-                              padding: {
-                                    bottom: 25
-                              }
-                        },
-                        legend: {
-                              position: 'left',
-                              labels: {
-                                    font: {
-                                          size: 10 // Adjust font size for legend
-                                    },
-                                    boxWidth: 12,
-                                    padding: 25
-                              }
-                        },
-                        datalabels: {
-                              formatter: (value, ctx) => {
-                                    let total = ctx.dataset.data.reduce((acc, val) => acc + val, 0);
-                                    let percentage = (value / total * 100).toFixed(2) + '%';
-                                    return percentage;
-                              },
-                              color: '#000',
-                              anchor: 'end',
-                              align: 'end',
-                              offset: 1,
-                              font: {
-                                    size: 10 // Adjust font size for data labels
-                              }
-                        }
-                  }
-            },
-            plugins: [ChartDataLabels]
-      });
+      const dataLulusanSMA = [
+            <?php echo htmlspecialchars($lulusanData['sma_sangat_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($lulusanData['sma_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($lulusanData['sma_kurang_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($lulusanData['sma_sangat_kurang_puas'] ?? 0); ?>
+      ];
+      createPieChart(document.getElementById('sma'), 'Lulusan SD', dataLulusanSMA);
 
-      // Chart untuk Profesi - Lainnya
-      const chart_pelajar_mahasiswa = document.getElementById('pelajar_mahasiswa');
-      new Chart(chart_pelajar_mahasiswa, {
-            type: 'pie',
-            data: {
-                  labels: ['Sangat Puas', 'Puas', 'Kurang Puas', 'Sangat Kurang Puas'],
-                  datasets: [{
-                        label: 'Jumlah Responden',
-                        data: [
-                              <?php echo htmlspecialchars($profesiData['pelajar_mahasiswa_sangat_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($profesiData['pelajar_mahasiswa_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($profesiData['pelajar_mahasiswa_kurang_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($profesiData['pelajar_mahasiswa_sangat_kurang_puas'] ?? 0); ?>
-                        ],
-                        borderWidth: 1,
-                        backgroundColor: [
-                              'rgba(255, 99, 132, 0.2)',
-                              'rgba(54, 162, 235, 0.2)',
-                              'rgba(255, 206, 86, 0.2)',
-                              'rgba(75, 192, 192, 0.2)'
-                        ],
-                        borderColor: [
-                              'rgba(255, 99, 132, 1)',
-                              'rgba(54, 162, 235, 1)',
-                              'rgba(255, 206, 86, 1)',
-                              'rgba(75, 192, 192, 1)'
-                        ],
-                  }]
-            },
-            options: {
-                  layout: {
-                        padding: {
-                              left: 10,
-                              top: 10,
-                              right: 40
-                        }
-                  },
-                  plugins: {
-                        title: {
-                              display: true,
-                              text: 'Profesi Pelajar & Mahasiswa',
-                              font: {
-                                    size: 16
-                              },
-                              padding: {
-                                    bottom: 25
-                              }
-                        },
-                        legend: {
-                              position: 'left',
-                              labels: {
-                                    font: {
-                                          size: 10 // Adjust font size for legend
-                                    },
-                                    boxWidth: 12,
-                                    padding: 25
-                              }
-                        },
-                        datalabels: {
-                              formatter: (value, ctx) => {
-                                    let total = ctx.dataset.data.reduce((acc, val) => acc + val, 0);
-                                    let percentage = (value / total * 100).toFixed(2) + '%';
-                                    return percentage;
-                              },
-                              color: '#000',
-                              anchor: 'end',
-                              align: 'end',
-                              offset: 1,
-                              font: {
-                                    size: 10 // Adjust font size for data labels
-                              }
-                        }
-                  }
-            },
-            plugins: [ChartDataLabels]
-      });
 
-      // Chart untuk Profesi - Lainnya
-      const chart_Pengangguran = document.getElementById('pengangguran');
-      new Chart(chart_Pengangguran, {
-            type: 'pie',
-            data: {
-                  labels: ['Sangat Puas', 'Puas', 'Kurang Puas', 'Sangat Kurang Puas'],
-                  datasets: [{
-                        label: 'Jumlah Responden',
-                        data: [
-                              <?php echo htmlspecialchars($profesiData['pengangguran_sangat_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($profesiData['pengangguran_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($profesiData['pengangguran_kurang_puas'] ?? 0); ?>,
-                              <?php echo htmlspecialchars($profesiData['pengangguran_sangat_kurang_puas'] ?? 0); ?>
-                        ],
-                        borderWidth: 1,
-                        backgroundColor: [
-                              'rgba(255, 99, 132, 0.2)',
-                              'rgba(54, 162, 235, 0.2)',
-                              'rgba(255, 206, 86, 0.2)',
-                              'rgba(75, 192, 192, 0.2)'
-                        ],
-                        borderColor: [
-                              'rgba(255, 99, 132, 1)',
-                              'rgba(54, 162, 235, 1)',
-                              'rgba(255, 206, 86, 1)',
-                              'rgba(75, 192, 192, 1)'
-                        ],
-                  }]
-            },
-            options: {
-                  layout: {
-                        padding: {
-                              left: 10,
-                              top: 10,
-                              right: 40
-                        }
-                  },
-                  plugins: {
-                        title: {
-                              display: true,
-                              text: 'Profesi Pengangguran',
-                              font: {
-                                    size: 16
-                              },
-                              padding: {
-                                    bottom: 25
-                              },
-                              color: 'black'
-                        },
-                        legend: {
-                              position: 'left',
-                              labels: {
-                                    font: {
-                                          size: 10 // Adjust font size for legend
-                                    },
-                                    boxWidth: 12,
-                                    padding: 25
-                              }
-                        },
-                        datalabels: {
-                              formatter: (value, ctx) => {
-                                    let total = ctx.dataset.data.reduce((acc, val) => acc + val, 0);
-                                    let percentage = (value / total * 100).toFixed(2) + '%';
-                                    return percentage;
-                              },
-                              color: '#000',
-                              anchor: 'end',
-                              align: 'end',
-                              offset: 1,
-                              font: {
-                                    size: 10 // Adjust font size for data labels
-                              }
-                        }
-                  }
-            },
-            plugins: [ChartDataLabels]
-      });
+      const dataLulusanDiploma = [
+            <?php echo htmlspecialchars($lulusanData['diploma_sangat_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($lulusanData['diploma_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($lulusanData['diploma_kurang_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($lulusanData['diploma_sangat_kurang_puas'] ?? 0); ?>
+      ];
+      createPieChart(document.getElementById('diploma'), 'Lulusan SD', dataLulusanDiploma);
+
+      const dataLulusanSarjana = [
+            <?php echo htmlspecialchars($lulusanData['sarjana_sangat_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($lulusanData['sarjana_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($lulusanData['sarjana_kurang_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($lulusanData['sarjana_sangat_kurang_puas'] ?? 0); ?>
+      ];
+      createPieChart(document.getElementById('sarjana'), 'Lulusan SD', dataLulusanSarjana);
+
+      const dataProfesiPNS = [
+            <?php echo htmlspecialchars($profesiData['pns_sangat_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($profesiData['pns_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($profesiData['pns_kurang_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($profesiData['pns_sangat_kurang_puas'] ?? 0); ?>
+      ];
+      createPieChart(document.getElementById('pns'), 'profesi SD', dataProfesiPNS);
+
+
+      const dataProfesiSwasta_wiraswasta = [
+            <?php echo htmlspecialchars($profesiData['swasta_wiraswasta_sangat_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($profesiData['swasta_wiraswasta_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($profesiData['swasta_wiraswasta_kurang_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($profesiData['swasta_wiraswasta_sangat_kurang_puas'] ?? 0); ?>
+      ];
+      createPieChart(document.getElementById('swasta_wiraswasta'), 'profesi SD', dataProfesiSwasta_wiraswasta);
+
+
+      const dataProfesiPelajar_Mahasiswa = [
+            <?php echo htmlspecialchars($profesiData['pelajar_mahasiswa_sangat_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($profesiData['pelajar_mahasiswa_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($profesiData['pelajar_mahasiswa_kurang_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($profesiData['pelajar_mahasiswa_sangat_kurang_puas'] ?? 0); ?>
+      ];
+      createPieChart(document.getElementById('pelajar_mahasiswa'), 'profesi SD', dataProfesiPelajar_Mahasiswa);
+
+      const dataprofesiPengangguran = [
+            <?php echo htmlspecialchars($profesiData['pengangguran_sangat_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($profesiData['pengangguran_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($profesiData['pengangguran_kurang_puas'] ?? 0); ?>,
+            <?php echo htmlspecialchars($profesiData['pengangguran_sangat_kurang_puas'] ?? 0); ?>
+      ];
+      createPieChart(document.getElementById('pengangguran'), 'profesi SD', dataprofesiPengangguran);
       </script>
 </body>
 
