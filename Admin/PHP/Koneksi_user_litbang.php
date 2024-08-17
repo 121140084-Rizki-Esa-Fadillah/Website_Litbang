@@ -2,7 +2,7 @@
 $servername = "localhost";
 $username = "root";
 $password = "";
-$database = "user_litbang";
+$dbname = "user_litbang";
 
 // Membuat koneksi
 $conn = new mysqli($servername, $username, $password, $dbname);

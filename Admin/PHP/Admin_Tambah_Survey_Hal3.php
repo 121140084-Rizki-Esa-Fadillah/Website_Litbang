@@ -1342,7 +1342,8 @@ $conn->close();
                               },
                               padding: {
                                     bottom: 25
-                              }
+                              },
+                              color: 'black'
                         },
                         legend: {
                               position: 'left',

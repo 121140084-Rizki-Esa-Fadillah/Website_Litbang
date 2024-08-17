@@ -19,4 +19,4 @@ function showTab(tab) {
 
 tableButton.addEventListener('click', () => showTab('table'));
 chartButton.addEventListener('click', () => showTab('chart'));
-showTab('table'); // Set default tab
+showTab('chart'); // Set default tab
