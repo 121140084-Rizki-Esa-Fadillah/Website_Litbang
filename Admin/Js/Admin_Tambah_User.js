@@ -1,7 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
-    const form = document.getElementById("edit-password-form");
-    const passwordInput = document.getElementById("password-baru");
-    const confirmInput = document.getElementById("confirm-password-baru");
+    const form = document.getElementById("tambah-user-form");
+    const passwordInput = document.getElementById("password");
+    const confirmInput = document.getElementById("confirm-password");
 
     form.addEventListener("submit", function(event) {
         // Ambil nilai dari password dan konfirmasi password

@@ -86,12 +86,12 @@ $conn->close();
                               <div class="form-group">
                                     <label for="gender">Jenis Kelamin</label>
                                     <select name="gender" id="gender">
-                                          <option value="laki-laki"
-                                                <?php if ($user['jenis_kelamin'] == 'laki-laki') echo 'selected'; ?>>
+                                          <option value="Laki-Laki"
+                                                <?php if ($user['jenis_kelamin'] == 'Laki-Laki') echo 'selected'; ?>>
                                                 Laki-Laki
                                           </option>
-                                          <option value="perempuan"
-                                                <?php if ($user['jenis_kelamin'] == 'perempuan') echo 'selected'; ?>>
+                                          <option value="Perempuan"
+                                                <?php if ($user['jenis_kelamin'] == 'Perempuan') echo 'selected'; ?>>
                                                 Perempuan
                                           </option>
                                     </select>

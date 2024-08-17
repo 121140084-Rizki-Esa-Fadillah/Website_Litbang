@@ -69,6 +69,7 @@ $conn->close();
                   <table>
                         <thead>
                               <tr>
+                                    <th>No</th>
                                     <th>ID</th>
                                     <th>Nama</th>
                                     <th>Username</th>
@@ -82,8 +83,12 @@ $conn->close();
                               </tr>
                         </thead>
                         <tbody>
-                              <?php foreach ($users as $user): ?>
+                              <?php 
+                              $no = 1;
+                              foreach ($users as $user):
+                              ?>
                               <tr>
+                                    <td><?php echo $no++; ?></td>
                                     <td><?php echo htmlspecialchars($user['id']); ?></td>
                                     <td><?php echo htmlspecialchars($user['nama_lengkap']); ?></td>
                                     <td><?php echo htmlspecialchars($user['username']); ?></td>
@@ -95,12 +100,15 @@ $conn->close();
                                     <td><?php echo htmlspecialchars($user['role']); ?></td>
                                     <td>
                                           <div class="action-buttons">
-                                                <a href="Admin_Edit_User.php" class="tombol-edit">
+                                                <a href="Admin_Edit_User.php?id=<?php echo $user['id']; ?>" class="tombol-edit">
                                                       <i class="fa fa-edit"></i>Edit
                                                 </a>
-                                                <button class="tombol-hapus-user">
-                                                      <i class="fa fa-trash"></i>Delete
-                                                </button>
+                                                <a href="Admin_Delete_User.php?id=<?php echo $user['id']; ?>">
+                                                      <button class="tombol-hapus-user">
+                                                            <i class="fa fa-trash"></i>Delete
+                                                      </button>
+
+                                                </a>
                                           </div>
                                     </td>
                               </tr>

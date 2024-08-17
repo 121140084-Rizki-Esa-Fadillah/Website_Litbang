@@ -1,3 +1,58 @@
+<?php
+session_start();
+
+include('Koneksi_user_litbang.php');
+
+// Cek apakah ID ada di URL
+if (isset($_GET['id'])) {
+    $id = $_GET['id'];
+
+    // Ambil data pengguna dari database berdasarkan ID
+    $stmt = $conn->prepare("SELECT * FROM user WHERE id = ?");
+    $stmt->bind_param('i', $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        $user = $result->fetch_assoc();
+        if ($_SERVER["REQUEST_METHOD"] == "POST") {
+            $username = $_POST['username'];
+            $nama_lengkap = $_POST['fullname'];
+            $jenis_kelamin = $_POST['gender'];
+            $email = $_POST['email'];
+            $no_hp = $_POST['no-hp'];
+            $password = $_POST['password'];
+            $role = $_POST['roles'];
+        
+            // Update data pengguna berdasarkan ID
+            $stmt = $conn->prepare("UPDATE user SET username = ?, nama_lengkap = ?, jenis_kelamin = ?, email = ?, no_hp = ?, password = ?, role = ? WHERE id = ?");
+            $stmt->bind_param('sssssssi', $username, $nama_lengkap, $jenis_kelamin, $email, $no_hp, $password, $role, $id);
+        
+            if ($stmt->execute()) {
+                // Redirect ke halaman manajemen user setelah update berhasil
+                header("Location: Admin_Manajemen_User.php");
+                exit();
+            } else {
+                echo "Gagal memperbaharui data pengguna.";
+            }
+        }
+    } else {
+        // Jika tidak ada data pengguna ditemukan, redirect ke halaman manajemen pengguna
+        header("Location: Admin_Manajemen_User.php");
+        exit();
+    }
+
+    // Tutup statement
+    $stmt->close();
+} else {
+    // Redirect jika ID tidak ditemukan
+    header("Location: Admin_Manajemen_User.php");
+    exit();
+}
+
+$conn->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -23,58 +78,71 @@
             <div class="header-edit-user">
                   <h2>Edit Data User</h2>
             </div>
-            <form>
+            <form method="post">
                   <div class="data-profile-user">
                         <div>
                               <div class="form-group">
                                     <label for="fullname">Nama Lengkap</label>
-                                    <input type="text" id="fullname" name="fullname" placeholder="Masukkan Nama">
+                                    <input type="text" id="fullname" name="fullname" placeholder="Masukkan Nama" required
+                                          value="<?php echo htmlspecialchars($user['nama_lengkap']); ?>">
                               </div>
                               <div class="form-group">
                                     <label for="username">Username</label>
-                                    <input type="text" id="username" name="username" placeholder="Username">
+                                    <input type="text" id="username" name="username" placeholder="Username" required
+                                          value="<?php echo htmlspecialchars($user['username']); ?>">
                               </div>
                               <div class="form-group">
                                     <label for="gender">Jenis Kelamin</label>
                                     <select id="gender" name="gender">
-                                          <option value="male">Laki - Laki</option>
-                                          <option value="female">Perempuan</option>
+                                          <option value="Laki-Laki"
+                                                <?php if ($user['jenis_kelamin'] == 'Laki-Laki') echo 'selected'; ?>>
+                                                Laki - Laki
+                                          </option>
+                                          <option value="Perempuan"
+                                                <?php if ($user['jenis_kelamin'] == 'Perempuan') echo 'selected'; ?>>
+                                                Perempuan
+                                          </option>
                                     </select>
                               </div>
                               <div class="form-group">
                                     <label for="email">Email</label>
-                                    <input type="email" id="email" name="email" placeholder="user123@gmail.com">
+                                    <input type="email" id="email" name="email" placeholder="user123@gmail.com" required
+                                          value="<?php echo htmlspecialchars($user['email']); ?>">
                               </div>
                               <div class="form-group">
                                     <label for="no-hp">No. Hp</label>
-                                    <input type="number" id="no-hp" name="no-hp" placeholder="0812xxxxxxxx">
+                                    <input type="number" id="no-hp" name="no-hp" placeholder="0812xxxxxxxx" required
+                                          value="<?php echo htmlspecialchars($user['no_hp']); ?>">
                               </div>
                               <div class="form-group">
                                     <label for="password">Password</label>
-                                    <input type="password" id="password" name="password" placeholder="********">
+                                    <input type="password" id="password" name="password" placeholder="********" required
+                                          value="<?php echo htmlspecialchars($user['password']); ?>">
                               </div>
                               <div class="form-group">
                                     <div class="roles">
                                           <label for="roles">Roles</label>
-                                          <input type="radio" id="admin" name="roles" placeholder="admin">
+                                          <input type="radio" id="admin" name="roles" value="Admin"
+                                                <?php echo ($user['role'] === 'Admin') ? 'checked' : ''; ?>>
                                           <label for="admin">Admin</label>
-                                          <input type="radio" id="user" name="roles" placeholder="user">
+                                          <input type="radio" id="user" name="roles" value="User"
+                                                <?php echo ($user['role'] === 'User') ? 'checked' : ''; ?>>
                                           <label for="user">User</label>
                                     </div>
                               </div>
                         </div>
                   </div>
-            </form>
-            <div class="tombol">
+                  <div class="tombol">
                   <a href="Admin_Manajemen_User.php" class="tombol-cancel">
                         <i class="fa-solid fa-x"></i>
                         <strong>Batal</strong>
                   </a>
-                  <button class="tombol-save">
+                  <button class="tombol-save" type="submit">
                         <i class="fa-regular fa-floppy-disk"></i>
                         <strong>Simpan</strong>
                   </button>
-            </div>
+                  </div>
+            </form>
       </main>
       <script src="..\Js\Main.js"></script>
 </body>

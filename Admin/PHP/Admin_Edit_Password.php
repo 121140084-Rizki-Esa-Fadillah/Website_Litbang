@@ -74,7 +74,7 @@ $conn->close();
                         serta simbol.
                         Jangan gunakan kata sandi yang mudah ditebak atau terkait dengan informasi pribadi Anda.</p>
             </div>
-            <form action="Admin_Edit_Password.php" method="post" id="registration-form">
+            <form action="Admin_Edit_Password.php" method="post" id="edit-password-form">
                   <div class="edit-password-admin">
                         <div class="form-group">
                               <label for="password-lama">Password Lama</label>
