@@ -141,11 +141,12 @@ td:nth-child(9), td:nth-child(7), td:nth-child(8) {
 
 tr:nth-child(odd) {
       background-color: #fff;
-      color: #5B5B5B;
+      color: black;
 }
 
 tr:nth-child(even) {
-      background-color: #cac4d06c;
+      background-color: #cac4d0;
+      color: black;
 }
 
 .action-buttons {

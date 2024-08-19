@@ -8,27 +8,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $image = $_FILES['upload-gambar']['name']; 
     $tmp = $_FILES['upload-gambar']['tmp_name']; 
 
-    // Move uploaded file to a desired location
-    $uploadDir = '../../image/';
-    if (move_uploaded_file($tmp, $uploadDir . $image)) {
-        $query = "INSERT INTO survey (title, keterangan, id_wilayah, image) VALUES ('$judul', '$keterangan', '$id_wilayah', '$image')";
+    // Set default image if no image is uploaded
+    $defaultImage = 'image_default.jpg';  // Ensure this image exists in your directory
 
-        if (mysqli_query($conn, $query)) {
-            // Redirect to Admin_Main.html with query parameters
-            header('Location: Admin_Tambah_Survey_Hal2.php');
-            exit();
+    if (!empty($image)) {
+        // Move uploaded file to a desired location
+        $uploadDir = '../../image/';
+        if (move_uploaded_file($tmp, $uploadDir . $image)) {
+            $imageToSave = $image;
         } else {
-            // Redirect with error message
-            echo "Gagal menyimpan data: " . mysqli_error($conn);
+            // Display alert on failure
+            echo "<script>alert('Gagal mengunggah gambar. Silakan coba lagi.'); window.location.href='Admin_Tambah_Survey_Hal1.php';</script>";
             exit();
         }
     } else {
-       echo "Failed to upload image";
+        // Use default image if no image is provided
+        $imageToSave = $defaultImage;
+    }
+
+    // Insert data into database including the image filename
+    $query = "INSERT INTO survey (title, keterangan, id_wilayah, image) VALUES ('$judul', '$keterangan', '$id_wilayah', '$imageToSave')";
+
+    if (mysqli_query($conn, $query)) {
+        // Redirect to the next page
+        header('Location: Admin_Tambah_Survey_Hal2.php');
+        exit();
+    } else {
+        // Display alert on failure
+        echo "<script>alert('Gagal menyimpan data: " . mysqli_error($conn) . "'); window.location.href='Admin_Tambah_Survey_Hal1.php';</script>";
+        exit();
     }
 
     mysqli_close($conn);
 }
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 

@@ -1,8 +1,10 @@
 <?php
 include "Koneksi_survei_litbang.php";
 
+$error_message = '';
+$success = false;
+
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Ambil ID dari form POST
     $id = $_POST['id'];
     $judul = $_POST['judul-survey'];
     $keterangan = $_POST['keterangan'];
@@ -10,50 +12,53 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $image = $_FILES['upload-gambar']['name']; 
     $tmp = $_FILES['upload-gambar']['tmp_name']; 
 
-    // Validasi file upload jika ada gambar
     if ($image) {
         $allowedExtensions = ['jpg', 'jpeg', 'png'];
         $fileExtension = pathinfo($image, PATHINFO_EXTENSION);
         if (!in_array($fileExtension, $allowedExtensions)) {
-            echo "Format file tidak diperbolehkan.";
-            exit();
-        }
-        if ($_FILES['upload-gambar']['size'] > 2 * 1024 * 1024) { // 2MB
-            echo "Ukuran file terlalu besar.";
-            exit();
-        }
-
-        // Move uploaded file to a desired location
-        $uploadDir = '../../image/';
-        if (move_uploaded_file($tmp, $uploadDir . $image)) {
-            $stmt = $conn->prepare("UPDATE survey SET title = ?, keterangan = ?, id_wilayah = ?, image = ? WHERE id = ?");
-            $stmt->bind_param("ssisi", $judul, $keterangan, $id_wilayah, $image, $id);
+            $error_message = "Format file tidak diperbolehkan.";
+        } elseif ($_FILES['upload-gambar']['size'] > 2 * 1024 * 1024) {
+            $error_message = "Ukuran file terlalu besar.";
         } else {
-            echo "Gagal meng-upload gambar.";
-            exit();
+            $uploadDir = '../../image/';
+            if (move_uploaded_file($tmp, $uploadDir . $image)) {
+                $stmt = $conn->prepare("UPDATE survey SET title = ?, keterangan = ?, id_wilayah = ?, image = ? WHERE id = ?");
+                $stmt->bind_param("ssisi", $judul, $keterangan, $id_wilayah, $image, $id);
+            } else {
+                $error_message = "Gagal meng-upload gambar.";
+            }
         }
     } else {
-        // Update without changing the image
         $stmt = $conn->prepare("UPDATE survey SET title = ?, keterangan = ?, id_wilayah = ? WHERE id = ?");
         $stmt->bind_param("ssis", $judul, $keterangan, $id_wilayah, $id);
     }
 
-    // Execute query and handle result
-    if ($stmt->execute()) {
-        header('Location: Admin_Hasil_Survey.php');
-        exit();
+    if (empty($error_message) && $stmt->execute()) {
+        $success = true;
     } else {
-        echo "Gagal memperbarui data: " . $stmt->error;
+        $error_message = $stmt->error;
     }
 
     $stmt->close();
     mysqli_close($conn);
+
+    if ($success) {
+        echo '<script>
+            window.location.href = "Admin_Hasil_Survey.php";
+            alert("Data berhasil diperbarui.");
+        </script>';
+        exit();
+    } else {
+        echo '<script>
+            alert("Gagal memperbarui data: ' . htmlspecialchars($error_message, ENT_QUOTES, 'UTF-8') . '");
+            window.history.back();
+        </script>';
+        exit();
+    }
 }
 
-// Ambil ID dari parameter GET
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-// Ambil data survei dari database
 if ($id > 0) {
     $stmt = $conn->prepare("SELECT title, keterangan, id_wilayah, image FROM survey WHERE id = ?");
     $stmt->bind_param("i", $id);
@@ -62,10 +67,14 @@ if ($id > 0) {
     $survey = $result->fetch_assoc();
     $stmt->close();
 } else {
-    echo "ID tidak valid.";
+    echo '<script>
+        alert("ID tidak valid.");
+        window.location.href = "Admin_Hasil_Survey.php";
+    </script>';
     exit();
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -140,7 +149,7 @@ if ($id > 0) {
                         <div class="upload-section">
                               <div class="upload-box">
                                     <img src="<?php echo '../../image/' . htmlspecialchars($survey['image']); ?>" alt=""
-                                          id="current-image">
+                                          id="upload-image">
                                     <input type="file" id="upload-gambar" name="upload-gambar"
                                           accept="image/jpeg, image/png">
                               </div>
@@ -159,6 +168,20 @@ if ($id > 0) {
                   </form>
             </div>
       </main>
+
+      <!-- JavaScript untuk mengganti gambar saat gambar baru diunggah -->
+      <script>
+      document.getElementById('upload-gambar').addEventListener('change', function(event) {
+            const file = event.target.files[0];
+            if (file) {
+                  const reader = new FileReader();
+                  reader.onload = function(e) {
+                        document.getElementById('upload-image').src = e.target.result;
+                  }
+                  reader.readAsDataURL(file);
+            }
+      });
+      </script>
       <script src="..\Js\Main.js"></script>
 </body>
 

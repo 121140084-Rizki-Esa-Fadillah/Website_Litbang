@@ -5,13 +5,35 @@ include "Koneksi_survei_litbang.php";
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $sort = isset($_GET['sort']) ? $_GET['sort'] : '';
 
-// Query untuk mengambil data survei dengan sorting dan pencarian
+// Query untuk menghitung total survei sesuai kriteria pencarian dan pengurutan
+$count_sql = "SELECT COUNT(*) as total_surveys
+              FROM survey
+              JOIN wilayah ON survey.id_wilayah = wilayah.id
+              WHERE survey.title LIKE ?";
+
+// Parameter untuk query counting
+$count_params = [];
+$count_types = "s";
+$count_params[] = "%" . $search . "%";
+
+if ($sort) {
+    $count_sql .= " AND wilayah.nama_wilayah = ?";
+    $count_types .= "s";
+    $count_params[] = $sort;
+}
+
+$count_stmt = $conn->prepare($count_sql);
+$count_stmt->bind_param($count_types, ...$count_params);
+$count_stmt->execute();
+$count_result = $count_stmt->get_result();
+$total_surveys = $count_result->fetch_assoc()['total_surveys'];
+
+// Query untuk mengambil 1 survei terbaru sesuai kriteria pencarian dan pengurutan
 $sql = "SELECT survey.id, survey.title, survey.keterangan, survey.image, survey.waktu_buat, wilayah.nama_wilayah
         FROM survey
         JOIN wilayah ON survey.id_wilayah = wilayah.id
         WHERE survey.title LIKE ?";
 
-// Tambahkan sorting jika ada
 $params = [];
 $types = "s";
 $params[] = "%" . $search . "%";
@@ -22,13 +44,10 @@ if ($sort) {
     $params[] = $sort;
 }
 
-$sql .= " ORDER BY survey.waktu_buat DESC LIMIT 1"; // Default hanya menampilkan 1 survei terbaru
+$sql .= " ORDER BY survey.waktu_buat DESC LIMIT 1";
 
 $stmt = $conn->prepare($sql);
-
-// Binding parameter pencarian dan sorting
 $stmt->bind_param($types, ...$params);
-
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -85,7 +104,8 @@ $conn->close();
                         <div class="total-survey-box">
                               <i class="fa-solid fa-file-lines"></i>
                               <div class="total">
-                                    <span><?php echo htmlspecialchars(count($surveys)); ?></span>
+                                    <span><?php echo htmlspecialchars($total_surveys); ?></span>
+                                    <!-- Total survei dari query count -->
                                     <h3>Total Survey</h3>
                               </div>
                         </div>
@@ -186,14 +206,14 @@ $conn->close();
                     } else {
                         echo '<div class="img">No Image</div>';
                     }
-                    
+
                     echo '<div class="ket">';
                     $description = htmlspecialchars($survey['keterangan']);
                     $maxLength = 200;
-  
+
                     // Memotong keterangan jika melebihi batas panjang
                     $truncatedDescription = (strlen($description) > $maxLength) ? substr($description, 0, $maxLength) . '...' : $description;
-  
+
                     echo '<p>' . $truncatedDescription . '</p>';
                     echo '<p class="wilayah">Wilayah Pelaksanaan Survei :</p>';
                     echo '<p>' . htmlspecialchars($survey['nama_wilayah']) . '</p>';
