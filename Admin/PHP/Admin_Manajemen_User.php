@@ -9,17 +9,57 @@ if (!isset($_SESSION['id'])) {
 }
 
 $id = $_SESSION['id'];
-$sql = "SELECT * FROM user";
-$result = $conn->query($sql);
+$search = isset($_GET['search']) ? $_GET['search'] : '';
+$sort = isset($_GET['sort']) ? $_GET['sort'] : 'name-asc'; // Default sort by name ascending
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$limit = 10; // Limit items per page
+$offset = ($page - 1) * $limit; // Calculate the offset
+
+// Sorting logic
+switch ($sort) {
+    case 'name-asc':
+        $order_by = "ORDER BY nama_lengkap ASC";
+        break;
+    case 'name-desc':
+        $order_by = "ORDER BY nama_lengkap DESC";
+        break;
+    case 'date-asc':
+        $order_by = "ORDER BY registered ASC";
+        break;
+    case 'date-desc':
+        $order_by = "ORDER BY registered DESC";
+        break;
+    default:
+        $order_by = "ORDER BY id ASC"; // Default sort
+}
+
+// SQL query with search, sorting, and pagination
+if ($search != '') {
+    $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM user WHERE nama_lengkap LIKE ? $order_by LIMIT ? OFFSET ?";
+    $stmt = $conn->prepare($sql);
+    $search_param = "%" . $search . "%";
+    $stmt->bind_param('sii', $search_param, $limit, $offset);
+} else {
+    $sql = "SELECT SQL_CALC_FOUND_ROWS * FROM user $order_by LIMIT ? OFFSET ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param('ii', $limit, $offset);
+}
+
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     $users = $result->fetch_all(MYSQLI_ASSOC);
 } else {
-    // Jika tidak ada data pengguna ditemukan, redirect ke halaman login
-    header("Location: Admin_Login.php");
-    exit();
+    $users = [];
 }
 
+// Calculate total pages
+$result_total = $conn->query("SELECT FOUND_ROWS() as total");
+$total_rows = $result_total->fetch_assoc()['total'];
+$total_pages = ceil($total_rows / $limit);
+
+$stmt->close();
 $conn->close();
 ?>
 
@@ -49,21 +89,28 @@ $conn->close();
                   </a>
             </div>
             <div class="search-sort-container">
-                  <div class="search-box">
-                        <input type="text" placeholder="Search...">
-                        <button>
+                  <form method="GET" action="">
+                        <div class="search-box">
+                          <input type="text" name="search" placeholder="Search..." value="<?php echo htmlspecialchars($search); ?>">
+                          <button type="submit">
                               <i class="fa fa-search"></i>
-                        </button>
-                  </div>
+                          </button>
+                        </div>
+                  </form>
+
                   <div class="sort-box">
-                        <label for="sort">Sorting :</label>
-                        <select id="sort">
-                              <option value="name-asc">Name Ascending</option>
-                              <option value="name-desc">Name Descending</option>
-                              <option value="date-asc">Date Ascending</option>
-                              <option value="date-desc">Date Descending</option>
-                        </select>
+                      <label for="sort">Sorting :</label>
+                      <form method="GET" action="">
+                          <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
+                          <select id="sort" name="sort" onchange="this.form.submit()">
+                              <option value="name-asc" <?php if ($sort == 'name-asc') echo 'selected'; ?>>Name Ascending</option>
+                              <option value="name-desc" <?php if ($sort == 'name-desc') echo 'selected'; ?>>Name Descending</option>
+                              <option value="date-asc" <?php if ($sort == 'date-asc') echo 'selected'; ?>>Date Ascending</option>
+                              <option value="date-desc" <?php if ($sort == 'date-desc') echo 'selected'; ?>>Date Descending</option>
+                          </select>
+                      </form>
                   </div>
+
             </div>
             <div class="table-container">
                   <table>
@@ -84,7 +131,7 @@ $conn->close();
                         </thead>
                         <tbody>
                               <?php 
-                              $no = 1;
+                              $no = $offset + 1; // Adjust numbering according to the current page
                               foreach ($users as $user):
                               ?>
                               <tr>
@@ -103,11 +150,8 @@ $conn->close();
                                                 <a href="Admin_Edit_User.php?id=<?php echo $user['id']; ?>" class="tombol-edit">
                                                       <i class="fa fa-edit"></i>Edit
                                                 </a>
-                                                <a href="Admin_Delete_User.php?id=<?php echo $user['id']; ?>">
-                                                      <button class="tombol-hapus-user">
-                                                            <i class="fa fa-trash"></i>Delete
-                                                      </button>
-
+                                                <a href="Admin_Delete_User.php?id=<?php echo $user['id']; ?>" class="tombol-hapus-user">
+                                                      <i class="fa fa-trash"></i>Delete
                                                 </a>
                                           </div>
                                     </td>
@@ -115,6 +159,17 @@ $conn->close();
                               <?php endforeach; ?>
                         </tbody>
                   </table>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                <?php if ($total_pages > 1): ?>
+                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                        <a href="?search=<?php echo urlencode($search); ?>&sort=<?php echo urlencode($sort); ?>&page=<?php echo $i; ?>" <?php if ($i == $page) echo 'class="active"'; ?>>
+                            <?php echo $i; ?>
+                        </a>
+                    <?php endfor; ?>
+                <?php endif; ?>
             </div>
       </main>
       <script src="..\Js\Main.js"></script>
