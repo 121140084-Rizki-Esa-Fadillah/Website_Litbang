@@ -12,7 +12,7 @@ $id = $_SESSION['id'];
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $sort = isset($_GET['sort']) ? $_GET['sort'] : 'name-asc'; // Default sort by name ascending
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$limit = 10; // Limit items per page
+$limit = 1; // Limit items per page
 $offset = ($page - 1) * $limit; // Calculate the offset
 
 // Sorting logic
@@ -91,24 +91,29 @@ $conn->close();
             <div class="search-sort-container">
                   <form method="GET" action="">
                         <div class="search-box">
-                          <input type="text" name="search" placeholder="Search..." value="<?php echo htmlspecialchars($search); ?>">
-                          <button type="submit">
-                              <i class="fa fa-search"></i>
-                          </button>
+                              <input type="text" name="search" placeholder="Search..."
+                                    value="<?php echo htmlspecialchars($search); ?>">
+                              <button type="submit">
+                                    <i class="fa fa-search"></i>
+                              </button>
                         </div>
                   </form>
 
                   <div class="sort-box">
-                      <label for="sort">Sorting :</label>
-                      <form method="GET" action="">
-                          <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
-                          <select id="sort" name="sort" onchange="this.form.submit()">
-                              <option value="name-asc" <?php if ($sort == 'name-asc') echo 'selected'; ?>>Name Ascending</option>
-                              <option value="name-desc" <?php if ($sort == 'name-desc') echo 'selected'; ?>>Name Descending</option>
-                              <option value="date-asc" <?php if ($sort == 'date-asc') echo 'selected'; ?>>Date Ascending</option>
-                              <option value="date-desc" <?php if ($sort == 'date-desc') echo 'selected'; ?>>Date Descending</option>
-                          </select>
-                      </form>
+                        <label for="sort">Sorting :</label>
+                        <form method="GET" action="">
+                              <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
+                              <select id="sort" name="sort" onchange="this.form.submit()">
+                                    <option value="name-asc" <?php if ($sort == 'name-asc') echo 'selected'; ?>>Name
+                                          Ascending</option>
+                                    <option value="name-desc" <?php if ($sort == 'name-desc') echo 'selected'; ?>>Name
+                                          Descending</option>
+                                    <option value="date-asc" <?php if ($sort == 'date-asc') echo 'selected'; ?>>Date
+                                          Ascending</option>
+                                    <option value="date-desc" <?php if ($sort == 'date-desc') echo 'selected'; ?>>Date
+                                          Descending</option>
+                              </select>
+                        </form>
                   </div>
 
             </div>
@@ -147,10 +152,12 @@ $conn->close();
                                     <td><?php echo htmlspecialchars($user['role']); ?></td>
                                     <td>
                                           <div class="action-buttons">
-                                                <a href="Admin_Edit_User.php?id=<?php echo $user['id']; ?>" class="tombol-edit">
+                                                <a href="Admin_Edit_User.php?id=<?php echo $user['id']; ?>"
+                                                      class="tombol-edit">
                                                       <i class="fa fa-edit"></i>Edit
                                                 </a>
-                                                <a href="Admin_Delete_User.php?id=<?php echo $user['id']; ?>" class="tombol-hapus-user">
+                                                <a href="Admin_Delete_User.php?id=<?php echo $user['id']; ?>"
+                                                      class="tombol-hapus-user">
                                                       <i class="fa fa-trash"></i>Delete
                                                 </a>
                                           </div>
@@ -163,14 +170,26 @@ $conn->close();
 
             <!-- Pagination -->
             <div class="pagination">
-                <?php if ($total_pages > 1): ?>
-                    <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                        <a href="?search=<?php echo urlencode($search); ?>&sort=<?php echo urlencode($sort); ?>&page=<?php echo $i; ?>" <?php if ($i == $page) echo 'class="active"'; ?>>
-                            <?php echo $i; ?>
-                        </a>
-                    <?php endfor; ?>
-                <?php endif; ?>
+                  <?php if ($page > 1): ?>
+                  <a
+                        href="?search=<?php echo urlencode($search); ?>&sort=<?php echo urlencode($sort); ?>&page=<?php echo $page - 1; ?>">&laquo;
+                        Previous</a>
+                  <?php endif; ?>
+
+                  <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                  <a href="?search=<?php echo urlencode($search); ?>&sort=<?php echo urlencode($sort); ?>&page=<?php echo $i; ?>"
+                        class="<?php echo ($i == $page) ? 'active' : ''; ?>">
+                        <?php echo $i; ?>
+                  </a>
+                  <?php endfor; ?>
+
+                  <?php if ($page < $total_pages): ?>
+                  <a
+                        href="?search=<?php echo urlencode($search); ?>&sort=<?php echo urlencode($sort); ?>&page=<?php echo $page + 1; ?>">Next
+                        &raquo;</a>
+                  <?php endif; ?>
             </div>
+
       </main>
       <script src="..\Js\Main.js"></script>
 </body>

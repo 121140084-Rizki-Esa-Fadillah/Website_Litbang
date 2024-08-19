@@ -5,6 +5,9 @@ include "Koneksi_survei_litbang.php";
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $sort = isset($_GET['sort']) ? $_GET['sort'] : '';
 $delete_id = isset($_POST['delete_id']) ? (int)$_POST['delete_id'] : 0;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$limit = 3; // Limit items per page
+$offset = ($page - 1) * $limit; // Calculate the offset
 
 // Hapus survei jika ada ID penghapusan
 if ($delete_id > 0) {
@@ -58,28 +61,40 @@ if ($delete_id > 0) {
     }
 }
 
-// Query untuk mengambil data dari tabel survey dan wilayah
+// Query untuk menghitung total baris
+$count_sql = "SELECT COUNT(*) as total FROM survey
+              JOIN wilayah ON survey.id_wilayah = wilayah.id
+              WHERE survey.title LIKE ?";
+if ($sort) {
+    $count_sql .= " AND wilayah.nama_wilayah = ?";
+}
+$count_stmt = $conn->prepare($count_sql);
+$search_param = "%" . $search . "%";
+if ($sort) {
+    $count_stmt->bind_param("ss", $search_param, $sort);
+} else {
+    $count_stmt->bind_param("s", $search_param);
+}
+$count_stmt->execute();
+$count_result = $count_stmt->get_result();
+$total_rows = $count_result->fetch_assoc()['total'];
+$total_pages = ceil($total_rows / $limit);
+
+// Query untuk mengambil data dengan batas dan offset
 $sql = "SELECT survey.id, survey.title, survey.keterangan, survey.image, survey.waktu_buat, wilayah.nama_wilayah
         FROM survey
         JOIN wilayah ON survey.id_wilayah = wilayah.id
         WHERE survey.title LIKE ?";
-
-// Tambahkan sorting jika ada
 if ($sort) {
     $sql .= " AND wilayah.nama_wilayah = ?";
 }
-$sql .= " ORDER BY survey.title ASC"; // Atur pengurutan default
-
+$sql .= " ORDER BY survey.title ASC LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
-
-// Binding parameter pencarian
-$search_param = "%" . $search . "%";
 if ($sort) {
-    $stmt->bind_param("ss", $search_param, $sort);
+    $stmt->bind_param("ssi", $search_param, $sort, $limit, $offset);
 } else {
-    $stmt->bind_param("s", $search_param);
+    $stmt->bind_param("sii", $search_param, $limit, $offset);
 }
-
 $stmt->execute();
 $result = $stmt->get_result();
 
@@ -96,7 +111,6 @@ if ($result->num_rows > 0) {
 }
 $conn->close();
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -241,6 +255,23 @@ $conn->close();
                 echo '<p>No surveys found.</p>';
             }
             ?>
+            </div>
+            <!-- Paginasi -->
+            <div class="pagination">
+                  <?php if ($page > 1): ?>
+                  <a
+                        href="?search=<?php echo urlencode($search); ?>&sort=<?php echo urlencode($sort); ?>&page=<?php echo $page - 1; ?>">&laquo;
+                        Previous</a>
+                  <?php endif; ?>
+                  <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                  <a href="?search=<?php echo urlencode($search); ?>&sort=<?php echo urlencode($sort); ?>&page=<?php echo $i; ?>"
+                        class="<?php echo ($i == $page) ? 'active' : ''; ?>"><?php echo $i; ?></a>
+                  <?php endfor; ?>
+                  <?php if ($page < $total_pages): ?>
+                  <a
+                        href="?search=<?php echo urlencode($search); ?>&sort=<?php echo urlencode($sort); ?>&page=<?php echo $page + 1; ?>">Next
+                        &raquo;</a>
+                  <?php endif; ?>
             </div>
       </main>
       <script src="..\Js\Main.js"></script>

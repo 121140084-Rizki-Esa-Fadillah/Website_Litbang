@@ -186,3 +186,50 @@
 .tombol-edit i, .tombol-hapus-survey i {
     margin-right: 0.5rem;
 }
+
+/* Pagination container */
+.pagination {
+    display: flex;
+    justify-content: center;
+    margin: 0.5rem 0;
+}
+
+/* Pagination links */
+.pagination a {
+    display: inline-block;
+    padding: 0.5rem 0.75rem;
+    margin: 0 0.25rem;
+    border: 1px solid #ddd;
+    border-radius: 0.25rem;
+    text-decoration: none;
+    color: #0c25a3;
+    background-color: #f8f9fa;
+    transition: background-color 0.3s, border-color 0.3s;
+}
+
+/* Pagination link hover */
+.pagination a:hover {
+    background-color: #e9ecef;
+    border-color: #ccc;
+}
+
+/* Active page link */
+.pagination a.active {
+    background-color: #0c25a3;
+    color: white;
+    border-color: #0c25a3;
+    cursor: default;
+}
+
+/* Previous and Next buttons */
+.pagination a:first-child,
+.pagination a:last-child {
+    font-weight: bold;
+}
+
+/* Disabled Previous and Next buttons */
+.pagination a[disabled] {
+    color: #6c757d;
+    pointer-events: none;
+    cursor: not-allowed;
+}
