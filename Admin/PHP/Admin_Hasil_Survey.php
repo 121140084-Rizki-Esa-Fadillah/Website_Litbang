@@ -1,5 +1,9 @@
 <?php
+session_start();
 include "Koneksi_survei_litbang.php";
+
+// Assuming user data is stored in the session after login
+$user = isset($_SESSION['user']) ? $_SESSION['user'] : null;
 
 // Ambil nilai pencarian, pengurutan, dan penghapusan dari parameter GET/POST
 $search = isset($_GET['search']) ? $_GET['search'] : '';
@@ -209,12 +213,8 @@ $conn->close();
                     echo '</a>';
                     echo '<div class="hasil-container">';
                     if (!empty($survey['image'])) {
-                        // Mengatur path gambar sesuai dengan struktur direktori Anda
-                        $imagePath = '../../image/' . $survey['image']; // Misalnya, path relatif ke folder 'image'
-                    
-                        // Memastikan gambar ada dan dapat diakses
+                        $imagePath = '../../image/' . $survey['image'];
                         if (file_exists($imagePath)) {
-                            // Output gambar dengan format yang benar
                             echo '<div class="img"><img src="' . htmlspecialchars($imagePath) . '" alt="' . htmlspecialchars($survey['title']) . '"></div>';
                         } else {
                             echo '<div class="img">Image not found</div>';
@@ -222,14 +222,10 @@ $conn->close();
                     } else {
                         echo '<div class="img">No Image</div>';
                     }
-                    
                     echo '<div class="ket">';
                     $description = htmlspecialchars($survey['keterangan']);
                     $maxLength = 200;
-
-                    // Memotong keterangan jika melebihi batas panjang
                     $truncatedDescription = (strlen($description) > $maxLength) ? substr($description, 0, $maxLength) . '...' : $description;
-
                     echo '<p>' . $truncatedDescription . '</p>';
                     echo '<p class="wilayah">Wilayah Pelaksanaan Survei :</p>';
                     echo '<p>' . htmlspecialchars($survey['nama_wilayah']) . '</p>';
@@ -238,14 +234,13 @@ $conn->close();
                     echo '<span class="material-symbols-outlined">schedule</span>';
                     echo '<p>Radar Litbang, ' . htmlspecialchars($survey['formatted_date']) . '</p>';
                     echo '</div>';
-                    echo '<div class="action-buttons">';
+                    echo '<div class="action-buttons"' . (isset($user['role']) && $user['role'] === 'User' ? ' style="display: none;"' : '') . '>';
                     echo '<a href="Admin_Edit_Keterangan_Survey.php?id=' . $survey['id'] . '" class="tombol-edit">';
                     echo '<i class="fa fa-edit"></i>Edit';
                     echo '</a>';
                     echo '<button class="tombol-hapus-survey" onclick="confirmDelete(' . $survey['id'] . ')">';
                     echo '<i class="fa fa-trash"></i>Delete';
                     echo '</button>';
-                    echo '</div>';
                     echo '</div>';
                     echo '</div>';
                     echo '</div>';
@@ -277,7 +272,7 @@ $conn->close();
       <script src="..\Js\Main.js"></script>
       <script>
       function confirmDelete(id) {
-            if (confirm('Are you sure you want to delete this survey?')) {
+            if (confirm('Apakah Anda Yakin Ingin Menghapus Survey Ini?')) {
                   // Create a form dynamically and submit it to handle deletion
                   const form = document.createElement('form');
                   form.method = 'POST';

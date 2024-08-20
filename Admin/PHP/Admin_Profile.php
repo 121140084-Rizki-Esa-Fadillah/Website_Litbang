@@ -52,9 +52,11 @@ $conn->close();
             <div class="profile-admin">
                   <div class="foto-profile">
                         <?php if (!empty($user['image_profile_path'])): ?>
-                              <div style="width: 7rem; height: 7rem; border-radius: 50%;">
-                                    <img src="<?php echo htmlspecialchars($user['image_profile_path']); ?>" alt="Foto Profil" id="open-modal-btn" style="cursor: pointer; width: 7rem; height: 7rem; border-radius: 50%;" >
-                              </div>
+                        <div style="width: 7rem; height: 7rem; border-radius: 50%;">
+                              <img src="<?php echo htmlspecialchars($user['image_profile_path']); ?>" alt="Foto Profil"
+                                    id="open-modal-btn"
+                                    style="cursor: pointer; width: 7rem; height: 7rem; border-radius: 50%;">
+                        </div>
                         <?php else: ?>
                         <i class="fa-solid fa-circle-user"></i>
                         <?php endif; ?>
@@ -62,7 +64,8 @@ $conn->close();
                   <div class="username-status-admin">
                         <h2><?php echo !empty($user['username']) ? htmlspecialchars($user['username']) : '-'; ?></h2>
                         <div class="indikator-admin">
-                              <span class="status-admin"><?php echo !empty($user['role']) ? htmlspecialchars($user['role']) : '-'; ?></span>
+                              <span
+                                    class="status-admin"><?php echo !empty($user['role']) ? htmlspecialchars($user['role']) : '-'; ?></span>
                         </div>
                   </div>
             </div>
@@ -113,9 +116,34 @@ $conn->close();
                         <strong>Edit</strong>
                   </a>
             </div>
+            <!-- Notification -->
+            <div id="notification" class="notification"></div>
       </main>
 
       <script>
+      document.addEventListener('DOMContentLoaded', function() {
+            const notification = document.getElementById('notification');
+            const notificationMessage =
+                  '<?php echo isset($_SESSION['notification']) ? $_SESSION['notification'] : ''; ?>';
+            const notificationType = notificationMessage.includes('Gagal') || notificationMessage.includes(
+                  'salah') ? 'error' : '';
+
+            if (notificationMessage) {
+                  notification.textContent = notificationMessage;
+                  notification.classList.add('show');
+                  if (notificationType === 'error') {
+                        notification.classList.add('error');
+                  }
+                  // Hide the notification after 5 seconds
+                  setTimeout(() => {
+                        notification.classList.remove('show');
+                  }, 5000);
+
+                  // Clear the notification from the session
+                  <?php unset($_SESSION['notification']); ?>
+            }
+      });
+
       document.getElementById('toggle-password').addEventListener('click', function() {
             const passwordElement = document.getElementById('password-value');
             const togglePassword = document.getElementById('toggle-password');

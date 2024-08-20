@@ -114,3 +114,27 @@
     font-size: 18px; /* Sesuaikan ukuran ikon jika perlu */
     z-index: 1; /* Memastikan ikon berada di atas konten lainnya */
 }
+
+/* CSS for Notification */
+.notification {
+    display: none;
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    background-color: #4CAF50;
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+    z-index: 1000;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.notification.error {
+    background-color: #f44336;
+}
+
+.notification.show {
+    display: block;
+}

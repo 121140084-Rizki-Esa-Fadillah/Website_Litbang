@@ -5,12 +5,10 @@ document.addEventListener("DOMContentLoaded", function () {
         const akun = document.querySelector('.akun');
         const dropdown = document.querySelector('.akun .dropdown');
 
-        if (akun) {
+        if (akun && dropdown) {
             akun.addEventListener('click', function (event) {
                 event.stopPropagation();
-                if (dropdown) {
-                    dropdown.classList.toggle('active');
-                }
+                dropdown.classList.toggle('active');
             });
         }
 
@@ -44,13 +42,9 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Function to set the active link in the sidebar
     function setActiveLink() {
-        // Get the current page URL
         const currentPage = window.location.pathname.split('/').pop();
-
-        // Get all sidebar links
         const links = document.querySelectorAll("nav ul li a");
 
-        // Loop through links and add the 'active' class to the matching one
         links.forEach(link => {
             const href = link.getAttribute('href').split('/').pop(); // Get the file name from href
             if (currentPage === href) {
@@ -74,6 +68,14 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(error => console.error('Error loading HTML:', error)); // Added error handling
     }
+
+    // Function to confirm logout
+    window.confirmLogout = function(event) {
+        event.preventDefault(); // Prevent default action
+        if (confirm("Apakah Anda Yakin Ingin Logout?")) {
+            window.location.href = "../PHP/Admin_Logout.php"; // Redirect to logout page if confirmed
+        }
+    };
 
     // Load header HTML and initialize listeners
     loadHTML('header', 'Main.php');

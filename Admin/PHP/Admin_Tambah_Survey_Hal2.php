@@ -385,10 +385,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         </table>
                   </div>
                   <div class="save">
-                        <a href="Admin_Tambah_Survey_Hal1.php">
-                              <i class="fa-solid fa-arrow-left"></i>
-                              <strong>Kembali</strong>
-                        </a>
                         <button type="submit" class="tombol-save">
                               <strong>Lanjut</strong>
                               <i class="fa-solid fa-arrow-right"></i>

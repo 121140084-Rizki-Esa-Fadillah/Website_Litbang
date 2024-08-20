@@ -83,8 +83,8 @@ $conn->close();
                         <div>
                               <div class="form-group">
                                     <label for="fullname">Nama Lengkap</label>
-                                    <input type="text" id="fullname" name="fullname" placeholder="Masukkan Nama" required
-                                          value="<?php echo htmlspecialchars($user['nama_lengkap']); ?>">
+                                    <input type="text" id="fullname" name="fullname" placeholder="Masukkan Nama"
+                                          required value="<?php echo htmlspecialchars($user['nama_lengkap']); ?>">
                               </div>
                               <div class="form-group">
                                     <label for="username">Username</label>
@@ -114,10 +114,11 @@ $conn->close();
                                     <input type="number" id="no-hp" name="no-hp" placeholder="0812xxxxxxxx" required
                                           value="<?php echo htmlspecialchars($user['no_hp']); ?>">
                               </div>
-                              <div class="form-group">
+                              <div class="form-group password-field">
                                     <label for="password">Password</label>
                                     <input type="password" id="password" name="password" placeholder="********" required
                                           value="<?php echo htmlspecialchars($user['password']); ?>">
+                                    <i class="fa-solid fa-eye" id="toggle-password" onclick="togglePassword()"></i>
                               </div>
                               <div class="form-group">
                                     <div class="roles">
@@ -133,18 +134,33 @@ $conn->close();
                         </div>
                   </div>
                   <div class="tombol">
-                  <a href="Admin_Manajemen_User.php" class="tombol-cancel">
-                        <i class="fa-solid fa-x"></i>
-                        <strong>Batal</strong>
-                  </a>
-                  <button class="tombol-save" type="submit">
-                        <i class="fa-regular fa-floppy-disk"></i>
-                        <strong>Simpan</strong>
-                  </button>
+                        <a href="Admin_Manajemen_User.php" class="tombol-cancel">
+                              <i class="fa-solid fa-x"></i>
+                              <strong>Batal</strong>
+                        </a>
+                        <button class="tombol-save" type="submit">
+                              <i class="fa-regular fa-floppy-disk"></i>
+                              <strong>Simpan</strong>
+                        </button>
                   </div>
             </form>
       </main>
       <script src="..\Js\Main.js"></script>
+      <script>
+      function togglePassword() {
+            const passwordField = document.getElementById('password');
+            const toggleIcon = document.getElementById('toggle-password');
+            if (passwordField.type === 'password') {
+                  passwordField.type = 'text';
+                  toggleIcon.classList.remove('fa-eye');
+                  toggleIcon.classList.add('fa-eye-slash');
+            } else {
+                  passwordField.type = 'password';
+                  toggleIcon.classList.remove('fa-eye-slash');
+                  toggleIcon.classList.add('fa-eye');
+            }
+      }
+      </script>
 </body>
 
 </html>

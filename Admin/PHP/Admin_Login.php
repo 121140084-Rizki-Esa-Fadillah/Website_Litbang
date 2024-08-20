@@ -8,9 +8,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    // Lakukan query untuk mendapatkan informasi pengguna berdasarkan username
-    $stmt = $conn->prepare("SELECT * FROM user WHERE username = ?");
-    $stmt->bind_param('s', $username);
+    // Lakukan query untuk mendapatkan informasi pengguna berdasarkan username dan password
+    $stmt = $conn->prepare("SELECT * FROM user WHERE username = ? AND password = ?");
+    $stmt->bind_param('ss', $username, $password);
     $stmt->execute();
     $result = $stmt->get_result();
 
@@ -21,6 +21,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($password == $user['password']) {
             // Set data pengguna dalam session
             $_SESSION['id'] = $user['id'];
+            $_SESSION['user'] = $user;
             $id = $_SESSION['id'];
             $updateStmt = $conn->prepare("UPDATE user SET last_login = NOW() WHERE id = ?");
             $updateStmt->bind_param("i", $id);

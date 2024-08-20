@@ -12,7 +12,7 @@ $id = $_SESSION['id'];
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $sort = isset($_GET['sort']) ? $_GET['sort'] : 'name-asc'; // Default sort by name ascending
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$limit = 1; // Limit items per page
+$limit = 10; // Limit items per page
 $offset = ($page - 1) * $limit; // Calculate the offset
 
 // Sorting logic
@@ -115,7 +115,6 @@ $conn->close();
                               </select>
                         </form>
                   </div>
-
             </div>
             <div class="table-container">
                   <table>
@@ -136,9 +135,9 @@ $conn->close();
                         </thead>
                         <tbody>
                               <?php 
-                              $no = $offset + 1; // Adjust numbering according to the current page
-                              foreach ($users as $user):
-                              ?>
+                    $no = $offset + 1; // Adjust numbering according to the current page
+                    foreach ($users as $user):
+                    ?>
                               <tr>
                                     <td><?php echo $no++; ?></td>
                                     <td><?php echo htmlspecialchars($user['id']); ?></td>
@@ -157,7 +156,8 @@ $conn->close();
                                                       <i class="fa fa-edit"></i>Edit
                                                 </a>
                                                 <a href="Admin_Delete_User.php?id=<?php echo $user['id']; ?>"
-                                                      class="tombol-hapus-user">
+                                                      class="tombol-hapus-user"
+                                                      onclick="return confirmDelete(<?php echo $user['id']; ?>)">
                                                       <i class="fa fa-trash"></i>Delete
                                                 </a>
                                           </div>
@@ -192,6 +192,12 @@ $conn->close();
 
       </main>
       <script src="..\Js\Main.js"></script>
+      <script>
+      function confirmDelete(userId) {
+            // Show confirmation dialog
+            return confirm("Apakah Anda Yakin Ingin Menghapus Data Ini?");
+      }
+      </script>
 </body>
 
 </html>

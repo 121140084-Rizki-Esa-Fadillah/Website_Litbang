@@ -119,3 +119,15 @@
     color: #0C25A3;
     border: 1px solid #0C25A3;
 }
+.password-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.password-field i {
+    position: absolute;
+    right: 0.5rem;
+    cursor: pointer;
+    color: #888;
+}

@@ -39,28 +39,30 @@ $conn->close();
 <body>
       <header>
             <div class="logo_radar">
-                <img src="../../image/Logo_RADAR_Lampung.png" alt="Logo RADAR Lampung">
+                  <img src="../../image/Logo_RADAR_Lampung.png" alt="Logo RADAR Lampung">
             </div>
-          <div class="akun">
+            <div class="akun">
                   <i class="fa-solid fa-user"></i>
                   <span><?php echo !empty($user['username']) ? htmlspecialchars($user['username']) : '-'; ?></span>
-            <div class="dropdown">
-                  <i class="fa-solid fa-caret-down"></i>
-                  <div class="dropdown-menu">
-                        <a href="../PHP/Admin_Profile.php">Profil Admin</a>
-                      <a href="../PHP/Admin_Logout.php">Logout</a>
+                  <div class="dropdown">
+                        <i class="fa-solid fa-caret-down"></i>
+                        <div class="dropdown-menu">
+                              <a href="../PHP/Admin_Profile.php">Profil Admin</a>
+                              <span onclick="confirmLogout(event)" style="cursor: pointer;">Logout</span>
+                        </div>
                   </div>
-              </div>
-          </div>
+            </div>
       </header>
       <aside>
             <div class="profile">
                   <?php if (!empty($user['image_profile_path'])): ?>
-                              <div style="width: 5rem; height: 5rem; border-radius: 50%;">
-                                    <img src="<?php echo htmlspecialchars($user['image_profile_path']); ?>" alt="Foto Profil" id="open-modal-btn" style="cursor: pointer; width: 5rem; height: 5rem; border-radius: 50%;" >
-                              </div>
+                  <div style="width: 5rem; height: 5rem; border-radius: 50%;">
+                        <img src="<?php echo htmlspecialchars($user['image_profile_path']); ?>" alt="Foto Profil"
+                              id="open-modal-btn"
+                              style="cursor: pointer; width: 5rem; height: 5rem; border-radius: 50%;">
+                  </div>
                   <?php else: ?>
-                        <i class="fa-solid fa-circle-user"></i>
+                  <i class="fa-solid fa-circle-user"></i>
                   <?php endif; ?>
                   <div class="username-status">
                         <h3><?php echo !empty($user['username']) ? htmlspecialchars($user['username']) : '-'; ?></h3>
@@ -103,7 +105,7 @@ $conn->close();
                                     </li>
                               </div>
                         </div>
-                        <li id="user-menu">
+                        <li id="user-menu" <?php if($user['role'] !== 'Admin') echo 'style="display: none;"'; ?>>
                               <i class="fa-solid fa-users-gear"></i>
                               <a href="../PHP/Admin_Manajemen_User.php">Manajemen User</a>
                         </li>

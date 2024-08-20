@@ -9,40 +9,47 @@ if (!isset($_SESSION['id'])) {
 }
 
 $id = $_SESSION['id'];
-$sql = "SELECT password FROM user WHERE id='$id'";
-$result = $conn->query($sql);
+$stmt = $conn->prepare("SELECT password FROM user WHERE id = ?");
+$stmt->bind_param('i', $id);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
-      $row = $result->fetch_assoc();
+    $row = $result->fetch_assoc();
 
-      if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $password_lama = $_POST['password-lama'];
         $password_baru = $_POST['password-baru'];
         $confirm_password_baru = $_POST['confirm-password-baru'];
 
+        if ($password_baru === $confirm_password_baru) {
             if ($password_lama == $row['password']) {
-                // Update data pengguna berdasarkan ID
-                $sql_update = "UPDATE user SET password='$password_baru' WHERE id=$id";
-        
-                if ($conn->query($sql_update) === TRUE) {
+                // Update password
+                $stmt_update = $conn->prepare("UPDATE user SET password = ? WHERE id = ?");
+                $stmt_update->bind_param('si', $password_baru, $id);
+                if ($stmt_update->execute()) {
+                    $_SESSION['notification'] = 'Password berhasil diperbaharui!';
                     header("Location: Admin_Profile.php");
-                    echo "<script>alert('Berhasil memperbaharui password');</script>";
                     exit();
                 } else {
-                    echo "<script>alert('Gagal memperbaharui password');</script>";
+                    $_SESSION['notification'] = 'Gagal memperbaharui password.';
                 }
+                $stmt_update->close();
             } else {
-                echo "<script>alert('Password lama salah'); window.location.href='Admin_Edit_Password.php';</script>";
-                exit();
+                $_SESSION['notification'] = 'Password lama salah.';
             }
-
-      }
+        } else {
+            $_SESSION['notification'] = 'Password baru tidak cocok.';
+        }
+    }
 } else {
-    echo "<script>alert('user tidak ditemukan');</script>";
+    $_SESSION['notification'] = 'Pengguna tidak ditemukan.';
 }
 
+$stmt->close();
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
