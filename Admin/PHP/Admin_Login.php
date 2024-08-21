@@ -63,6 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   <input type="text" id="username" name="username" placeholder="Username" required>
                   <input type="password" id="password" name="password" placeholder="Password" required>
                   <button type="submit">LOGIN</button>
+                  <p>Belum memiliki akun? <a href="Admin_Registrasi.php">Registrasi</a></p>
             </form>
       </div>
       <div class="image_login">

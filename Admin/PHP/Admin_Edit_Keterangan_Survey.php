@@ -1,6 +1,8 @@
 <?php
 include "Koneksi_survei_litbang.php";
 
+session_start(); // Start the session to use session variables
+
 $error_message = '';
 $success = false;
 
@@ -43,10 +45,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     mysqli_close($conn);
 
     if ($success) {
-        echo '<script>
-            window.location.href = "Admin_Hasil_Survey.php";
-            alert("Data berhasil diperbarui.");
-        </script>';
+        // Set notification message in session
+        $_SESSION['notification'] = "Data berhasil diperbarui.";
+        header("Location: Admin_Hasil_Survey.php");
         exit();
     } else {
         echo '<script>

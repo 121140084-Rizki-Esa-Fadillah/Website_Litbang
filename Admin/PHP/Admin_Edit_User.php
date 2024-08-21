@@ -30,10 +30,13 @@ if (isset($_GET['id'])) {
         
             if ($stmt->execute()) {
                 // Redirect ke halaman manajemen user setelah update berhasil
+                $_SESSION['notification'] = "Berhasil memperbaharui data pengguna.";
                 header("Location: Admin_Manajemen_User.php");
                 exit();
             } else {
-                echo "Gagal memperbaharui data pengguna.";
+                  $_SESSION['notification'] = "Gagal memperbaharui data pengguna..";
+                  header("Location: Admin_Manajemen_User.php");
+                exit();
             }
         }
     } else {

@@ -112,6 +112,8 @@ $conn->close();
                   </ul>
             </nav>
       </aside>
+      <!-- Notification -->
+      <div id="notification" class="notification"></div>
 </body>
 
 </html>

@@ -52,6 +52,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         required>
                   <button type="submit">REGISTER</button>
             </form>
+
             <p>Sudah memiliki akun? <a href="Admin_Login.php">Login</a></p>
       </div>
       <script src="../Js/Admin_Registrasi.js"></script>
