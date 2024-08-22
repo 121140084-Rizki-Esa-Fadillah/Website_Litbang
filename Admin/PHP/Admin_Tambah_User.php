@@ -25,6 +25,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Eksekusi statement
     if ($stmt->execute()) {
         // Jika berhasil, redirect ke halaman manajemen user
+        $_SESSION['notification'] = "Data pengguna berhasil ditambahkan.";
         header("Location: Admin_Manajemen_User.php");
         exit();
     } else {
@@ -68,11 +69,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         <div>
                               <div class="form-group">
                                     <label for="fullname">Nama Lengkap</label>
-                                    <input type="text" id="fullname" name="fullname" placeholder="Masukkan Nama" required>
+                                    <input type="text" id="fullname" name="fullname" placeholder="Masukkan Nama"
+                                          required>
                               </div>
                               <div class="form-group">
                                     <label for="username">Username</label>
-                                    <input type="text" id="username" name="username" placeholder="Masukkan Username" required>
+                                    <input type="text" id="username" name="username" placeholder="Masukkan Username"
+                                          required>
                               </div>
                               <div class="form-group">
                                     <label for="gender">Jenis Kelamin</label>
@@ -91,11 +94,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                               </div>
                               <div class="form-group">
                                     <label for="password">Password</label>
-                                    <input type="password" id="password" name="password" placeholder="Masukkan Password" required>
+                                    <input type="password" id="password" name="password" placeholder="Masukkan Password"
+                                          required>
                               </div>
                               <div class="form-group">
                                     <label for="confirm.password">Confirm Password</label>
-                                    <input type="password" id="confirm-password" name="confirm-password" placeholder="Confirm Password" required>
+                                    <input type="password" id="confirm-password" name="confirm-password"
+                                          placeholder="Confirm Password" required>
                               </div>
                               <div class="form-group">
 

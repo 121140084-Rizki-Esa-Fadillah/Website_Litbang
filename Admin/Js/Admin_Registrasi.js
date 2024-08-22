@@ -8,9 +8,15 @@ document.addEventListener("DOMContentLoaded", function() {
         const password = passwordInput.value;
         const confirmPassword = confirmInput.value;
 
-        // Cek apakah password dan konfirmasi password cocok
-        if (password !== confirmPassword) {
-            // Jika tidak cocok, tampilkan pesan kesalahan dan batalkan pengiriman form
+        // Cek apakah password memenuhi kriteria
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+
+        if (!passwordPattern.test(password)) {
+            // Jika password tidak memenuhi kriteria, tampilkan pesan kesalahan
+            alert("Password harus memiliki minimal 8 karakter, mencakup huruf besar, huruf kecil, dan angka.");
+            event.preventDefault(); // Mencegah form dikirim
+        } else if (password !== confirmPassword) {
+            // Jika password dan konfirmasi password tidak cocok
             alert("Password dan konfirmasi password tidak cocok.");
             event.preventDefault(); // Mencegah form dikirim
         }

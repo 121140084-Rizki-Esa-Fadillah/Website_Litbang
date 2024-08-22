@@ -77,8 +77,7 @@ $conn->close();
                   <p>Silakan isi formulir di bawah ini untuk mengubah kata sandi akun Anda.
                         Pastikan kata sandi baru Anda kuat dan aman.
                         Kata sandi yang kuat biasanya terdiri dari minimal 8 karakter, mencakup huruf besar dan kecil,
-                        angka,
-                        serta simbol.
+                        serta angka.
                         Jangan gunakan kata sandi yang mudah ditebak atau terkait dengan informasi pribadi Anda.</p>
             </div>
             <form action="Admin_Edit_Password.php" method="post" id="edit-password-form">

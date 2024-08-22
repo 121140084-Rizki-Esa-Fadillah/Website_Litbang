@@ -36,6 +36,7 @@ $conn->close();
       <title>Halaman Dashboard Admin</title>
       <link rel="stylesheet" href="../CSS/Admin_Main.css">
       <link rel="stylesheet" href="../CSS/Admin_Profile.css">
+      <link rel="stylesheet" href="../CSS/notification.css">
       <link rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
       <script src="https://kit.fontawesome.com/ae643ea90b.js" crossorigin="anonymous"></script>
@@ -49,6 +50,7 @@ $conn->close();
                   <i class="fa-solid fa-bars"></i>
                   <h2>Profil Admin</h2>
             </section>
+            <?php include('notification.php'); ?>
             <div class="profile-admin">
                   <div class="foto-profile">
                         <?php if (!empty($user['image_profile_path'])): ?>
@@ -116,34 +118,8 @@ $conn->close();
                         <strong>Edit</strong>
                   </a>
             </div>
-            <!-- Notification -->
-            <div id="notification" class="notification"></div>
       </main>
-
       <script>
-      document.addEventListener('DOMContentLoaded', function() {
-            const notification = document.getElementById('notification');
-            const notificationMessage =
-                  '<?php echo isset($_SESSION['notification']) ? $_SESSION['notification'] : ''; ?>';
-            const notificationType = notificationMessage.includes('Gagal') || notificationMessage.includes(
-                  'salah') ? 'error' : '';
-
-            if (notificationMessage) {
-                  notification.textContent = notificationMessage;
-                  notification.classList.add('show');
-                  if (notificationType === 'error') {
-                        notification.classList.add('error');
-                  }
-                  // Hide the notification after 5 seconds
-                  setTimeout(() => {
-                        notification.classList.remove('show');
-                  }, 5000);
-
-                  // Clear the notification from the session
-                  <?php unset($_SESSION['notification']); ?>
-            }
-      });
-
       document.getElementById('toggle-password').addEventListener('click', function() {
             const passwordElement = document.getElementById('password-value');
             const togglePassword = document.getElementById('toggle-password');
@@ -162,6 +138,7 @@ $conn->close();
       });
       </script>
       <script src="..\Js\Main.js"></script>
+      <script src="..\Js\notification.js"></script>
 </body>
 
 </html>

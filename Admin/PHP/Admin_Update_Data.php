@@ -15,13 +15,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = $_POST['email'];
     $jenis_kelamin = $_POST['gender'];
     $no_hp = $_POST['no-hp'];
+
     // Update data pengguna berdasarkan ID
     $sql_update = "UPDATE user SET nama_lengkap='$nama_lengkap', email='$email', jenis_kelamin='$jenis_kelamin', no_hp='$no_hp' WHERE id=$id";
+    
     if ($conn->query($sql_update) === TRUE) {
+        // Set notification message in session
+        $_SESSION['notification'] = "Data berhasil diperbarui.";
         header("Location: Admin_Profile.php");
         exit();
     } else {
-        echo "Error updating record: " . $conn->error;
+        $_SESSION['notification'] = "Gagal memperbarui data: " . $conn->error;
+        header("Location: Admin_Profile.php");
+        exit();
     }
 }
 

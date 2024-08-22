@@ -72,6 +72,7 @@ $conn->close();
       <title>Manajemen User</title>
       <link rel="stylesheet" href="../CSS/Admin_Main.css">
       <link rel="stylesheet" href="../CSS/Admin_Manajemen_User.css">
+      <link rel="stylesheet" href="../CSS/notification.css">
       <script src="https://kit.fontawesome.com/ae643ea90b.js" crossorigin="anonymous"></script>
 </head>
 
@@ -104,14 +105,15 @@ $conn->close();
                         <form method="GET" action="">
                               <input type="hidden" name="search" value="<?php echo htmlspecialchars($search); ?>">
                               <select id="sort" name="sort" onchange="this.form.submit()">
-                                    <option value="name-asc" <?php if ($sort == 'name-asc') echo 'selected'; ?>>Name
-                                          Ascending</option>
-                                    <option value="name-desc" <?php if ($sort == 'name-desc') echo 'selected'; ?>>Name
-                                          Descending</option>
-                                    <option value="date-asc" <?php if ($sort == 'date-asc') echo 'selected'; ?>>Date
-                                          Ascending</option>
-                                    <option value="date-desc" <?php if ($sort == 'date-desc') echo 'selected'; ?>>Date
-                                          Descending</option>
+                                    <option value="name-asc" <?php if ($sort == 'name-asc') echo 'selected'; ?>>Nama A -
+                                          Z
+                                    </option>
+                                    <option value="name-desc" <?php if ($sort == 'name-desc') echo 'selected'; ?>>Nama
+                                          Z - A</option>
+                                    <option value="date-asc" <?php if ($sort == 'date-asc') echo 'selected'; ?>>Tanggal
+                                          Terlama</option>
+                                    <option value="date-desc" <?php if ($sort == 'date-desc') echo 'selected'; ?>>
+                                          Tanggal Terbaru</option>
                               </select>
                         </form>
                   </div>
@@ -189,9 +191,10 @@ $conn->close();
                         &raquo;</a>
                   <?php endif; ?>
             </div>
-
+            <?php include('notification.php'); ?>
       </main>
       <script src="..\Js\Main.js"></script>
+      <script src="..\Js\notification.js"></script>
       <script>
       function confirmDelete(userId) {
             // Show confirmation dialog

@@ -124,6 +124,7 @@ $conn->close();
       <title>Hasil Survey</title>
       <link rel="stylesheet" href="../CSS/Admin_Main.css">
       <link rel="stylesheet" href="../CSS/Admin_Hasil_Survey.css">
+      <link rel="stylesheet" href="../CSS/notification.css">
       <script src="https://kit.fontawesome.com/ae643ea90b.js" crossorigin="anonymous"></script>
       <link rel="stylesheet"
             href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
@@ -268,8 +269,10 @@ $conn->close();
                         &raquo;</a>
                   <?php endif; ?>
             </div>
+            <?php include('notification.php'); ?>
       </main>
       <script src="..\Js\Main.js"></script>
+      <script src="..\Js\notification.js"></script>
       <script>
       function confirmDelete(id) {
             if (confirm('Apakah Anda Yakin Ingin Menghapus Survey Ini?')) {

@@ -12,7 +12,7 @@ body {
 .login {
     background-color: #cecded;
     width: 25vw;
-    height: 40vh;
+    height: 45vh;
     padding: 2rem;
     border-radius: 0.5rem 0 0 0.5rem;
     text-align: center;
@@ -29,6 +29,16 @@ body {
     margin-bottom: 1rem;
     text-align: center;
     font-size: 14px;
+}
+
+.login p a {
+    text-decoration: none;
+    font-weight: 500;
+    color: #0c25a3;
+}
+
+.login p a:hover {
+    color: #0c25a3c5;
 }
 
 .login input {
@@ -66,7 +76,7 @@ body {
     background-color: #0c25a3c5;
     padding: 2rem;
     width: 25vw;
-    height: 40vh;
+    height: 45vh;
     border-radius: 0 1rem 1rem 0;
     display: flex;
     justify-content: center;
