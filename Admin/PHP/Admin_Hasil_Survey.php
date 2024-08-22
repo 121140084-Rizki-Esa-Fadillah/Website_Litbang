@@ -95,7 +95,7 @@ if ($sort) {
 $sql .= " ORDER BY survey.title ASC LIMIT ? OFFSET ?";
 $stmt = $conn->prepare($sql);
 if ($sort) {
-    $stmt->bind_param("ssi", $search_param, $sort, $limit, $offset);
+    $stmt->bind_param("ssii", $search_param, $sort, $limit, $offset);
 } else {
     $stmt->bind_param("sii", $search_param, $limit, $offset);
 }
