@@ -47,6 +47,7 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    width: 100%;
 }
 
 .value-password a {
@@ -62,6 +63,10 @@
 .password-admin {
     margin-right: 1rem;
     padding-right: 1rem;
+}
+
+#password-value {
+    width: 4rem;
 }
 
 .edit {
