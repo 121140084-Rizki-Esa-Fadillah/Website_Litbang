@@ -84,20 +84,33 @@ $conn->close();
                   <div class="edit-password-admin">
                         <div class="form-group">
                               <label for="password-lama">Password Lama</label>
-                              <input type="password" id="password-lama" name="password-lama" placeholder="Password Lama"
-                                    required>
+                              <div class=" password-field">
+                                    <input type="password" id="password-lama" name="password-lama"
+                                          placeholder="Password Lama" required>
+                                    <i class="fa-solid fa-eye" id="toggle-password-lama"
+                                          onclick="togglePassword('password-lama', 'toggle-password-lama')"></i>
+                              </div>
                         </div>
                         <div class="form-group">
                               <label for="password-baru">Password Baru</label>
-                              <input type="password" id="password-baru" name="password-baru" placeholder="Password Baru"
-                                    required>
+                              <div class="password-field">
+                                    <input type="password" id="password-baru" name="password-baru"
+                                          placeholder="Password Baru" required>
+                                    <i class="fa-solid fa-eye" id="toggle-password-baru"
+                                          onclick="togglePassword('password-baru', 'toggle-password-baru')"></i>
+                              </div>
                         </div>
                         <div class="form-group">
                               <label for="confirm-password-baru">Confirm Password Baru</label>
-                              <input type="password" id="confirm-password-baru" name="confirm-password-baru"
-                                    placeholder="Confirm Password Baru" required>
+                              <div class="password-field">
+                                    <input type="password" id="confirm-password-baru" name="confirm-password-baru"
+                                          placeholder="Confirm Password Baru" required>
+                                    <i class="fa-solid fa-eye" id="toggle-confirm-password"
+                                          onclick="togglePassword('confirm-password-baru', 'toggle-confirm-password')"></i>
+                              </div>
                         </div>
                   </div>
+
                   <div class="tombol">
                         <a href="Admin_Profile.php">
                               <i class="fa-solid fa-x"></i>

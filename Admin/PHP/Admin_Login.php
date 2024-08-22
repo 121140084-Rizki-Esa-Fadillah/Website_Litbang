@@ -53,6 +53,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Halaman Login Admin</title>
       <link rel="stylesheet" href="../CSS/Admin_Login.css">
+      <link rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,400,0,0" />
+      <script src="https://kit.fontawesome.com/ae643ea90b.js" crossorigin="anonymous"></script>
 </head>
 
 <body>
@@ -61,7 +64,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <p>Silahkan masukkan username dan password anda untuk login</p>
             <form action="Admin_Login.php" method="post">
                   <input type="text" id="username" name="username" placeholder="Username" required>
-                  <input type="password" id="password" name="password" placeholder="Password" required>
+                  <div class="password-field">
+                        <input type="password" id="password" name="password" placeholder="Password" required>
+                        <i class="fa-solid fa-eye" id="toggle-password" onclick="togglePassword()"></i>
+                  </div>
                   <button type="submit">LOGIN</button>
                   <p>Belum memiliki akun? <a href="Admin_Registrasi.php">Registrasi</a></p>
             </form>
@@ -69,6 +75,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
       <div class="image_login">
             <img src="../../image/image_login.png" alt="Login Image">
       </div>
+      <script>
+
+      </script>
       <script src="..\Js\Admin_Login.js"></script>
 </body>
 

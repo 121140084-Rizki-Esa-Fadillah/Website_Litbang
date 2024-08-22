@@ -21,4 +21,36 @@ document.addEventListener("DOMContentLoaded", function() {
             event.preventDefault(); // Mencegah form dikirim
         }
     });
+
+    function togglePassword() {
+        const passwordField = document.getElementById('password');
+        const toggleIcon = document.getElementById('toggle-password');
+        if (passwordField.type === 'password') {
+            passwordField.type = 'text';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        } else {
+            passwordField.type = 'password';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        }
+    }
+
+    function toggleConfirmPassword() {
+        const confirmPasswordField = document.getElementById('confirm-password');
+        const toggleIcon = document.getElementById('toggle-confirm-password');
+        if (confirmPasswordField.type === 'password') {
+            confirmPasswordField.type = 'text';
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash');
+        } else {
+            confirmPasswordField.type = 'password';
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye');
+        }
+    }
+
+    // Attach event listeners to icons
+    document.getElementById('toggle-password').addEventListener('click', togglePassword);
+    document.getElementById('toggle-confirm-password').addEventListener('click', toggleConfirmPassword);
 });

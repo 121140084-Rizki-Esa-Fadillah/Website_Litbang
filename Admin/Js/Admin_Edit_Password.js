@@ -7,6 +7,7 @@ document.addEventListener("DOMContentLoaded", function() {
         const password = passwordInput.value;
         const confirmPassword = confirmInput.value;
 
+        // Pola untuk password: minimal 8 karakter, mencakup huruf besar, huruf kecil, dan angka
         const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
 
         if (!passwordPattern.test(password)) {
@@ -18,3 +19,18 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
+
+// Fungsi togglePassword harus dideklarasikan di luar event listener DOMContentLoaded agar bisa diakses oleh elemen HTML
+function togglePassword(fieldId, iconId) {
+    const passwordField = document.getElementById(fieldId);
+    const toggleIcon = document.getElementById(iconId);
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        toggleIcon.classList.remove('fa-eye');
+        toggleIcon.classList.add('fa-eye-slash');
+    } else {
+        passwordField.type = 'password';
+        toggleIcon.classList.remove('fa-eye-slash');
+        toggleIcon.classList.add('fa-eye');
+    }
+}

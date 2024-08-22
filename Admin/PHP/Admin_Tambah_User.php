@@ -92,15 +92,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                                     <label for="no-hp">No. Hp</label>
                                     <input type="number" id="no-hp" name="no-hp" placeholder="Masukkan No HP" required>
                               </div>
-                              <div class="form-group">
+                              <div class="form-group password-field">
                                     <label for="password">Password</label>
                                     <input type="password" id="password" name="password" placeholder="Masukkan Password"
                                           required>
+                                    <i class="fa-solid fa-eye" id="toggle-password" onclick="togglePassword()"></i>
                               </div>
-                              <div class="form-group">
+                              <div class="form-group password-field">
                                     <label for="confirm.password">Confirm Password</label>
                                     <input type="password" id="confirm-password" name="confirm-password"
                                           placeholder="Confirm Password" required>
+                                    <i class="fa-solid fa-eye" id="toggle-password"
+                                          onclick="toggleConfirmPassword()"></i>
                               </div>
                               <div class="form-group">
 
