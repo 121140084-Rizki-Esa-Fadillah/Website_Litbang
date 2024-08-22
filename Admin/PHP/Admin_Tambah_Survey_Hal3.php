@@ -362,7 +362,7 @@ $conn->close();
             </div>
 
             <div class="actions">
-                  <a href="Admin_Tambah_Survey_Hal2.php" class="tombol-cancel"><i
+                  <a href="Admin_Tambah_Survey_Hal2.php?id=<?php echo $surveyData['id']; ?>" class="tombol-cancel"><i
                               class="fa-solid fa-arrow-left"></i><strong>Kembali</strong></a>
                   <a href="Admin_Hasil_Survey.php" class="tombol-publish"><i class="fa-solid fa-upload"></i>Publish</a>
             </div>
