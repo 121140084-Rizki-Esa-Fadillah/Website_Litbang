@@ -42,26 +42,31 @@ body {
     color: #0c25a3c5;
 }
 
-.login input {
+input {
     width: 70%;
     padding: 0.5rem;
     margin-bottom: 1rem;
     border: 1.5px solid #0c25a3;
     border-radius: 0.5rem;
     outline: none;
-    position: relative; /* Tambahkan relative untuk menempatkan icon di dalamnya */
 }
 
-.login input:focus {
+input:focus {
     border-color: #0c25a3;
     box-shadow: 0 0 0 1px #0c25a3;
 }
 
+.password-field {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 .password-field i {
     position: absolute;
-    right: 5rem; 
-    top: 60%; 
-    transform: translateY(-70%); 
+    right: 3rem;
+    margin-bottom: 1rem;
     cursor: pointer;
     color: #888;
 }

@@ -49,12 +49,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h2> REGISTRASI </h2>
             <p>Silakan melakukan registrasi untuk mengakses webiste Litbang Radar Lampung</p>
             <form id="registration-form" action="" method="post">
-                  <input type="text" id="username" name="username" placeholder="Username" required>
+                  <div class="password-field">
+                        <input type="text" id="username" name="username" placeholder="Username" required>
+                  </div>
                   <div class="password-field">
                         <input type="password" id="password" name="password" placeholder="Password" required>
                         <i class="fa-solid fa-eye" id="toggle-password" onclick="togglePassword()"></i>
                   </div>
-                  <div class="confirm-password-field">
+                  <div class="password-field">
                         <input type="password" id="confirm-password" name="confirm-password"
                               placeholder="Confirm Password" required>
                         <i class="fa-solid fa-eye" id="toggle-confirm-password" onclick="toggleConfirmPassword()"></i>

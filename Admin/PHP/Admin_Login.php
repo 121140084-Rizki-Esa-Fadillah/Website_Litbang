@@ -63,7 +63,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <h2>LOGIN</h2>
             <p>Silahkan masukkan username dan password anda untuk login</p>
             <form action="Admin_Login.php" method="post">
-                  <input type="text" id="username" name="username" placeholder="Username" required>
+                  <div class="password-field">
+                        <input type="text" id="username" name="username" placeholder="Username" required>
+                  </div>
                   <div class="password-field">
                         <input type="password" id="password" name="password" placeholder="Password" required>
                         <i class="fa-solid fa-eye" id="toggle-password" onclick="togglePassword()"></i>
