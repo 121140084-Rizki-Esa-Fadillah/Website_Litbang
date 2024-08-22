@@ -437,24 +437,32 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <tr>
                                           <td>Laki-laki</td>
                                           <td><input type="number" name="gender_sangat_puas_laki" required
-                                                value="<?php echo htmlspecialchars($gender['laki_laki_sangat_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($gender['laki_laki_sangat_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="gender_puas_laki" required
-                                                value="<?php echo htmlspecialchars($gender['laki_laki_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($gender['laki_laki_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="gender_kurang_puas_laki" required
-                                                value="<?php echo htmlspecialchars($gender['laki_laki_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($gender['laki_laki_kurang_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="gender_sangat_kurang_puas_laki" required
-                                                value="<?php echo htmlspecialchars($gender['laki_laki_sangat_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($gender['laki_laki_sangat_kurang_puas']); ?>">
+                                          </td>
                                     </tr>
                                     <tr>
                                           <td>Perempuan</td>
                                           <td><input type="number" name="gender_sangat_puas_perempuan" required
-                                                value="<?php echo htmlspecialchars($gender['perempuan_sangat_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($gender['perempuan_sangat_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="gender_puas_perempuan" required
-                                                value="<?php echo htmlspecialchars($gender['perempuan_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($gender['perempuan_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="gender_kurang_puas_perempuan" required
-                                                value="<?php echo htmlspecialchars($gender['perempuan_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($gender['perempuan_kurang_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="gender_sangat_kurang_puas_perempuan" required
-                                                value="<?php echo htmlspecialchars($gender['perempuan_sangat_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($gender['perempuan_sangat_kurang_puas']); ?>">
+                                          </td>
                                     </tr>
                               </tbody>
                         </table>
@@ -474,24 +482,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <tr>
                                           <td>18-35 Tahun</td>
                                           <td><input type="number" name="usia_sangat_puas_18_35" required
-                                                value="<?php echo htmlspecialchars($usia['18_35_sangat_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($usia['18_35_sangat_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="usia_puas_18_35" required
-                                                value="<?php echo htmlspecialchars($usia['18_35_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($usia['18_35_puas']); ?>"></td>
                                           <td><input type="number" name="usia_kurang_puas_18_35" required
-                                                value="<?php echo htmlspecialchars($usia['18_35_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($usia['18_35_kurang_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="usia_sangat_kurang_puas_18_35" required
-                                                value="<?php echo htmlspecialchars($usia['18_35_sangat_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($usia['18_35_sangat_kurang_puas']); ?>">
+                                          </td>
                                     </tr>
                                     <tr>
                                           <td>36 Tahun ke atas</td>
                                           <td><input type="number" name="usia_sangat_puas_36_plus" required
-                                                value="<?php echo htmlspecialchars($usia['36_up_sangat_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($usia['36_up_sangat_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="usia_puas_36_plus" required
-                                                value="<?php echo htmlspecialchars($usia['36_up_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($usia['36_up_puas']); ?>"></td>
                                           <td><input type="number" name="usia_kurang_puas_36_plus" required
-                                                value="<?php echo htmlspecialchars($usia['36_up_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($usia['36_up_kurang_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="usia_sangat_kurang_puas_36_plus" required
-                                                value="<?php echo htmlspecialchars($usia['36_up_sangat_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($usia['36_up_sangat_kurang_puas']); ?>">
+                                          </td>
                                     </tr>
                               </tbody>
                         </table>
@@ -511,57 +525,76 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <tr>
                                           <td>SD</td>
                                           <td><input type="number" name="lulusan_sangat_puas_sd" required
-                                                value="<?php echo htmlspecialchars($lulusan['sd_sangat_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['sd_sangat_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="lulusan_puas_sd" required
-                                                value="<?php echo htmlspecialchars($lulusan['sd_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['sd_puas']); ?>"></td>
                                           <td><input type="number" name="lulusan_kurang_puas_sd" required
-                                                value="<?php echo htmlspecialchars($lulusan['sd_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['sd_kurang_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="lulusan_sangat_kurang_puas_sd" required
-                                                value="<?php echo htmlspecialchars($lulusan['sd_sangat_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['sd_sangat_kurang_puas']); ?>">
+                                          </td>
                                     </tr>
                                     <tr>
                                           <td>SMP</td>
                                           <td><input type="number" name="lulusan_sangat_puas_smp" required
-                                                value="<?php echo htmlspecialchars($lulusan['smp_sangat_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['smp_sangat_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="lulusan_puas_smp" required
-                                                value="<?php echo htmlspecialchars($lulusan['smp_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['smp_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="lulusan_kurang_puas_smp" required
-                                                value="<?php echo htmlspecialchars($lulusan['smp_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['smp_kurang_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="lulusan_sangat_kurang_puas_smp" required
-                                                value="<?php echo htmlspecialchars($lulusan['smp_sangat_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['smp_sangat_kurang_puas']); ?>">
+                                          </td>
                                     </tr>
                                     <tr>
                                           <td>SMA</td>
                                           <td><input type="number" name="lulusan_sangat_puas_sma" required
-                                                value="<?php echo htmlspecialchars($lulusan['sma_sangat_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['sma_sangat_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="lulusan_puas_sma" required
-                                                value="<?php echo htmlspecialchars($lulusan['sma_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['sma_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="lulusan_kurang_puas_sma" required
-                                                value="<?php echo htmlspecialchars($lulusan['sma_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['sma_kurang_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="lulusan_sangat_kurang_puas_sma" required
-                                                value="<?php echo htmlspecialchars($lulusan['sma_sangat_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['sma_sangat_kurang_puas']); ?>">
+                                          </td>
                                     </tr>
                                     <tr>
                                           <td>Diploma</td>
                                           <td><input type="number" name="lulusan_sangat_puas_diploma" required
-                                                value="<?php echo htmlspecialchars($lulusan['diploma_sangat_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['diploma_sangat_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="lulusan_puas_diploma" required
-                                                value="<?php echo htmlspecialchars($lulusan['diploma_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['diploma_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="lulusan_kurang_puas_diploma" required
-                                                value="<?php echo htmlspecialchars($lulusan['diploma_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['diploma_kurang_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="lulusan_sangat_kurang_puas_diploma" required
-                                                value="<?php echo htmlspecialchars($lulusan['diploma_sangat_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['diploma_sangat_kurang_puas']); ?>">
+                                          </td>
                                     </tr>
                                     <tr>
                                           <td>S1/S2/S3</td>
                                           <td><input type="number" name="lulusan_sangat_puas_sarjana" required
-                                                value="<?php echo htmlspecialchars($lulusan['sarjana_sangat_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['sarjana_sangat_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="lulusan_puas_sarjana" required
-                                                value="<?php echo htmlspecialchars($lulusan['sarjana_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['sarjana_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="lulusan_kurang_puas_sarjana" required
-                                                value="<?php echo htmlspecialchars($lulusan['sarjana_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['sarjana_kurang_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="lulusan_sangat_kurang_puas_sarjana" required
-                                                value="<?php echo htmlspecialchars($lulusan['sarjana_sangat_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusan['sarjana_sangat_kurang_puas']); ?>">
+                                          </td>
                                     </tr>
                               </tbody>
                         </table>
@@ -581,55 +614,68 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <tr>
                                           <td>PNS</td>
                                           <td><input type="number" name="profesi_sangat_puas_pns" required
-                                                value="<?php echo htmlspecialchars($profesi['pns_sangat_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($profesi['pns_sangat_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="profesi_puas_pns" required
-                                                value="<?php echo htmlspecialchars($profesi['pns_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($profesi['pns_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="profesi_kurang_puas_pns" required
-                                                value="<?php echo htmlspecialchars($profesi['pns_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($profesi['pns_kurang_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="profesi_sangat_kurang_puas_pns" required
-                                                value="<?php echo htmlspecialchars($profesi['pns_sangat_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($profesi['pns_sangat_kurang_puas']); ?>">
+                                          </td>
                                     </tr>
                                     <tr>
                                           <td>Swasta/Wiraswasta</td>
                                           <td><input type="number" name="profesi_sangat_puas_swasta" required
-                                                value="<?php echo htmlspecialchars($profesi['swasta_wiraswasta_sangat_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($profesi['swasta_wiraswasta_sangat_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="profesi_puas_swasta" required
-                                                value="<?php echo htmlspecialchars($profesi['swasta_wiraswasta_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($profesi['swasta_wiraswasta_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="profesi_kurang_puas_swasta" required
-                                                value="<?php echo htmlspecialchars($profesi['swasta_wiraswasta_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($profesi['swasta_wiraswasta_kurang_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="profesi_sangat_kurang_puas_swasta" required
-                                                value="<?php echo htmlspecialchars($profesi['swasta_wiraswasta_sangat_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($profesi['swasta_wiraswasta_sangat_kurang_puas']); ?>">
+                                          </td>
                                     </tr>
                                     <tr>
                                           <td>Pelajar/Mahasiswa</td>
                                           <td><input type="number" name="profesi_sangat_puas_pelajar" required
-                                                value="<?php echo htmlspecialchars($profesi['pelajar_mahasiswa_sangat_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($profesi['pelajar_mahasiswa_sangat_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="profesi_puas_pelajar" required
-                                                value="<?php echo htmlspecialchars($profesi['pelajar_mahasiswa_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($profesi['pelajar_mahasiswa_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="profesi_kurang_puas_pelajar" required
-                                                value="<?php echo htmlspecialchars($profesi['pelajar_mahasiswa_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($profesi['pelajar_mahasiswa_kurang_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="profesi_sangat_kurang_puas_pelajar" required
-                                                value="<?php echo htmlspecialchars($profesi['pelajar_mahasiswa_sangat_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($profesi['pelajar_mahasiswa_sangat_kurang_puas']); ?>">
+                                          </td>
                                     </tr>
                                     <tr>
                                           <td>Pengangguran</td>
                                           <td><input type="number" name="profesi_sangat_puas_pengangguran" required
-                                                value="<?php echo htmlspecialchars($profesi['pengangguran_sangat_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($profesi['pengangguran_sangat_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="profesi_puas_pengangguran" required
-                                                value="<?php echo htmlspecialchars($profesi['pengangguran_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($profesi['pengangguran_puas']); ?>">
+                                          </td>
                                           <td><input type="number" name="profesi_kurang_puas_pengangguran" required
-                                                value="<?php echo htmlspecialchars($profesi['pengangguran_kurang_puas']); ?>"></td>
-                                          <td><input type="number" name="profesi_sangat_kurang_puas_pengangguran" required
-                                                value="<?php echo htmlspecialchars($profesi['pengangguran_sangat_kurang_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($profesi['pengangguran_kurang_puas']); ?>">
+                                          </td>
+                                          <td><input type="number" name="profesi_sangat_kurang_puas_pengangguran"
+                                                      required
+                                                      value="<?php echo htmlspecialchars($profesi['pengangguran_sangat_kurang_puas']); ?>">
+                                          </td>
                                     </tr>
                               </tbody>
                         </table>
                   </div>
                   <div class="save">
-                        <a href="Admin_Tambah_Survey_Hal1.php">
-                              <i class="fa-solid fa-arrow-left"></i>
-                              <strong>Kembali</strong>
-                        </a>
                         <button type="submit" class="tombol-save">
                               <strong>Lanjut</strong>
                               <i class="fa-solid fa-arrow-right"></i>
