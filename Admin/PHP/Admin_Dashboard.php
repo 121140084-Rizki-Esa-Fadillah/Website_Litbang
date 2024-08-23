@@ -28,7 +28,7 @@ $count_stmt->execute();
 $count_result = $count_stmt->get_result();
 $total_surveys = $count_result->fetch_assoc()['total_surveys'];
 
-// Query untuk mengambil 1 survei terbaru sesuai kriteria pencarian dan pengurutan
+// Query untuk mengambil survei
 $sql = "SELECT survey.id, survey.title, survey.keterangan, survey.image, survey.waktu_buat, wilayah.nama_wilayah
         FROM survey
         JOIN wilayah ON survey.id_wilayah = wilayah.id
@@ -44,7 +44,12 @@ if ($sort) {
     $params[] = $sort;
 }
 
-$sql .= " ORDER BY survey.waktu_buat DESC LIMIT 1";
+// Jika tidak ada pencarian dan pengurutan, ambil hanya survei terbaru
+if (empty($search) && empty($sort)) {
+    $sql .= " ORDER BY survey.waktu_buat DESC LIMIT 1";
+} else {
+    $sql .= " ORDER BY survey.waktu_buat DESC"; // Tampilkan semua hasil yang sesuai
+}
 
 $stmt = $conn->prepare($sql);
 $stmt->bind_param($types, ...$params);
@@ -61,6 +66,7 @@ if ($result->num_rows > 0) {
 
 $conn->close();
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
