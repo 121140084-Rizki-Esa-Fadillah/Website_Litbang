@@ -3,13 +3,13 @@ session_start();
 
 include('Koneksi_user_litbang.php');
 
-if (!isset($_SESSION['id'])) {
+if (!isset($_SESSION['id_user'])) {
     header("Location: Admin_Login.php");
     exit();
 }
 
-$id = $_SESSION['id'];
-$sql = "SELECT * FROM user WHERE id='$id'";
+$id = $_SESSION['id_user'];
+$sql = "SELECT * FROM user WHERE id_user='$id'";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {

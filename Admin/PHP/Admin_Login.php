@@ -20,10 +20,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         // Verifikasi kata sandi
         if ($password == $user['password']) {
             // Set data pengguna dalam session
-            $_SESSION['id'] = $user['id'];
+            $_SESSION['id_user'] = $user['id_user'];
             $_SESSION['user'] = $user;
-            $id = $_SESSION['id'];
-            $updateStmt = $conn->prepare("UPDATE user SET last_login = NOW() WHERE id = ?");
+            $id = $_SESSION['id_user'];
+            $updateStmt = $conn->prepare("UPDATE user SET last_login = NOW() WHERE id_user = ?");
             $updateStmt->bind_param("i", $id);
             $updateStmt->execute();
             

@@ -1,5 +1,6 @@
 <?php
 include "Koneksi_survei_litbang.php";
+session_start(); 
 
 // Ambil ID survey dari URL atau parameter yang diterima
 $survey_id = $_GET['id'] ?? 1; // Default ID survey jika tidak ada parameter

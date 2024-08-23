@@ -1,5 +1,6 @@
 <?php
 include "Koneksi_survei_litbang.php";
+session_start(); 
 
 // Ambil nilai pencarian dan pengurutan dari parameter GET
 $search = isset($_GET['search']) ? $_GET['search'] : '';

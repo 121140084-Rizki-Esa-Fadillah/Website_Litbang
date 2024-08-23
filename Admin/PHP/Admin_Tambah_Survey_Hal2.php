@@ -1,390 +1,281 @@
 <?php
+session_start(); 
 include "Koneksi_survei_litbang.php";
+
+$surveyId = isset($_GET['id']) ? $_GET['id'] : (isset($_SESSION['survey_id']) ? $_SESSION['survey_id'] : null);
 
 // Function to validate inputs
 function validateInput($data) {
     return filter_var($data, FILTER_VALIDATE_INT) !== false ? intval($data) : 0;
 }
 
-// inisialisasi data
-$gender = [
-      'laki_laki_sangat_puas' => '',
-      'laki_laki_puas' => '',
-      'laki_laki_kurang_puas' => '',
-      'laki_laki_sangat_kurang_puas' => '',
-      'perempuan_sangat_puas' => '',
-      'perempuan_puas' => '',
-      'perempuan_kurang_puas' => '',
-      'perempuan_sangat_kurang_puas' => '',
-];
+// Retrieve gender-related data from session
+$genderSangatPuasLaki = isset($_SESSION['gender_sangat_puas_laki']) ? $_SESSION['gender_sangat_puas_laki'] : '';
+$genderPuasLaki = isset($_SESSION['gender_puas_laki']) ? $_SESSION['gender_puas_laki'] : '';
+$genderKurangPuasLaki = isset($_SESSION['gender_kurang_puas_laki']) ? $_SESSION['gender_kurang_puas_laki'] : '';
+$genderSangatKurangPuasLaki = isset($_SESSION['gender_sangat_kurang_puas_laki']) ? $_SESSION['gender_sangat_kurang_puas_laki'] : '';
 
-$lulusan = [
-      'sd_sangat_puas' => '',
-      'sd_puas' => '',
-      'sd_kurang_puas' => '',
-      'sd_sangat_kurang_puas' => '',
-      'smp_sangat_puas' => '',
-      'smp_puas' => '',
-      'smp_kurang_puas' => '',
-      'smp_sangat_kurang_puas' => '',
-      'sma_sangat_puas' => '',
-      'sma_puas' => '',
-      'sma_kurang_puas' => '',
-      'sma_sangat_kurang_puas' => '',
-      'diploma_sangat_puas' => '',
-      'diploma_puas' => '',
-      'diploma_kurang_puas' => '',
-      'diploma_sangat_kurang_puas' => '',
-      'sarjana_sangat_puas' => '',
-      'sarjana_puas' => '',
-      'sarjana_kurang_puas' => '',
-      'sarjana_sangat_kurang_puas' => '',
-];
+$genderSangatPuasPerempuan = isset($_SESSION['gender_sangat_puas_perempuan']) ? $_SESSION['gender_sangat_puas_perempuan'] : '';
+$genderPuasPerempuan = isset($_SESSION['gender_puas_perempuan']) ? $_SESSION['gender_puas_perempuan'] : '';
+$genderKurangPuasPerempuan = isset($_SESSION['gender_kurang_puas_perempuan']) ? $_SESSION['gender_kurang_puas_perempuan'] : '';
+$genderSangatKurangPuasPerempuan = isset($_SESSION['gender_sangat_kurang_puas_perempuan']) ? $_SESSION['gender_sangat_kurang_puas_perempuan'] : '';
 
-$profesi = [
-      'pns_sangat_puas' => '',
-      'pns_puas' => '',
-      'pns_kurang_puas' => '',
-      'pns_sangat_kurang_puas' => '',
-      'swasta_wiraswasta_sangat_puas' => '',
-      'swasta_wiraswasta_puas' => '',
-      'swasta_wiraswasta_kurang_puas' => '',
-      'swasta_wiraswasta_sangat_kurang_puas' => '',
-      'pelajar_mahasiswa_sangat_puas' => '',
-      'pelajar_mahasiswa_puas' => '',
-      'pelajar_mahasiswa_kurang_puas' => '',
-      'pelajar_mahasiswa_sangat_kurang_puas' => '',
-      'pengangguran_sangat_puas' => '',
-      'pengangguran_puas' => '',
-      'pengangguran_kurang_puas' => '',
-      'pengangguran_sangat_kurang_puas' => '',
-];
 
-$usia = [
-      '18_35_sangat_puas' => '',
-      '18_35_puas' => '',
-      '18_35_kurang_puas' => '',
-      '18_35_sangat_kurang_puas' => '',
-      '36_up_sangat_puas' => '',
-      '36_up_puas' => '',
-      '36_up_kurang_puas' => '',
-      '36_up_sangat_kurang_puas' => '',
-];
+// Retrieve age-related data from session
+$usiaSangatPuas18_35 = isset($_SESSION['usia_sangat_puas_18_35']) ? $_SESSION['usia_sangat_puas_18_35'] : '';
+$usiaPuas18_35 = isset($_SESSION['usia_puas_18_35']) ? $_SESSION['usia_puas_18_35'] : '';
+$usiaKurangPuas18_35 = isset($_SESSION['usia_kurang_puas_18_35']) ? $_SESSION['usia_kurang_puas_18_35'] : '';
+$usiaSangatKurangPuas18_35 = isset($_SESSION['usia_sangat_kurang_puas_18_35']) ? $_SESSION['usia_sangat_kurang_puas_18_35'] : '';
 
-if (isset($_GET['id'])) {
-    $id = $_GET['id'];
+$usiaSangatPuas36Plus = isset($_SESSION['usia_sangat_puas_36_plus']) ? $_SESSION['usia_sangat_puas_36_plus'] : '';
+$usiaPuas36Plus = isset($_SESSION['usia_puas_36_plus']) ? $_SESSION['usia_puas_36_plus'] : '';
+$usiaKurangPuas36Plus = isset($_SESSION['usia_kurang_puas_36_plus']) ? $_SESSION['usia_kurang_puas_36_plus'] : '';
+$usiaSangatKurangPuas36Plus = isset($_SESSION['usia_sangat_kurang_puas_36_plus']) ? $_SESSION['usia_sangat_kurang_puas_36_plus'] : '';
 
-    // Ambil data pengguna dari database berdasarkan ID
-    $stmt = $conn->prepare("SELECT * FROM gender WHERE id = ?");
-    $stmt->bind_param('i', $id);
-    $stmt->execute();
-    $gender_result = $stmt->get_result();
 
-    $stmt = $conn->prepare("SELECT * FROM lulusan WHERE id = ?");
-    $stmt->bind_param('i', $id);
-    $stmt->execute();
-    $lulusan_result = $stmt->get_result();
+// Retrieve education-related data from session
+$lulusanSangatPuasSD = isset($_SESSION['lulusan_sangat_puas_sd']) ? $_SESSION['lulusan_sangat_puas_sd'] : '';
+$lulusanPuasSD = isset($_SESSION['lulusan_puas_sd']) ? $_SESSION['lulusan_puas_sd'] : '';
+$lulusanKurangPuasSD = isset($_SESSION['lulusan_kurang_puas_sd']) ? $_SESSION['lulusan_kurang_puas_sd'] : '';
+$lulusanSangatKurangPuasSD = isset($_SESSION['lulusan_sangat_kurang_puas_sd']) ? $_SESSION['lulusan_sangat_kurang_puas_sd'] : '';
 
-    $stmt = $conn->prepare("SELECT * FROM profesi WHERE id = ?");
-    $stmt->bind_param('i', $id);
-    $stmt->execute();
-    $profesi_result = $stmt->get_result();
+$lulusanSangatPuasSMP = isset($_SESSION['lulusan_sangat_puas_smp']) ? $_SESSION['lulusan_sangat_puas_smp'] : '';
+$lulusanPuasSMP = isset($_SESSION['lulusan_puas_smp']) ? $_SESSION['lulusan_puas_smp'] : '';
+$lulusanKurangPuasSMP = isset($_SESSION['lulusan_kurang_puas_smp']) ? $_SESSION['lulusan_kurang_puas_smp'] : '';
+$lulusanSangatKurangPuasSMP = isset($_SESSION['lulusan_sangat_kurang_puas_smp']) ? $_SESSION['lulusan_sangat_kurang_puas_smp'] : '';
 
-    $stmt = $conn->prepare("SELECT * FROM usia WHERE id = ?");
-    $stmt->bind_param('i', $id);
-    $stmt->execute();
-    $usia_result = $stmt->get_result();
+$lulusanSangatPuasSMA = isset($_SESSION['lulusan_sangat_puas_sma']) ? $_SESSION['lulusan_sangat_puas_sma'] : '';
+$lulusanPuasSMA = isset($_SESSION['lulusan_puas_sma']) ? $_SESSION['lulusan_puas_sma'] : '';
+$lulusanKurangPuasSMA = isset($_SESSION['lulusan_kurang_puas_sma']) ? $_SESSION['lulusan_kurang_puas_sma'] : '';
+$lulusanSangatKurangPuasSMA = isset($_SESSION['lulusan_sangat_kurang_puas_sma']) ? $_SESSION['lulusan_sangat_kurang_puas_sma'] : '';
 
-    if ($gender_result->num_rows > 0) {
-        $gender = $gender_result->fetch_assoc();
-    }
-    if ($lulusan_result->num_rows > 0) {
-        $lulusan = $lulusan_result->fetch_assoc();
-    }
-    if ($profesi_result->num_rows > 0) {
-        $profesi = $profesi_result->fetch_assoc();
-    }
-    if ($usia_result->num_rows > 0) {
-        $usia = $usia_result->fetch_assoc();
-    }
+$lulusanSangatPuasDiploma = isset($_SESSION['lulusan_sangat_puas_diploma']) ? $_SESSION['lulusan_sangat_puas_diploma'] : '';
+$lulusanPuasDiploma = isset($_SESSION['lulusan_puas_diploma']) ? $_SESSION['lulusan_puas_diploma'] : '';
+$lulusanKurangPuasDiploma = isset($_SESSION['lulusan_kurang_puas_diploma']) ? $_SESSION['lulusan_kurang_puas_diploma'] : '';
+$lulusanSangatKurangPuasDiploma = isset($_SESSION['lulusan_sangat_kurang_puas_diploma']) ? $_SESSION['lulusan_sangat_kurang_puas_diploma'] : '';
 
-    // Close statement and connection
-    $stmt->close();
-    $conn->close();
-}
+$lulusanSangatPuasSarjana = isset($_SESSION['lulusan_sangat_puas_sarjana']) ? $_SESSION['lulusan_sangat_puas_sarjana'] : '';
+$lulusanPuasSarjana = isset($_SESSION['lulusan_puas_sarjana']) ? $_SESSION['lulusan_puas_sarjana'] : '';
+$lulusanKurangPuasSarjana = isset($_SESSION['lulusan_kurang_puas_sarjana']) ? $_SESSION['lulusan_kurang_puas_sarjana'] : '';
+$lulusanSangatKurangPuasSarjana = isset($_SESSION['lulusan_sangat_kurang_puas_sarjana']) ? $_SESSION['lulusan_sangat_kurang_puas_sarjana'] : '';
+
+
+// Retrieve profession-related data from session
+$profesiSangatPuasPNS = isset($_SESSION['profesi_sangat_puas_pns']) ? $_SESSION['profesi_sangat_puas_pns'] : '';
+$profesiPuasPNS = isset($_SESSION['profesi_puas_pns']) ? $_SESSION['profesi_puas_pns'] : '';
+$profesiKurangPuasPNS = isset($_SESSION['profesi_kurang_puas_pns']) ? $_SESSION['profesi_kurang_puas_pns'] : '';
+$profesiSangatKurangPuasPNS = isset($_SESSION['profesi_sangat_kurang_puas_pns']) ? $_SESSION['profesi_sangat_kurang_puas_pns'] : '';
+
+$profesiSangatPuasSwastaWiraswasta = isset($_SESSION['profesi_sangat_puas_swasta_wiraswasta']) ? $_SESSION['profesi_sangat_puas_swasta_wiraswasta'] : '';
+$profesiPuasSwastaWiraswasta = isset($_SESSION['profesi_puas_swasta_wiraswasta']) ? $_SESSION['profesi_puas_swasta_wiraswasta'] : '';
+$profesiKurangPuasSwastaWiraswasta = isset($_SESSION['profesi_kurang_puas_swasta_wiraswasta']) ? $_SESSION['profesi_kurang_puas_swasta_wiraswasta'] : '';
+$profesiSangatKurangPuasSwastaWiraswasta = isset($_SESSION['profesi_sangat_kurang_puas_swasta_wiraswasta']) ? $_SESSION['profesi_sangat_kurang_puas_swasta_wiraswasta'] : '';
+
+$profesiSangatPuasPelajarMahasiswa = isset($_SESSION['profesi_sangat_puas_pelajar_mahasiswa']) ? $_SESSION['profesi_sangat_puas_pelajar_mahasiswa'] : '';
+$profesiPuasPelajarMahasiswa = isset($_SESSION['profesi_puas_pelajar_mahasiswa']) ? $_SESSION['profesi_puas_pelajar_mahasiswa'] : '';
+$profesiKurangPuasPelajarMahasiswa = isset($_SESSION['profesi_kurang_puas_pelajar_mahasiswa']) ? $_SESSION['profesi_kurang_puas_pelajar_mahasiswa'] : '';
+$profesiSangatKurangPuasPelajarMahasiswa = isset($_SESSION['profesi_sangat_kurang_puas_pelajar_mahasiswa']) ? $_SESSION['profesi_sangat_kurang_puas_pelajar_mahasiswa'] : '';
+
+$profesiSangatPuasPengangguran = isset($_SESSION['profesi_sangat_puas_pengangguran']) ? $_SESSION['profesi_sangat_puas_pengangguran'] : '';
+$profesiPuasPengangguran = isset($_SESSION['profesi_puas_pengangguran']) ? $_SESSION['profesi_puas_pengangguran'] : '';
+$profesiKurangPuasPengangguran = isset($_SESSION['profesi_kurang_puas_pengangguran']) ? $_SESSION['profesi_kurang_puas_pengangguran'] : '';
+$profesiSangatKurangPuasPengangguran = isset($_SESSION['profesi_sangat_kurang_puas_pengangguran']) ? $_SESSION['profesi_sangat_kurang_puas_pengangguran'] : '';
+
 
 // Check if the form has been submitted
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validate and sanitize inputs
-    $gender_sangat_puas_laki = validateInput($_POST['gender_sangat_puas_laki']);
-    $gender_puas_laki = validateInput($_POST['gender_puas_laki']);
-    $gender_kurang_puas_laki = validateInput($_POST['gender_kurang_puas_laki']);
-    $gender_sangat_kurang_puas_laki = validateInput($_POST['gender_sangat_kurang_puas_laki']);
+      $gender_sangat_puas_laki = validateInput($_POST['gender_sangat_puas_laki']);
+      $gender_puas_laki = validateInput($_POST['gender_puas_laki']);
+      $gender_kurang_puas_laki = validateInput($_POST['gender_kurang_puas_laki']);
+      $gender_sangat_kurang_puas_laki = validateInput($_POST['gender_sangat_kurang_puas_laki']);
 
-    $gender_sangat_puas_perempuan = validateInput($_POST['gender_sangat_puas_perempuan']);
-    $gender_puas_perempuan = validateInput($_POST['gender_puas_perempuan']);
-    $gender_kurang_puas_perempuan = validateInput($_POST['gender_kurang_puas_perempuan']);
-    $gender_sangat_kurang_puas_perempuan = validateInput($_POST['gender_sangat_kurang_puas_perempuan']);
+      $gender_sangat_puas_perempuan = validateInput($_POST['gender_sangat_puas_perempuan']);
+      $gender_puas_perempuan = validateInput($_POST['gender_puas_perempuan']);
+      $gender_kurang_puas_perempuan = validateInput($_POST['gender_kurang_puas_perempuan']);
+      $gender_sangat_kurang_puas_perempuan = validateInput($_POST['gender_sangat_kurang_puas_perempuan']);
 
-    $total_responden_laki_laki = $gender_sangat_puas_laki + $gender_puas_laki + $gender_kurang_puas_laki + $gender_sangat_kurang_puas_laki;
-    $total_responden_perempuan = $gender_sangat_puas_perempuan + $gender_puas_perempuan + $gender_kurang_puas_perempuan + $gender_sangat_kurang_puas_perempuan;
-    $total_responden_gender = $total_responden_laki_laki + $total_responden_perempuan;
+      // Store data in session variables
+      $_SESSION['gender_sangat_puas_laki'] = $gender_sangat_puas_laki;
+      $_SESSION['gender_puas_laki'] = $gender_puas_laki;
+      $_SESSION['gender_kurang_puas_laki'] = $gender_kurang_puas_laki;
+      $_SESSION['gender_sangat_kurang_puas_laki'] = $gender_sangat_kurang_puas_laki;
+
+      $_SESSION['gender_sangat_puas_perempuan'] = $gender_sangat_puas_perempuan;
+      $_SESSION['gender_puas_perempuan'] = $gender_puas_perempuan;
+      $_SESSION['gender_kurang_puas_perempuan'] = $gender_kurang_puas_perempuan;
+      $_SESSION['gender_sangat_kurang_puas_perempuan'] = $gender_sangat_kurang_puas_perempuan;
+
+      // Calculate totals
+      $total_responden_laki_laki = $gender_sangat_puas_laki + $gender_puas_laki + $gender_kurang_puas_laki + $gender_sangat_kurang_puas_laki;
+      $total_responden_perempuan = $gender_sangat_puas_perempuan + $gender_puas_perempuan + $gender_kurang_puas_perempuan + $gender_sangat_kurang_puas_perempuan;
+      $total_responden_gender = $total_responden_laki_laki + $total_responden_perempuan;
+
+      // Store totals in session variables
+      $_SESSION['total_responden_laki_laki'] = $total_responden_laki_laki;
+      $_SESSION['total_responden_perempuan'] = $total_responden_perempuan;
+      $_SESSION['total_responden_gender'] = $total_responden_gender;
+    
+    // Validate and sanitize age group inputs
+      $usia_sangat_puas_18_35 = validateInput($_POST['usia_sangat_puas_18_35']);
+      $usia_puas_18_35 = validateInput($_POST['usia_puas_18_35']);
+      $usia_kurang_puas_18_35 = validateInput($_POST['usia_kurang_puas_18_35']);
+      $usia_sangat_kurang_puas_18_35 = validateInput($_POST['usia_sangat_kurang_puas_18_35']);
+
+      $usia_sangat_puas_36_plus = validateInput($_POST['usia_sangat_puas_36_plus']);
+      $usia_puas_36_plus = validateInput($_POST['usia_puas_36_plus']);
+      $usia_kurang_puas_36_plus = validateInput($_POST['usia_kurang_puas_36_plus']);
+      $usia_sangat_kurang_puas_36_plus = validateInput($_POST['usia_sangat_kurang_puas_36_plus']);
+
+      // Store data in session variables
+      $_SESSION['usia_sangat_puas_18_35'] = $usia_sangat_puas_18_35;
+      $_SESSION['usia_puas_18_35'] = $usia_puas_18_35;
+      $_SESSION['usia_kurang_puas_18_35'] = $usia_kurang_puas_18_35;
+      $_SESSION['usia_sangat_kurang_puas_18_35'] = $usia_sangat_kurang_puas_18_35;
+
+      $_SESSION['usia_sangat_puas_36_plus'] = $usia_sangat_puas_36_plus;
+      $_SESSION['usia_puas_36_plus'] = $usia_puas_36_plus;
+      $_SESSION['usia_kurang_puas_36_plus'] = $usia_kurang_puas_36_plus;
+      $_SESSION['usia_sangat_kurang_puas_36_plus'] = $usia_sangat_kurang_puas_36_plus;
+
+      // Calculate totals
+      $total_responden_18_35 = $usia_sangat_puas_18_35 + $usia_puas_18_35 + $usia_kurang_puas_18_35 + $usia_sangat_kurang_puas_18_35;
+      $total_responden_36_up = $usia_sangat_puas_36_plus + $usia_puas_36_plus + $usia_kurang_puas_36_plus + $usia_sangat_kurang_puas_36_plus;
+      $total_responden_usia = $total_responden_18_35 + $total_responden_36_up;
+
+      // Store totals in session variables
+      $_SESSION['total_responden_18_35'] = $total_responden_18_35;
+      $_SESSION['total_responden_36_up'] = $total_responden_36_up;
+      $_SESSION['total_responden_usia'] = $total_responden_usia;
 
     
-    $usia_sangat_puas_18_35 = validateInput($_POST['usia_sangat_puas_18_35']);
-    $usia_puas_18_35 = validateInput($_POST['usia_puas_18_35']);
-    $usia_kurang_puas_18_35 = validateInput($_POST['usia_kurang_puas_18_35']);
-    $usia_sangat_kurang_puas_18_35 = validateInput($_POST['usia_sangat_kurang_puas_18_35']);
+    // Validate and sanitize education level inputs
+      $lulusan_sangat_puas_sd = validateInput($_POST['lulusan_sangat_puas_sd']);
+      $lulusan_puas_sd = validateInput($_POST['lulusan_puas_sd']);
+      $lulusan_kurang_puas_sd = validateInput($_POST['lulusan_kurang_puas_sd']);
+      $lulusan_sangat_kurang_puas_sd = validateInput($_POST['lulusan_sangat_kurang_puas_sd']);
 
-    $usia_sangat_puas_36_plus = validateInput($_POST['usia_sangat_puas_36_plus']);
-    $usia_puas_36_plus = validateInput($_POST['usia_puas_36_plus']);
-    $usia_kurang_puas_36_plus = validateInput($_POST['usia_kurang_puas_36_plus']);
-    $usia_sangat_kurang_puas_36_plus = validateInput($_POST['usia_sangat_kurang_puas_36_plus']);
+      $lulusan_sangat_puas_smp = validateInput($_POST['lulusan_sangat_puas_smp']);
+      $lulusan_puas_smp = validateInput($_POST['lulusan_puas_smp']);
+      $lulusan_kurang_puas_smp = validateInput($_POST['lulusan_kurang_puas_smp']);
+      $lulusan_sangat_kurang_puas_smp = validateInput($_POST['lulusan_sangat_kurang_puas_smp']);
 
-    $total_responden_18_35 = $usia_sangat_puas_18_35 + $usia_puas_18_35 + $usia_kurang_puas_18_35 + $usia_sangat_kurang_puas_18_35;
-    $total_responden_36_up = $usia_sangat_puas_36_plus + $usia_puas_36_plus + $usia_kurang_puas_36_plus + $usia_sangat_kurang_puas_36_plus;
-    $total_responden_usia = $total_responden_18_35 + $total_responden_36_up;
+      $lulusan_sangat_puas_sma = validateInput($_POST['lulusan_sangat_puas_sma']);
+      $lulusan_puas_sma = validateInput($_POST['lulusan_puas_sma']);
+      $lulusan_kurang_puas_sma = validateInput($_POST['lulusan_kurang_puas_sma']);
+      $lulusan_sangat_kurang_puas_sma = validateInput($_POST['lulusan_sangat_kurang_puas_sma']);
+
+      $lulusan_sangat_puas_diploma = validateInput($_POST['lulusan_sangat_puas_diploma']);
+      $lulusan_puas_diploma = validateInput($_POST['lulusan_puas_diploma']);
+      $lulusan_kurang_puas_diploma = validateInput($_POST['lulusan_kurang_puas_diploma']);
+      $lulusan_sangat_kurang_puas_diploma = validateInput($_POST['lulusan_sangat_kurang_puas_diploma']);
+
+      $lulusan_sangat_puas_sarjana = validateInput($_POST['lulusan_sangat_puas_sarjana']);
+      $lulusan_puas_sarjana = validateInput($_POST['lulusan_puas_sarjana']);
+      $lulusan_kurang_puas_sarjana = validateInput($_POST['lulusan_kurang_puas_sarjana']);
+      $lulusan_sangat_kurang_puas_sarjana = validateInput($_POST['lulusan_sangat_kurang_puas_sarjana']);
+
+      // Store data in session variables
+      $_SESSION['lulusan_sangat_puas_sd'] = $lulusan_sangat_puas_sd;
+      $_SESSION['lulusan_puas_sd'] = $lulusan_puas_sd;
+      $_SESSION['lulusan_kurang_puas_sd'] = $lulusan_kurang_puas_sd;
+      $_SESSION['lulusan_sangat_kurang_puas_sd'] = $lulusan_sangat_kurang_puas_sd;
+
+      $_SESSION['lulusan_sangat_puas_smp'] = $lulusan_sangat_puas_smp;
+      $_SESSION['lulusan_puas_smp'] = $lulusan_puas_smp;
+      $_SESSION['lulusan_kurang_puas_smp'] = $lulusan_kurang_puas_smp;
+      $_SESSION['lulusan_sangat_kurang_puas_smp'] = $lulusan_sangat_kurang_puas_smp;
+
+      $_SESSION['lulusan_sangat_puas_sma'] = $lulusan_sangat_puas_sma;
+      $_SESSION['lulusan_puas_sma'] = $lulusan_puas_sma;
+      $_SESSION['lulusan_kurang_puas_sma'] = $lulusan_kurang_puas_sma;
+      $_SESSION['lulusan_sangat_kurang_puas_sma'] = $lulusan_sangat_kurang_puas_sma;
+
+      $_SESSION['lulusan_sangat_puas_diploma'] = $lulusan_sangat_puas_diploma;
+      $_SESSION['lulusan_puas_diploma'] = $lulusan_puas_diploma;
+      $_SESSION['lulusan_kurang_puas_diploma'] = $lulusan_kurang_puas_diploma;
+      $_SESSION['lulusan_sangat_kurang_puas_diploma'] = $lulusan_sangat_kurang_puas_diploma;
+
+      $_SESSION['lulusan_sangat_puas_sarjana'] = $lulusan_sangat_puas_sarjana;
+      $_SESSION['lulusan_puas_sarjana'] = $lulusan_puas_sarjana;
+      $_SESSION['lulusan_kurang_puas_sarjana'] = $lulusan_kurang_puas_sarjana;
+      $_SESSION['lulusan_sangat_kurang_puas_sarjana'] = $lulusan_sangat_kurang_puas_sarjana;
+
+      // Calculate totals
+      $total_responden_sd = $lulusan_sangat_puas_sd + $lulusan_puas_sd + $lulusan_kurang_puas_sd + $lulusan_sangat_kurang_puas_sd;
+      $total_responden_smp = $lulusan_sangat_puas_smp + $lulusan_puas_smp + $lulusan_kurang_puas_smp + $lulusan_sangat_kurang_puas_smp;
+      $total_responden_sma = $lulusan_sangat_puas_sma + $lulusan_puas_sma + $lulusan_kurang_puas_sma + $lulusan_sangat_kurang_puas_sma;
+      $total_responden_diploma = $lulusan_sangat_puas_diploma + $lulusan_puas_diploma + $lulusan_kurang_puas_diploma + $lulusan_sangat_kurang_puas_diploma;
+      $total_responden_sarjana = $lulusan_sangat_puas_sarjana + $lulusan_puas_sarjana + $lulusan_kurang_puas_sarjana + $lulusan_sangat_kurang_puas_sarjana;
+      $total_responden_lulusan = $total_responden_sd + $total_responden_smp + $total_responden_sma + $total_responden_diploma + $total_responden_sarjana;
+
+      // Store totals in session variables
+      $_SESSION['total_responden_sd'] = $total_responden_sd;
+      $_SESSION['total_responden_smp'] = $total_responden_smp;
+      $_SESSION['total_responden_sma'] = $total_responden_sma;
+      $_SESSION['total_responden_diploma'] = $total_responden_diploma;
+      $_SESSION['total_responden_sarjana'] = $total_responden_sarjana;
+      $_SESSION['total_responden_lulusan'] = $total_responden_lulusan;
 
     
-    $lulusan_sangat_puas_sd = validateInput($_POST['lulusan_sangat_puas_sd']);
-    $lulusan_puas_sd = validateInput($_POST['lulusan_puas_sd']);
-    $lulusan_kurang_puas_sd = validateInput($_POST['lulusan_kurang_puas_sd']);
-    $lulusan_sangat_kurang_puas_sd = validateInput($_POST['lulusan_sangat_kurang_puas_sd']);
+    // Validate and sanitize profession inputs
+      $profesi_sangat_puas_pns = validateInput($_POST['profesi_sangat_puas_pns']);
+      $profesi_puas_pns = validateInput($_POST['profesi_puas_pns']);
+      $profesi_kurang_puas_pns = validateInput($_POST['profesi_kurang_puas_pns']);
+      $profesi_sangat_kurang_puas_pns = validateInput($_POST['profesi_sangat_kurang_puas_pns']);
 
-    $lulusan_sangat_puas_smp = validateInput($_POST['lulusan_sangat_puas_smp']);
-    $lulusan_puas_smp = validateInput($_POST['lulusan_puas_smp']);
-    $lulusan_kurang_puas_smp = validateInput($_POST['lulusan_kurang_puas_smp']);
-    $lulusan_sangat_kurang_puas_smp = validateInput($_POST['lulusan_sangat_kurang_puas_smp']);
+      $profesi_sangat_puas_swasta_wiraswasta = validateInput($_POST['profesi_sangat_puas_swasta_wiraswasta']);
+      $profesi_puas_swasta_wiraswasta = validateInput($_POST['profesi_puas_swasta_wiraswasta']);
+      $profesi_kurang_puas_swasta_wiraswasta = validateInput($_POST['profesi_kurang_puas_swasta_wiraswasta']);
+      $profesi_sangat_kurang_puas_swasta_wiraswasta = validateInput($_POST['profesi_sangat_kurang_puas_swasta_wiraswasta']);
 
-    $lulusan_sangat_puas_sma = validateInput($_POST['lulusan_sangat_puas_sma']);
-    $lulusan_puas_sma = validateInput($_POST['lulusan_puas_sma']);
-    $lulusan_kurang_puas_sma = validateInput($_POST['lulusan_kurang_puas_sma']);
-    $lulusan_sangat_kurang_puas_sma = validateInput($_POST['lulusan_sangat_kurang_puas_sma']);
+      $profesi_sangat_puas_pelajar_mahasiswa = validateInput($_POST['profesi_sangat_puas_pelajar_mahasiswa']);
+      $profesi_puas_pelajar_mahasiswa = validateInput($_POST['profesi_puas_pelajar_mahasiswa']);
+      $profesi_kurang_puas_pelajar_mahasiswa = validateInput($_POST['profesi_kurang_puas_pelajar_mahasiswa']);
+      $profesi_sangat_kurang_puas_pelajar_mahasiswa = validateInput($_POST['profesi_sangat_kurang_puas_pelajar_mahasiswa']);
 
-    $lulusan_sangat_puas_diploma = validateInput($_POST['lulusan_sangat_puas_diploma']);
-    $lulusan_puas_diploma = validateInput($_POST['lulusan_puas_diploma']);
-    $lulusan_kurang_puas_diploma = validateInput($_POST['lulusan_kurang_puas_diploma']);
-    $lulusan_sangat_kurang_puas_diploma = validateInput($_POST['lulusan_sangat_kurang_puas_diploma']);
+      $profesi_sangat_puas_pengangguran = validateInput($_POST['profesi_sangat_puas_pengangguran']);
+      $profesi_puas_pengangguran = validateInput($_POST['profesi_puas_pengangguran']);
+      $profesi_kurang_puas_pengangguran = validateInput($_POST['profesi_kurang_puas_pengangguran']);
+      $profesi_sangat_kurang_puas_pengangguran = validateInput($_POST['profesi_sangat_kurang_puas_pengangguran']);
 
-    $lulusan_sangat_puas_sarjana = validateInput($_POST['lulusan_sangat_puas_sarjana']);
-    $lulusan_puas_sarjana = validateInput($_POST['lulusan_puas_sarjana']);
-    $lulusan_kurang_puas_sarjana = validateInput($_POST['lulusan_kurang_puas_sarjana']);
-    $lulusan_sangat_kurang_puas_sarjana = validateInput($_POST['lulusan_sangat_kurang_puas_sarjana']);
+      // Store data in session variables
+      $_SESSION['profesi_sangat_puas_pns'] = $profesi_sangat_puas_pns;
+      $_SESSION['profesi_puas_pns'] = $profesi_puas_pns;
+      $_SESSION['profesi_kurang_puas_pns'] = $profesi_kurang_puas_pns;
+      $_SESSION['profesi_sangat_kurang_puas_pns'] = $profesi_sangat_kurang_puas_pns;
 
-    $total_responden_sd = $lulusan_sangat_puas_sd + $lulusan_puas_sd + $lulusan_kurang_puas_sd + $lulusan_sangat_kurang_puas_sd;
-    $total_responden_smp = $lulusan_sangat_puas_smp + $lulusan_puas_smp + $lulusan_kurang_puas_smp + $lulusan_sangat_kurang_puas_smp;
-    $total_responden_sma = $lulusan_sangat_puas_sma + $lulusan_puas_sma + $lulusan_kurang_puas_sma + $lulusan_sangat_kurang_puas_sma;
-    $total_responden_diploma = $lulusan_sangat_puas_diploma + $lulusan_puas_diploma + $lulusan_kurang_puas_diploma + $lulusan_sangat_kurang_puas_diploma;
-    $total_responden_sarjana = $lulusan_sangat_puas_sarjana + $lulusan_puas_sarjana + $lulusan_kurang_puas_sarjana + $lulusan_sangat_kurang_puas_sarjana;
-    $total_responden_lulusan = $total_responden_sd + $total_responden_smp + $total_responden_sma + $total_responden_diploma + $total_responden_sarjana;
+      $_SESSION['profesi_sangat_puas_swasta_wiraswasta'] = $profesi_sangat_puas_swasta_wiraswasta;
+      $_SESSION['profesi_puas_swasta_wiraswasta'] = $profesi_puas_swasta_wiraswasta;
+      $_SESSION['profesi_kurang_puas_swasta_wiraswasta'] = $profesi_kurang_puas_swasta_wiraswasta;
+      $_SESSION['profesi_sangat_kurang_puas_swasta_wiraswasta'] = $profesi_sangat_kurang_puas_swasta_wiraswasta;
 
-    
-    $profesi_sangat_puas_pns = validateInput($_POST['profesi_sangat_puas_pns']);
-    $profesi_puas_pns = validateInput($_POST['profesi_puas_pns']);
-    $profesi_kurang_puas_pns = validateInput($_POST['profesi_kurang_puas_pns']);
-    $profesi_sangat_kurang_puas_pns = validateInput($_POST['profesi_sangat_kurang_puas_pns']);
+      $_SESSION['profesi_sangat_puas_pelajar_mahasiswa'] = $profesi_sangat_puas_pelajar_mahasiswa;
+      $_SESSION['profesi_puas_pelajar_mahasiswa'] = $profesi_puas_pelajar_mahasiswa;
+      $_SESSION['profesi_kurang_puas_pelajar_mahasiswa'] = $profesi_kurang_puas_pelajar_mahasiswa;
+      $_SESSION['profesi_sangat_kurang_puas_pelajar_mahasiswa'] = $profesi_sangat_kurang_puas_pelajar_mahasiswa;
 
-    $profesi_sangat_puas_swasta_wiraswasta = validateInput($_POST['profesi_sangat_puas_swasta']);
-    $profesi_puas_swasta_wiraswasta = validateInput($_POST['profesi_puas_swasta']);
-    $profesi_kurang_puas_swasta_wiraswasta = validateInput($_POST['profesi_kurang_puas_swasta']);
-    $profesi_sangat_kurang_puas_swasta_wiraswasta = validateInput($_POST['profesi_sangat_kurang_puas_swasta']);
+      $_SESSION['profesi_sangat_puas_pengangguran'] = $profesi_sangat_puas_pengangguran;
+      $_SESSION['profesi_puas_pengangguran'] = $profesi_puas_pengangguran;
+      $_SESSION['profesi_kurang_puas_pengangguran'] = $profesi_kurang_puas_pengangguran;
+      $_SESSION['profesi_sangat_kurang_puas_pengangguran'] = $profesi_sangat_kurang_puas_pengangguran;
 
-    $profesi_sangat_puas_pelajar_mahasiswa = validateInput($_POST['profesi_sangat_puas_pelajar']);
-    $profesi_puas_pelajar_mahasiswa = validateInput($_POST['profesi_puas_pelajar']);
-    $profesi_kurang_puas_pelajar_mahasiswa = validateInput($_POST['profesi_kurang_puas_pelajar']);
-    $profesi_sangat_kurang_puas_pelajar_mahasiswa = validateInput($_POST['profesi_sangat_kurang_puas_pelajar']);
+      // Calculate totals
+      $total_responden_pns = $profesi_sangat_puas_pns + $profesi_puas_pns + $profesi_kurang_puas_pns + $profesi_sangat_kurang_puas_pns;
+      $total_responden_swasta_wiraswasta = $profesi_sangat_puas_swasta_wiraswasta + $profesi_puas_swasta_wiraswasta + $profesi_kurang_puas_swasta_wiraswasta + $profesi_sangat_kurang_puas_swasta_wiraswasta;
+      $total_responden_pelajar_mahasiswa = $profesi_sangat_puas_pelajar_mahasiswa + $profesi_puas_pelajar_mahasiswa + $profesi_kurang_puas_pelajar_mahasiswa + $profesi_sangat_kurang_puas_pelajar_mahasiswa;
+      $total_responden_pengangguran = $profesi_sangat_puas_pengangguran + $profesi_puas_pengangguran + $profesi_kurang_puas_pengangguran + $profesi_sangat_kurang_puas_pengangguran;
+      $total_responden_profesi = $total_responden_pns + $total_responden_swasta_wiraswasta + $total_responden_pelajar_mahasiswa + $total_responden_pengangguran;
 
-    $profesi_sangat_puas_pengangguran = validateInput($_POST['profesi_sangat_puas_pengangguran']);
-    $profesi_puas_pengangguran = validateInput($_POST['profesi_puas_pengangguran']);
-    $profesi_kurang_puas_pengangguran = validateInput($_POST['profesi_kurang_puas_pengangguran']);
-    $profesi_sangat_kurang_puas_pengangguran = validateInput($_POST['profesi_sangat_kurang_puas_pengangguran']);
+      // Store totals in session variables
+      $_SESSION['total_responden_pns'] = $total_responden_pns;
+      $_SESSION['total_responden_swasta_wiraswasta'] = $total_responden_swasta_wiraswasta;
+      $_SESSION['total_responden_pelajar_mahasiswa'] = $total_responden_pelajar_mahasiswa;
+      $_SESSION['total_responden_pengangguran'] = $total_responden_pengangguran;
+      $_SESSION['total_responden_profesi'] = $total_responden_profesi;
 
-    $total_responden_pns = $profesi_sangat_puas_pns + $profesi_puas_pns + $profesi_kurang_puas_pns + $profesi_sangat_kurang_puas_pns;
-    $total_responden_swasta_wiraswasta = $profesi_sangat_puas_swasta_wiraswasta + $profesi_puas_swasta_wiraswasta + $profesi_kurang_puas_swasta_wiraswasta + $profesi_sangat_kurang_puas_swasta_wiraswasta;
-    $total_responden_pelajar_mahasiswa = $profesi_sangat_puas_pelajar_mahasiswa + $profesi_puas_pelajar_mahasiswa + $profesi_kurang_puas_pelajar_mahasiswa + $profesi_sangat_kurang_puas_pelajar_mahasiswa;
-    $total_responden_pengangguran = $profesi_sangat_puas_pengangguran + $profesi_puas_pengangguran + $profesi_kurang_puas_pengangguran + $profesi_sangat_kurang_puas_pengangguran;
-    $total_responden_profesi = $total_responden_pns + $total_responden_swasta_wiraswasta + $total_responden_pelajar_mahasiswa + $total_responden_pengangguran;
-
-    // Query untuk mendapatkan ID tertinggi dari tabel survey
-    $id_survey_query = "SELECT MAX(id) as max_id FROM survey";
-    $result_survey = $conn->query($id_survey_query);
-    
-    if ($result_survey->num_rows > 0) {
-        $row_survey = $result_survey->fetch_assoc();
-        $id_survey = $row_survey['max_id'];
-    } else {
-        $id_survey = null; // Jika tidak ada data
-    }
-    
-    // Query untuk mendapatkan ID tertinggi dari tabel gender
-    $id_gender_query = "SELECT MAX(id) as max_id FROM gender";
-    $result_gender = $conn->query($id_gender_query);
-    
-    if ($result_gender->num_rows > 0) {
-        $row_gender = $result_gender->fetch_assoc();
-        $id_gender = $row_gender['max_id'];
-    } else {
-        $id_gender = null; // Jika tidak ada data
-    }
-
-    if ($id_survey == $id_gender) {
-          $id = $id_survey;
-          // Update 'gender'
-          $stmt_gender = $conn->prepare("
-              UPDATE gender SET 
-                  laki_laki_sangat_puas = ?, laki_laki_puas = ?, laki_laki_kurang_puas = ?, laki_laki_sangat_kurang_puas = ?,
-                  perempuan_sangat_puas = ?, perempuan_puas = ?, perempuan_kurang_puas = ?, perempuan_sangat_kurang_puas = ?,
-                  total_responden_laki_laki = ?, total_responden_perempuan = ?, total_responden_gender = ?
-              WHERE id = ?
-          ");
-    
-          $stmt_gender->bind_param("iiiiiiiiiiii", 
-              $gender_sangat_puas_laki, $gender_puas_laki, $gender_kurang_puas_laki, $gender_sangat_kurang_puas_laki,
-              $gender_sangat_puas_perempuan, $gender_puas_perempuan, $gender_kurang_puas_perempuan, $gender_sangat_kurang_puas_perempuan,
-              $total_responden_laki_laki, $total_responden_perempuan, $total_responden_gender, $id
-          );
-    
-          // Update 'usia'
-          $stmt_usia = $conn->prepare("
-              UPDATE usia SET 
-                  18_35_sangat_puas = ?, 18_35_puas = ?, 18_35_kurang_puas = ?, 18_35_sangat_kurang_puas = ?,
-                  36_up_sangat_puas = ?, 36_up_puas = ?, 36_up_kurang_puas = ?, 36_up_sangat_kurang_puas = ?,
-                  total_responden_18_35 = ?, total_responden_36_up = ?, total_responden_usia = ?
-              WHERE id = ?
-          ");
-    
-          $stmt_usia->bind_param("iiiiiiiiiiii", 
-              $usia_sangat_puas_18_35, $usia_puas_18_35, $usia_kurang_puas_18_35, $usia_sangat_kurang_puas_18_35,
-              $usia_sangat_puas_36_plus, $usia_puas_36_plus, $usia_kurang_puas_36_plus, $usia_sangat_kurang_puas_36_plus,
-              $total_responden_18_35, $total_responden_36_up, $total_responden_usia, $id
-          );
-    
-          // Update 'lulusan'
-          $stmt_lulusan = $conn->prepare("
-              UPDATE lulusan SET 
-                  sd_sangat_puas = ?, sd_puas = ?, sd_kurang_puas = ?, sd_sangat_kurang_puas = ?,
-                  smp_sangat_puas = ?, smp_puas = ?, smp_kurang_puas = ?, smp_sangat_kurang_puas = ?,
-                  sma_sangat_puas = ?, sma_puas = ?, sma_kurang_puas = ?, sma_sangat_kurang_puas = ?,
-                  diploma_sangat_puas = ?, diploma_puas = ?, diploma_kurang_puas = ?, diploma_sangat_kurang_puas = ?,
-                  sarjana_sangat_puas = ?, sarjana_puas = ?, sarjana_kurang_puas = ?, sarjana_sangat_kurang_puas = ?,
-                  total_responden_sd = ?, total_responden_smp = ?, total_responden_sma = ?, total_responden_diploma = ?, total_responden_sarjana = ?, total_responden_lulusan = ?
-              WHERE id = ?
-          ");
-    
-          $stmt_lulusan->bind_param("iiiiiiiiiiiiiiiiiiiiiiiiiii", 
-              $lulusan_sangat_puas_sd, $lulusan_puas_sd, $lulusan_kurang_puas_sd, $lulusan_sangat_kurang_puas_sd,
-              $lulusan_sangat_puas_smp, $lulusan_puas_smp, $lulusan_kurang_puas_smp, $lulusan_sangat_kurang_puas_smp,
-              $lulusan_sangat_puas_sma, $lulusan_puas_sma, $lulusan_kurang_puas_sma, $lulusan_sangat_kurang_puas_sma,
-              $lulusan_sangat_puas_diploma, $lulusan_puas_diploma, $lulusan_kurang_puas_diploma, $lulusan_sangat_kurang_puas_diploma,
-              $lulusan_sangat_puas_sarjana, $lulusan_puas_sarjana, $lulusan_kurang_puas_sarjana, $lulusan_sangat_kurang_puas_sarjana,
-              $total_responden_sd, $total_responden_smp, $total_responden_sma, $total_responden_diploma, $total_responden_sarjana, $total_responden_lulusan, $id
-          );
-    
-          // Update 'profesi'
-          $stmt_profesi = $conn->prepare("
-              UPDATE profesi SET 
-                  pns_sangat_puas = ?, pns_puas = ?, pns_kurang_puas = ?, pns_sangat_kurang_puas = ?,
-                  swasta_wiraswasta_sangat_puas = ?, swasta_wiraswasta_puas = ?, swasta_wiraswasta_kurang_puas = ?, swasta_wiraswasta_sangat_kurang_puas = ?,
-                  pelajar_mahasiswa_sangat_puas = ?, pelajar_mahasiswa_puas = ?, pelajar_mahasiswa_kurang_puas = ?, pelajar_mahasiswa_sangat_kurang_puas = ?,
-                  pengangguran_sangat_puas = ?, pengangguran_puas = ?, pengangguran_kurang_puas = ?, pengangguran_sangat_kurang_puas = ?,
-                  total_responden_pns = ?, total_responden_swasta_wiraswasta = ?, total_responden_pelajar_mahasiswa = ?, total_responden_pengangguran = ?, total_responden_profesi = ?
-              WHERE id = ?
-          ");
-    
-          $stmt_profesi->bind_param("iiiiiiiiiiiiiiiiiiiiii", 
-              $profesi_sangat_puas_pns, $profesi_puas_pns, $profesi_kurang_puas_pns, $profesi_sangat_kurang_puas_pns,
-              $profesi_sangat_puas_swasta_wiraswasta, $profesi_puas_swasta_wiraswasta, $profesi_kurang_puas_swasta_wiraswasta, $profesi_sangat_kurang_puas_swasta_wiraswasta,
-              $profesi_sangat_puas_pelajar_mahasiswa, $profesi_puas_pelajar_mahasiswa, $profesi_kurang_puas_pelajar_mahasiswa, $profesi_sangat_kurang_puas_pelajar_mahasiswa,
-              $profesi_sangat_puas_pengangguran, $profesi_puas_pengangguran, $profesi_kurang_puas_pengangguran, $profesi_sangat_kurang_puas_pengangguran,
-              $total_responden_pns, $total_responden_swasta_wiraswasta, $total_responden_pelajar_mahasiswa, $total_responden_pengangguran, $total_responden_profesi, $id
-          );
-    } else {
-          // Prepare SQL statement for 'gender'
-          $stmt_gender = $conn->prepare("
-                INSERT INTO gender (laki_laki_sangat_puas, laki_laki_puas, laki_laki_kurang_puas, laki_laki_sangat_kurang_puas,
-                                        perempuan_sangat_puas, perempuan_puas, perempuan_kurang_puas, perempuan_sangat_kurang_puas,
-                                        total_responden_laki_laki, total_responden_perempuan, total_responden_gender)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-          ");
-      
-          // Bind parameters for 'gender'
-          $stmt_gender->bind_param("iiiiiiiiiii", 
-          $gender_sangat_puas_laki, $gender_puas_laki, $gender_kurang_puas_laki, $gender_sangat_kurang_puas_laki,
-          $gender_sangat_puas_perempuan, $gender_puas_perempuan, $gender_kurang_puas_perempuan, $gender_sangat_kurang_puas_perempuan,
-          $total_responden_laki_laki, $total_responden_perempuan, $total_responden_gender
-          );
-      
-          // Prepare SQL statement for 'usia'
-          $stmt_usia = $conn->prepare("
-                INSERT INTO usia (18_35_sangat_puas, 18_35_puas, 18_35_kurang_puas, 18_35_sangat_kurang_puas,
-                                  36_up_sangat_puas, 36_up_puas, 36_up_kurang_puas, 36_up_sangat_kurang_puas,
-                                  total_responden_18_35, total_responden_36_up, total_responden_usia)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-          ");
-      
-          // Bind parameters for 'usia'
-          $stmt_usia->bind_param("iiiiiiiiiii", 
-          $usia_sangat_puas_18_35, $usia_puas_18_35, $usia_kurang_puas_18_35, $usia_sangat_kurang_puas_18_35,
-          $usia_sangat_puas_36_plus, $usia_puas_36_plus, $usia_kurang_puas_36_plus, $usia_sangat_kurang_puas_36_plus,
-          $total_responden_18_35, $total_responden_36_up, $total_responden_usia
-          );
-      
-          // Prepare SQL statement for 'lulusan'
-          $stmt_lulusan = $conn->prepare("
-                INSERT INTO lulusan (
-                sd_sangat_puas, sd_puas, sd_kurang_puas, sd_sangat_kurang_puas,	
-                smp_sangat_puas, smp_puas, smp_kurang_puas, smp_sangat_kurang_puas, 
-                sma_sangat_puas, sma_puas, sma_kurang_puas, sma_sangat_kurang_puas, 
-                diploma_sangat_puas, diploma_puas, diploma_kurang_puas, diploma_sangat_kurang_puas, 
-                sarjana_sangat_puas, sarjana_puas, sarjana_kurang_puas, sarjana_sangat_kurang_puas, 
-                total_responden_sd, total_responden_smp, total_responden_sma, total_responden_diploma, total_responden_sarjana, total_responden_lulusan	
-                ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-          ");
-      
-          // Bind parameters
-          $stmt_lulusan->bind_param("iiiiiiiiiiiiiiiiiiiiiiiiii", 
-          $lulusan_sangat_puas_sd, $lulusan_puas_sd, $lulusan_kurang_puas_sd, $lulusan_sangat_kurang_puas_sd,
-          $lulusan_sangat_puas_smp, $lulusan_puas_smp, $lulusan_kurang_puas_smp, $lulusan_sangat_kurang_puas_smp,
-          $lulusan_sangat_puas_sma, $lulusan_puas_sma, $lulusan_kurang_puas_sma, $lulusan_sangat_kurang_puas_sma,
-          $lulusan_sangat_puas_diploma, $lulusan_puas_diploma, $lulusan_kurang_puas_diploma, $lulusan_sangat_kurang_puas_diploma,
-          $lulusan_sangat_puas_sarjana, $lulusan_puas_sarjana, $lulusan_kurang_puas_sarjana, $lulusan_sangat_kurang_puas_sarjana,
-          $total_responden_sd, $total_responden_smp, $total_responden_sma, $total_responden_diploma, $total_responden_sarjana, $total_responden_lulusan
-          );
-      
-          // Prepare SQL statement for 'profesi'
-          $stmt_profesi = $conn->prepare("
-                INSERT INTO profesi (pns_sangat_puas, pns_puas, pns_kurang_puas, pns_sangat_kurang_puas,
-                                        swasta_wiraswasta_sangat_puas, swasta_wiraswasta_puas, swasta_wiraswasta_kurang_puas, swasta_wiraswasta_sangat_kurang_puas,
-                                        pelajar_mahasiswa_sangat_puas, pelajar_mahasiswa_puas, pelajar_mahasiswa_kurang_puas, pelajar_mahasiswa_sangat_kurang_puas,
-                                        pengangguran_sangat_puas, pengangguran_puas, pengangguran_kurang_puas, pengangguran_sangat_kurang_puas,
-                                        total_responden_pns, total_responden_swasta_wiraswasta, total_responden_pelajar_mahasiswa, total_responden_pengangguran, total_responden_profesi)
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-          ");
-      
-          // Bind parameters for 'profesi'
-          $stmt_profesi->bind_param("iiiiiiiiiiiiiiiiiiiii", 
-          $profesi_sangat_puas_pns, $profesi_puas_pns, $profesi_kurang_puas_pns, $profesi_sangat_kurang_puas_pns,
-          $profesi_sangat_puas_swasta_wiraswasta, $profesi_puas_swasta_wiraswasta, $profesi_kurang_puas_swasta_wiraswasta, $profesi_sangat_kurang_puas_swasta_wiraswasta,
-          $profesi_sangat_puas_pelajar_mahasiswa, $profesi_puas_pelajar_mahasiswa, $profesi_kurang_puas_pelajar_mahasiswa, $profesi_sangat_kurang_puas_pelajar_mahasiswa,
-          $profesi_sangat_puas_pengangguran, $profesi_puas_pengangguran, $profesi_kurang_puas_pengangguran, $profesi_sangat_kurang_puas_pengangguran,
-          $total_responden_pns, $total_responden_swasta_wiraswasta, $total_responden_pelajar_mahasiswa, $total_responden_pengangguran, $total_responden_profesi
-          );
-    }
-
-      // Execute statements and check for errors
-      if ($stmt_gender->execute() && $stmt_usia->execute() && $stmt_lulusan->execute() && $stmt_profesi->execute()) {
-            header('Location: Admin_Tambah_Survey_Hal3.php');
-            exit();
-      } else {
-            echo "Error: " . $stmt_gender->error . " " . $stmt_usia->error . " " . $stmt_lulusan->error . " " . $stmt_profesi->error;
-      }
-
-      // Close the statements and the connection
-      $stmt_gender->close();
-      $stmt_usia->close();
-      $stmt_lulusan->close();
-      $stmt_profesi->close();
-      $conn->close();
+      header('Location: Admin_Tambah_Survey_Hal3.php');
+      exit();
 }
 ?>
 
@@ -421,6 +312,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                               memahami kebutuhan serta kepuasan Anda dengan lebih baik.</p>
                   </div>
 
+                  <!-- Tabel Gender -->
                   <div class="table">
                         <h3>Gender</h3>
                         <table>
@@ -437,35 +329,35 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <tr>
                                           <td>Laki-laki</td>
                                           <td><input type="number" name="gender_sangat_puas_laki" required
-                                                      value="<?php echo htmlspecialchars($gender['laki_laki_sangat_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($genderSangatPuasLaki); ?>">
                                           </td>
                                           <td><input type="number" name="gender_puas_laki" required
-                                                      value="<?php echo htmlspecialchars($gender['laki_laki_puas']); ?>">
-                                          </td>
+                                                      value="<?php echo htmlspecialchars($genderPuasLaki); ?>"></td>
                                           <td><input type="number" name="gender_kurang_puas_laki" required
-                                                      value="<?php echo htmlspecialchars($gender['laki_laki_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($genderKurangPuasLaki); ?>">
                                           </td>
                                           <td><input type="number" name="gender_sangat_kurang_puas_laki" required
-                                                      value="<?php echo htmlspecialchars($gender['laki_laki_sangat_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($genderSangatKurangPuasLaki); ?>">
                                           </td>
                                     </tr>
                                     <tr>
                                           <td>Perempuan</td>
                                           <td><input type="number" name="gender_sangat_puas_perempuan" required
-                                                      value="<?php echo htmlspecialchars($gender['perempuan_sangat_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($genderSangatPuasPerempuan); ?>">
                                           </td>
                                           <td><input type="number" name="gender_puas_perempuan" required
-                                                      value="<?php echo htmlspecialchars($gender['perempuan_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($genderPuasPerempuan); ?>">
                                           </td>
                                           <td><input type="number" name="gender_kurang_puas_perempuan" required
-                                                      value="<?php echo htmlspecialchars($gender['perempuan_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($genderKurangPuasPerempuan); ?>">
                                           </td>
                                           <td><input type="number" name="gender_sangat_kurang_puas_perempuan" required
-                                                      value="<?php echo htmlspecialchars($gender['perempuan_sangat_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($genderSangatKurangPuasPerempuan); ?>">
                                           </td>
                                     </tr>
                               </tbody>
                         </table>
+
                         <!-- Tabel Usia -->
                         <h3>Usia</h3>
                         <table>
@@ -482,33 +374,34 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <tr>
                                           <td>18-35 Tahun</td>
                                           <td><input type="number" name="usia_sangat_puas_18_35" required
-                                                      value="<?php echo htmlspecialchars($usia['18_35_sangat_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($usiaSangatPuas18_35); ?>">
                                           </td>
                                           <td><input type="number" name="usia_puas_18_35" required
-                                                      value="<?php echo htmlspecialchars($usia['18_35_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($usiaPuas18_35); ?>"></td>
                                           <td><input type="number" name="usia_kurang_puas_18_35" required
-                                                      value="<?php echo htmlspecialchars($usia['18_35_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($usiaKurangPuas18_35); ?>">
                                           </td>
                                           <td><input type="number" name="usia_sangat_kurang_puas_18_35" required
-                                                      value="<?php echo htmlspecialchars($usia['18_35_sangat_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($usiaSangatKurangPuas18_35); ?>">
                                           </td>
                                     </tr>
                                     <tr>
                                           <td>36 Tahun ke atas</td>
                                           <td><input type="number" name="usia_sangat_puas_36_plus" required
-                                                      value="<?php echo htmlspecialchars($usia['36_up_sangat_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($usiaSangatPuas36Plus); ?>">
                                           </td>
                                           <td><input type="number" name="usia_puas_36_plus" required
-                                                      value="<?php echo htmlspecialchars($usia['36_up_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($usiaPuas36Plus); ?>"></td>
                                           <td><input type="number" name="usia_kurang_puas_36_plus" required
-                                                      value="<?php echo htmlspecialchars($usia['36_up_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($usiaKurangPuas36Plus); ?>">
                                           </td>
                                           <td><input type="number" name="usia_sangat_kurang_puas_36_plus" required
-                                                      value="<?php echo htmlspecialchars($usia['36_up_sangat_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($usiaSangatKurangPuas36Plus); ?>">
                                           </td>
                                     </tr>
                               </tbody>
                         </table>
+
                         <!-- Tabel Lulusan -->
                         <h3>Lulusan</h3>
                         <table>
@@ -525,75 +418,71 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <tr>
                                           <td>SD</td>
                                           <td><input type="number" name="lulusan_sangat_puas_sd" required
-                                                      value="<?php echo htmlspecialchars($lulusan['sd_sangat_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($lulusanSangatPuasSD); ?>">
                                           </td>
                                           <td><input type="number" name="lulusan_puas_sd" required
-                                                      value="<?php echo htmlspecialchars($lulusan['sd_puas']); ?>"></td>
+                                                      value="<?php echo htmlspecialchars($lulusanPuasSD); ?>"></td>
                                           <td><input type="number" name="lulusan_kurang_puas_sd" required
-                                                      value="<?php echo htmlspecialchars($lulusan['sd_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($lulusanKurangPuasSD); ?>">
                                           </td>
                                           <td><input type="number" name="lulusan_sangat_kurang_puas_sd" required
-                                                      value="<?php echo htmlspecialchars($lulusan['sd_sangat_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($lulusanSangatKurangPuasSD); ?>">
                                           </td>
                                     </tr>
                                     <tr>
                                           <td>SMP</td>
                                           <td><input type="number" name="lulusan_sangat_puas_smp" required
-                                                      value="<?php echo htmlspecialchars($lulusan['smp_sangat_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($lulusanSangatPuasSMP); ?>">
                                           </td>
                                           <td><input type="number" name="lulusan_puas_smp" required
-                                                      value="<?php echo htmlspecialchars($lulusan['smp_puas']); ?>">
-                                          </td>
+                                                      value="<?php echo htmlspecialchars($lulusanPuasSMP); ?>"></td>
                                           <td><input type="number" name="lulusan_kurang_puas_smp" required
-                                                      value="<?php echo htmlspecialchars($lulusan['smp_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($lulusanKurangPuasSMP); ?>">
                                           </td>
                                           <td><input type="number" name="lulusan_sangat_kurang_puas_smp" required
-                                                      value="<?php echo htmlspecialchars($lulusan['smp_sangat_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($lulusanSangatKurangPuasSMP); ?>">
                                           </td>
                                     </tr>
                                     <tr>
                                           <td>SMA</td>
                                           <td><input type="number" name="lulusan_sangat_puas_sma" required
-                                                      value="<?php echo htmlspecialchars($lulusan['sma_sangat_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($lulusanSangatPuasSMA); ?>">
                                           </td>
                                           <td><input type="number" name="lulusan_puas_sma" required
-                                                      value="<?php echo htmlspecialchars($lulusan['sma_puas']); ?>">
-                                          </td>
+                                                      value="<?php echo htmlspecialchars($lulusanPuasSMA); ?>"></td>
                                           <td><input type="number" name="lulusan_kurang_puas_sma" required
-                                                      value="<?php echo htmlspecialchars($lulusan['sma_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($lulusanKurangPuasSMA); ?>">
                                           </td>
                                           <td><input type="number" name="lulusan_sangat_kurang_puas_sma" required
-                                                      value="<?php echo htmlspecialchars($lulusan['sma_sangat_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($lulusanSangatKurangPuasSMA); ?>">
                                           </td>
                                     </tr>
                                     <tr>
                                           <td>Diploma</td>
                                           <td><input type="number" name="lulusan_sangat_puas_diploma" required
-                                                      value="<?php echo htmlspecialchars($lulusan['diploma_sangat_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($lulusanSangatPuasDiploma); ?>">
                                           </td>
                                           <td><input type="number" name="lulusan_puas_diploma" required
-                                                      value="<?php echo htmlspecialchars($lulusan['diploma_puas']); ?>">
-                                          </td>
+                                                      value="<?php echo htmlspecialchars($lulusanPuasDiploma); ?>"></td>
                                           <td><input type="number" name="lulusan_kurang_puas_diploma" required
-                                                      value="<?php echo htmlspecialchars($lulusan['diploma_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($lulusanKurangPuasDiploma); ?>">
                                           </td>
                                           <td><input type="number" name="lulusan_sangat_kurang_puas_diploma" required
-                                                      value="<?php echo htmlspecialchars($lulusan['diploma_sangat_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($lulusanSangatKurangPuasDiploma); ?>">
                                           </td>
                                     </tr>
                                     <tr>
                                           <td>S1/S2/S3</td>
                                           <td><input type="number" name="lulusan_sangat_puas_sarjana" required
-                                                      value="<?php echo htmlspecialchars($lulusan['sarjana_sangat_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($lulusanSangatPuasSarjana); ?>">
                                           </td>
                                           <td><input type="number" name="lulusan_puas_sarjana" required
-                                                      value="<?php echo htmlspecialchars($lulusan['sarjana_puas']); ?>">
-                                          </td>
+                                                      value="<?php echo htmlspecialchars($lulusanPuasSarjana); ?>"></td>
                                           <td><input type="number" name="lulusan_kurang_puas_sarjana" required
-                                                      value="<?php echo htmlspecialchars($lulusan['sarjana_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($lulusanKurangPuasSarjana); ?>">
                                           </td>
                                           <td><input type="number" name="lulusan_sangat_kurang_puas_sarjana" required
-                                                      value="<?php echo htmlspecialchars($lulusan['sarjana_sangat_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($lulusanSangatKurangPuasSarjana); ?>">
                                           </td>
                                     </tr>
                               </tbody>
@@ -614,66 +503,69 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                     <tr>
                                           <td>PNS</td>
                                           <td><input type="number" name="profesi_sangat_puas_pns" required
-                                                      value="<?php echo htmlspecialchars($profesi['pns_sangat_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($profesiSangatPuasPNS); ?>">
                                           </td>
                                           <td><input type="number" name="profesi_puas_pns" required
-                                                      value="<?php echo htmlspecialchars($profesi['pns_puas']); ?>">
-                                          </td>
+                                                      value="<?php echo htmlspecialchars($profesiPuasPNS); ?>"></td>
                                           <td><input type="number" name="profesi_kurang_puas_pns" required
-                                                      value="<?php echo htmlspecialchars($profesi['pns_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($profesiKurangPuasPNS); ?>">
                                           </td>
                                           <td><input type="number" name="profesi_sangat_kurang_puas_pns" required
-                                                      value="<?php echo htmlspecialchars($profesi['pns_sangat_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($profesiSangatKurangPuasPNS); ?>">
                                           </td>
                                     </tr>
                                     <tr>
                                           <td>Swasta/Wiraswasta</td>
-                                          <td><input type="number" name="profesi_sangat_puas_swasta" required
-                                                      value="<?php echo htmlspecialchars($profesi['swasta_wiraswasta_sangat_puas']); ?>">
+                                          <td><input type="number" name="profesi_sangat_puas_swasta_wiraswasta" required
+                                                      value="<?php echo htmlspecialchars($profesiSangatPuasSwastaWiraswasta); ?>">
                                           </td>
-                                          <td><input type="number" name="profesi_puas_swasta" required
-                                                      value="<?php echo htmlspecialchars($profesi['swasta_wiraswasta_puas']); ?>">
+                                          <td><input type="number" name="profesi_puas_swasta_wiraswasta" required
+                                                      value="<?php echo htmlspecialchars($profesiPuasSwastaWiraswasta); ?>">
                                           </td>
-                                          <td><input type="number" name="profesi_kurang_puas_swasta" required
-                                                      value="<?php echo htmlspecialchars($profesi['swasta_wiraswasta_kurang_puas']); ?>">
+                                          <td><input type="number" name="profesi_kurang_puas_swasta_wiraswasta" required
+                                                      value="<?php echo htmlspecialchars($profesiKurangPuasSwastaWiraswasta); ?>">
                                           </td>
-                                          <td><input type="number" name="profesi_sangat_kurang_puas_swasta" required
-                                                      value="<?php echo htmlspecialchars($profesi['swasta_wiraswasta_sangat_kurang_puas']); ?>">
+                                          <td><input type="number" name="profesi_sangat_kurang_puas_swasta_wiraswasta"
+                                                      required
+                                                      value="<?php echo htmlspecialchars($profesiSangatKurangPuasSwastaWiraswasta); ?>">
                                           </td>
                                     </tr>
                                     <tr>
                                           <td>Pelajar/Mahasiswa</td>
-                                          <td><input type="number" name="profesi_sangat_puas_pelajar" required
-                                                      value="<?php echo htmlspecialchars($profesi['pelajar_mahasiswa_sangat_puas']); ?>">
+                                          <td><input type="number" name="profesi_sangat_puas_pelajar_mahasiswa" required
+                                                      value="<?php echo htmlspecialchars($profesiSangatPuasPelajarMahasiswa); ?>">
                                           </td>
-                                          <td><input type="number" name="profesi_puas_pelajar" required
-                                                      value="<?php echo htmlspecialchars($profesi['pelajar_mahasiswa_puas']); ?>">
+                                          <td><input type="number" name="profesi_puas_pelajar_mahasiswa" required
+                                                      value="<?php echo htmlspecialchars($profesiPuasPelajarMahasiswa); ?>">
                                           </td>
-                                          <td><input type="number" name="profesi_kurang_puas_pelajar" required
-                                                      value="<?php echo htmlspecialchars($profesi['pelajar_mahasiswa_kurang_puas']); ?>">
+                                          <td><input type="number" name="profesi_kurang_puas_pelajar_mahasiswa" required
+                                                      value="<?php echo htmlspecialchars($profesiKurangPuasPelajarMahasiswa); ?>">
                                           </td>
-                                          <td><input type="number" name="profesi_sangat_kurang_puas_pelajar" required
-                                                      value="<?php echo htmlspecialchars($profesi['pelajar_mahasiswa_sangat_kurang_puas']); ?>">
+                                          <td><input type="number" name="profesi_sangat_kurang_puas_pelajar_mahasiswa"
+                                                      required
+                                                      value="<?php echo htmlspecialchars($profesiSangatKurangPuasPelajarMahasiswa); ?>">
                                           </td>
                                     </tr>
+
                                     <tr>
                                           <td>Pengangguran</td>
                                           <td><input type="number" name="profesi_sangat_puas_pengangguran" required
-                                                      value="<?php echo htmlspecialchars($profesi['pengangguran_sangat_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($profesiSangatPuasPengangguran); ?>">
                                           </td>
                                           <td><input type="number" name="profesi_puas_pengangguran" required
-                                                      value="<?php echo htmlspecialchars($profesi['pengangguran_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($profesiPuasPengangguran); ?>">
                                           </td>
                                           <td><input type="number" name="profesi_kurang_puas_pengangguran" required
-                                                      value="<?php echo htmlspecialchars($profesi['pengangguran_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($profesiKurangPuasPengangguran); ?>">
                                           </td>
                                           <td><input type="number" name="profesi_sangat_kurang_puas_pengangguran"
                                                       required
-                                                      value="<?php echo htmlspecialchars($profesi['pengangguran_sangat_kurang_puas']); ?>">
+                                                      value="<?php echo htmlspecialchars($profesiSangatKurangPuasPengangguran); ?>">
                                           </td>
                                     </tr>
                               </tbody>
                         </table>
+
                   </div>
                   <div class="save">
                         <a href="Admin_Tambah_Survey_Hal1.php">

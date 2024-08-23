@@ -7,7 +7,7 @@ include('Koneksi_user_litbang.php');
 if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
-    $stmt = $conn->prepare("DELETE FROM user WHERE id = ?");
+    $stmt = $conn->prepare("DELETE FROM user WHERE id_user = ?");
     $stmt->bind_param('i', $id);
 
     if ($stmt->execute()) {

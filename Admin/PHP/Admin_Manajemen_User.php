@@ -1,14 +1,13 @@
 <?php
 session_start();
-
 include('Koneksi_user_litbang.php');
 
-if (!isset($_SESSION['id'])) {
+if (!isset($_SESSION['id_user'])) {
     header("Location: Admin_Login.php");
     exit();
 }
 
-$id = $_SESSION['id'];
+$id = $_SESSION['id_user'];
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $sort = isset($_GET['sort']) ? $_GET['sort'] : 'name-asc'; // Default sort by name ascending
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
@@ -142,7 +141,7 @@ $conn->close();
                     ?>
                               <tr>
                                     <td><?php echo $no++; ?></td>
-                                    <td><?php echo htmlspecialchars($user['id']); ?></td>
+                                    <td><?php echo htmlspecialchars($user['id_user']); ?></td>
                                     <td><?php echo htmlspecialchars($user['nama_lengkap']); ?></td>
                                     <td><?php echo htmlspecialchars($user['username']); ?></td>
                                     <td><?php echo htmlspecialchars($user['jenis_kelamin']); ?></td>
@@ -153,13 +152,13 @@ $conn->close();
                                     <td><?php echo htmlspecialchars($user['role']); ?></td>
                                     <td>
                                           <div class="action-buttons">
-                                                <a href="Admin_Edit_User.php?id=<?php echo $user['id']; ?>"
+                                                <a href="Admin_Edit_User.php?id=<?php echo $user['id_user']; ?>"
                                                       class="tombol-edit">
                                                       <i class="fa fa-edit"></i>Edit
                                                 </a>
-                                                <a href="Admin_Delete_User.php?id=<?php echo $user['id']; ?>"
+                                                <a href="Admin_Delete_User.php?id=<?php echo $user['id_user']; ?>"
                                                       class="tombol-hapus-user"
-                                                      onclick="return confirmDelete(<?php echo $user['id']; ?>)">
+                                                      onclick="return confirmDelete(<?php echo $user['id_user']; ?>)">
                                                       <i class="fa fa-trash"></i>Delete
                                                 </a>
                                           </div>

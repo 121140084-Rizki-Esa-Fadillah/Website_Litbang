@@ -3,13 +3,13 @@ session_start();
 
 include('Koneksi_user_litbang.php');
 
-if (!isset($_SESSION['id'])) {
+if (!isset($_SESSION['id_user'])) {
     header("Location: Admin_Login.php");
     exit();
 }
 
-$id = $_SESSION['id'];
-$stmt = $conn->prepare("SELECT password FROM user WHERE id = ?");
+$id = $_SESSION['id_user'];
+$stmt = $conn->prepare("SELECT password FROM user WHERE id_user = ?");
 $stmt->bind_param('i', $id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -25,7 +25,7 @@ if ($result->num_rows > 0) {
         if ($password_baru === $confirm_password_baru) {
             if ($password_lama == $row['password']) {
                 // Update password
-                $stmt_update = $conn->prepare("UPDATE user SET password = ? WHERE id = ?");
+                $stmt_update = $conn->prepare("UPDATE user SET password = ? WHERE id_user = ?");
                 $stmt_update->bind_param('si', $password_baru, $id);
                 if ($stmt_update->execute()) {
                     $_SESSION['notification'] = 'Password berhasil diperbaharui!';

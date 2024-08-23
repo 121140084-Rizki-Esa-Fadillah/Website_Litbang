@@ -1,48 +1,64 @@
 <?php
 include "Koneksi_survei_litbang.php";
+session_start();  // Memastikan session dimulai jika belum dimulai
+
+// Ambil data dari session jika tersedia
+$judulSurvey = isset($_SESSION['judul-survey']) ? htmlspecialchars($_SESSION['judul-survey'], ENT_QUOTES, 'UTF-8') : '';
+$keterangan = isset($_SESSION['keterangan']) ? htmlspecialchars($_SESSION['keterangan'], ENT_QUOTES, 'UTF-8') : '';
+$idWilayah = isset($_SESSION['id_wilayah']) ? htmlspecialchars($_SESSION['id_wilayah'], ENT_QUOTES, 'UTF-8') : '';
+$imagePreview = isset($_SESSION['image']) ? '../../image/' . $_SESSION['image'] : '../../image/upload_foto.png';
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $judul = $_POST['judul-survey'];
-    $keterangan = $_POST['keterangan'];
-    $id_wilayah = $_POST['id_wilayah'];
-    $image = $_FILES['upload-gambar']['name']; 
-    $tmp = $_FILES['upload-gambar']['tmp_name']; 
+    // Validasi input
+    if (empty($_POST['judul-survey']) || empty($_POST['keterangan']) || empty($_POST['id_wilayah'])) {
+        echo "<script>alert('Semua field harus diisi.'); window.location.href='Admin_Tambah_Survey_Hal1.php';</script>";
+        exit();
+    }
+    $_SESSION['judul-survey'] = htmlspecialchars(trim($_POST['judul-survey']));
+    $_SESSION['keterangan'] = htmlspecialchars(trim($_POST['keterangan']));
+    $_SESSION['id_wilayah'] = htmlspecialchars(trim($_POST['id_wilayah']));
 
-    // Set default image if no image is uploaded
-    $defaultImage = 'image_default.jpg';  // Ensure this image exists in your directory
+    // Validasi dan proses upload gambar
+    $image = $_FILES['upload-gambar']['name'];
+    $tmp = $_FILES['upload-gambar']['tmp_name'];
+    $imageSize = $_FILES['upload-gambar']['size'];
+    $imageType = $_FILES['upload-gambar']['type'];
+    $defaultImage = 'image_default.jpg';
+
+    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
+    $maxSize = 2 * 1024 * 1024; // 2MB
 
     if (!empty($image)) {
-        // Move uploaded file to a desired location
-        $uploadDir = '../../image/';
-        if (move_uploaded_file($tmp, $uploadDir . $image)) {
-            $imageToSave = $image;
+        if (in_array($imageType, $allowedTypes) && $imageSize <= $maxSize) {
+            $uploadDir = '../../image/';
+            
+            // Pastikan direktori upload ada
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+            
+            $uploadFile = $uploadDir . basename($image);
+
+            // Validasi upload gambar
+            if (move_uploaded_file($tmp, $uploadFile)) {
+                $_SESSION['image'] = $image;
+            } else {
+                echo "<script>alert('Gagal mengunggah gambar. Silakan coba lagi.'); window.location.href='Admin_Tambah_Survey_Hal1.php';</script>";
+                exit();
+            }
         } else {
-            // Display alert on failure
-            echo "<script>alert('Gagal mengunggah gambar. Silakan coba lagi.'); window.location.href='Admin_Tambah_Survey_Hal1.php';</script>";
+            echo "<script>alert('Jenis file tidak didukung atau ukuran file terlalu besar.'); window.location.href='Admin_Tambah_Survey_Hal1.php';</script>";
             exit();
         }
     } else {
-        // Use default image if no image is provided
-        $imageToSave = $defaultImage;
+        $_SESSION['image'] = $defaultImage;
     }
 
-    // Insert data into database including the image filename
-    $query = "INSERT INTO survey (title, keterangan, id_wilayah, image) VALUES ('$judul', '$keterangan', '$id_wilayah', '$imageToSave')";
-
-    if (mysqli_query($conn, $query)) {
-        // Redirect to the next page
-        header('Location: Admin_Tambah_Survey_Hal2.php');
-        exit();
-    } else {
-        // Display alert on failure
-        echo "<script>alert('Gagal menyimpan data: " . mysqli_error($conn) . "'); window.location.href='Admin_Tambah_Survey_Hal1.php';</script>";
-        exit();
-    }
-
-    mysqli_close($conn);
+    // Redirect ke halaman berikutnya
+    header('Location: Admin_Tambah_Survey_Hal2.php');
+    exit();
 }
 ?>
-
 
 <!DOCTYPE html>
 <html lang="en">
@@ -69,37 +85,52 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="form-section">
                   <h2>Tambah Data Survey</h2>
                   <form action="../php/Admin_Tambah_Survey_Hal1.php" method="post" enctype="multipart/form-data">
-                        <input type="hidden" name="id" value="<?php echo $id; ?>">
+                        <!-- Pastikan variabel id sudah diset dengan benar -->
+                        <input type="hidden" name="id"
+                              value="<?php echo htmlspecialchars($id ?? '', ENT_QUOTES, 'UTF-8'); ?>">
 
                         <label for="judul-survey">Judul Survey:</label>
-                        <input type="text" id="judul-survey" name="judul-survey" placeholder="..." required>
+                        <input type="text" id="judul-survey" name="judul-survey" placeholder="...."
+                              value="<?php echo $judulSurvey; ?>" required>
 
                         <label for="keterangan">Keterangan:</label>
-                        <textarea id="keterangan" name="keterangan" placeholder="..." required></textarea>
+                        <textarea id="keterangan" name="keterangan" placeholder="...."
+                              required><?php echo $keterangan; ?></textarea>
 
-                        <label for="sort">Pilih Wilayah :</label>
+                        <label for="id_wilayah">Pilih Wilayah :</label>
                         <select id="id_wilayah" name="id_wilayah" required>
-                              <option value="1">Lampung Barat</option>
-                              <option value="2">Tanggamus</option>
-                              <option value="3">Lampung Selatan</option>
-                              <option value="4">Lampung Timur</option>
-                              <option value="5">Lampung Tengah</option>
-                              <option value="6">Lampung Utara</option>
-                              <option value="7">Way Kanan</option>
-                              <option value="8">Tulang Bawang</option>
-                              <option value="9">Pesawaran</option>
-                              <option value="10">Pringsewu</option>
-                              <option value="11">Mesuji</option>
-                              <option value="12">Tulang Bawang Barat</option>
-                              <option value="13">Pesisir Barat</option>
-                              <option value="14">Bandar Lampung</option>
-                              <option value="15">Kota Metro</option>
+                              <option value="" disabled <?php echo $idWilayah == '' ? 'selected' : ''; ?>>--Pilih
+                                    wilayah--</option>
+                              <option value="1" <?php echo $idWilayah == '1' ? 'selected' : ''; ?>>Lampung Barat
+                              </option>
+                              <option value="2" <?php echo $idWilayah == '2' ? 'selected' : ''; ?>>Tanggamus</option>
+                              <option value="3" <?php echo $idWilayah == '3' ? 'selected' : ''; ?>>Lampung Selatan
+                              </option>
+                              <option value="4" <?php echo $idWilayah == '4' ? 'selected' : ''; ?>>Lampung Timur
+                              </option>
+                              <option value="5" <?php echo $idWilayah == '5' ? 'selected' : ''; ?>>Lampung Tengah
+                              </option>
+                              <option value="6" <?php echo $idWilayah == '6' ? 'selected' : ''; ?>>Lampung Utara
+                              </option>
+                              <option value="7" <?php echo $idWilayah == '7' ? 'selected' : ''; ?>>Way Kanan</option>
+                              <option value="8" <?php echo $idWilayah == '8' ? 'selected' : ''; ?>>Tulang Bawang
+                              </option>
+                              <option value="9" <?php echo $idWilayah == '9' ? 'selected' : ''; ?>>Pesawaran</option>
+                              <option value="10" <?php echo $idWilayah == '10' ? 'selected' : ''; ?>>Pringsewu</option>
+                              <option value="11" <?php echo $idWilayah == '11' ? 'selected' : ''; ?>>Mesuji</option>
+                              <option value="12" <?php echo $idWilayah == '12' ? 'selected' : ''; ?>>Tulang Bawang Barat
+                              </option>
+                              <option value="13" <?php echo $idWilayah == '13' ? 'selected' : ''; ?>>Pesisir Barat
+                              </option>
+                              <option value="14" <?php echo $idWilayah == '14' ? 'selected' : ''; ?>>Bandar Lampung
+                              </option>
+                              <option value="15" <?php echo $idWilayah == '15' ? 'selected' : ''; ?>>Kota Metro</option>
                         </select>
 
                         <label for="upload-gambar">Upload Gambar (Optional):</label>
                         <div class="upload-section">
                               <div class="upload-box">
-                                    <img id="image-preview" src="../../image/upload_foto.png" alt="Preview">
+                                    <img id="image-preview" src="<?php echo $imagePreview; ?>" alt="Preview">
                                     <input type="file" id="upload-gambar" name="upload-gambar"
                                           accept="image/jpeg, image/png">
                               </div>
@@ -114,7 +145,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                   </form>
             </div>
       </main>
-      <script src="..\Js\Main.js"></script>
+      <script src="../Js/Main.js"></script>
       <script>
       document.getElementById('upload-gambar').addEventListener('change', function(event) {
             const file = event.target.files[0];

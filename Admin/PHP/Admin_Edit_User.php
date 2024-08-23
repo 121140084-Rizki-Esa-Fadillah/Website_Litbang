@@ -8,7 +8,7 @@ if (isset($_GET['id'])) {
     $id = $_GET['id'];
 
     // Ambil data pengguna dari database berdasarkan ID
-    $stmt = $conn->prepare("SELECT * FROM user WHERE id = ?");
+    $stmt = $conn->prepare("SELECT * FROM user WHERE id_user= ?");
     $stmt->bind_param('i', $id);
     $stmt->execute();
     $result = $stmt->get_result();
@@ -25,7 +25,7 @@ if (isset($_GET['id'])) {
             $role = $_POST['roles'];
         
             // Update data pengguna berdasarkan ID
-            $stmt = $conn->prepare("UPDATE user SET username = ?, nama_lengkap = ?, jenis_kelamin = ?, email = ?, no_hp = ?, password = ?, role = ? WHERE id = ?");
+            $stmt = $conn->prepare("UPDATE user SET username = ?, nama_lengkap = ?, jenis_kelamin = ?, email = ?, no_hp = ?, password = ?, role = ? WHERE id_user = ?");
             $stmt->bind_param('sssssssi', $username, $nama_lengkap, $jenis_kelamin, $email, $no_hp, $password, $role, $id);
         
             if ($stmt->execute()) {
